@@ -4,12 +4,19 @@ TODO:
 
 wishlist--
 trianing page for Horses    see stats and feed horses to grow xp, 
+training page is minigames to increase stats
+
+race page
+all the horses start on the left, run to the right, speed is determined by stats and luck
+
+winner goes to winning page
+loser goes to you know
+
 
 
 stats:
-
-
-
+Speed: base movement
+Balance: likliehood of stalling
 
 
 
