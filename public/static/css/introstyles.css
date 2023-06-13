@@ -7,6 +7,8 @@
 body {
     display: flex;
     flex-direction: column;
-    height: 100%;
     background-color: pink;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
 }
