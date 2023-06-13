@@ -10,7 +10,6 @@ body {
     align-items: center;
     justify-content: space-around;
     gap: 10px;
-    border: outset black 20px;
     background-color: gold;
     font-family: sans-serif;
     
