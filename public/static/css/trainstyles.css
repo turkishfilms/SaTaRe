@@ -11,12 +11,19 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    gap: 10px;
     font-family: Delicious;
+    background-color: skyblue;
 }
+
 
 h1{
     text-decoration: underline;
+    text-shadow: #FC0 1px 0 10px;
+    height: 10vh;
+    color: whitesmoke;
+    overflow: hidden;
+    text-align: center;
+
 }
 
 #currentStats{
@@ -25,8 +32,9 @@ h1{
     flex-wrap: wrap;
     font-family: Delicious;
     justify-content: space-evenly;
-    background-color: pink;
     width: 80%;
+    height: 30vh;
+    text-align: center;
 }
 
 #currentStats > p {
@@ -35,20 +43,45 @@ h1{
     font-size: 140%;
 }
 
+#trainOptions {
+    height: 10vh;
+    width: 80vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+}
+
+#trainOptions > button {
+    width: 150px;
+    font-size: 200%;
+    height: 40px;
+}
+
+
 #trainedHistory {
-    height: 30vh;
-    max-height: 30vh;
+    height: 35vh;
+    max-height: 35vh;
     width: 100%;
     text-align: center;
-    background-color: blue;
     overflow: auto;
+    border-top: 5px solid black;
+    border-bottom: solid black 5px;
+    background-image: url("../../assets/graphics/bg_hay.png");
+  
 }
+
 
 #readyUp {
     position: fixed;
     text-align: center;
     bottom: 0;
-    height: 100px;
+    height: 15vh;
     width: 100%;
     font-size: 400%;
+    background-color: rgb(145, 106, 34);
+}
+
+#readyUp:hover {
+    background-color: gold;
 }

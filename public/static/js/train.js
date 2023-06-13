@@ -1,25 +1,22 @@
-const actions = ["walked", "fed", "rested"];
-actions.forEach((action) => {
-  document
-    .getElementById(action)
-    .addEventListener("click", () => changeStat(action));
-});
+const trainedHistory = document.getElementById("trainedHistory");
 
-// let walkButton = document.getElementById("walk");
-// let feedButton = document.getElementById("feed")
-// let restButton = document.getElementById("rest");
+const actions = { walked: "Walk", fed: "Feed", rested: "Rest" };
 
-let trainedHistory = document.getElementById("trainedHistory");
-
-// walkButton.addEventListener("click", () => changeStat("walked"));
-// feedButton.addEventListener("click", () => changeStat("fed"));
-// restButton.addEventListener("click", () => changeStat("rested"));
+for (let action in actions) {
+  const button = document.createElement("button");
+  button.id = action;
+  button.textContent = actions[action];
+  button.addEventListener("click", () => changeStat(action));
+  document.getElementById("trainOptions").appendChild(button);
+}
 
 function changeStat(stat) {
   //stat += 1; edit the class of the horse here to change stat based on parameter stat which receives walk, feed, and rest
-  let statChanged = document.createElement("h2");
-  statChanged.style.backgroundColor = "greenyellow";
+  const statChanged = document.createElement("h2");
+  statChanged.style.backgroundColor = "grey";
+  statChanged.style.opacity = "0.95";
   statChanged.textContent = "You have " + stat + " your horse.";
+  statChanged.style.borderBottom = 'solid black 3px';
 
   trainedHistory.prepend(statChanged);
 }

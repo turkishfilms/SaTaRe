@@ -2,11 +2,13 @@ export default class Horse {
   #speed;
   #balance;
   #weight;
-
+  #name;
+  #color;
   constructor({ speed = 10, balance = 0, weight = 100 } = {}) {
     this.#speed = speed;
     this.#balance = balance;
     this.#weight = weight;
+    this.#name
   }
   get speed() {
     return this.#speed;

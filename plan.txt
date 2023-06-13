@@ -53,3 +53,23 @@ ways to train stats:
     walk: increases balance, lowers weight
 
     rest: descreases weight, decreases balance
+
+
+
+
+
+natural selection ideas:
+
+    earn points from winning to spend on training.
+
+    if horse weight gets too low (lose weight from losing race or training)
+    then it dies and is deleted. 
+
+    if horse reaches certain weight (max stat) and wins
+    5 races in row it is put into hall of fame and retired
+
+
+    or its more a .reduce like idea where uou keep playing
+    until only one horse alive (collects all the other players stats)
+    by winning and spending well while others slowly get drained
+    then once you win your horse is put into hall of fame
