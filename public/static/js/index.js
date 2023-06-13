@@ -4,6 +4,9 @@ import Horse from "./Horse.js";
 const main = (p) => {
   p.horses;
   p.setup = () => {
+    const canvasDiv = document.getElementById('raceCanvas'); 
+    let cnv = p.createCanvas(canvasDiv.clientWidth, canvasDiv.clientHeight); // set the width and height of the canvas to the width and height of the div
+    cnv.parent('canvasContainer');
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.background(0);
     p.horses = Array.from(
