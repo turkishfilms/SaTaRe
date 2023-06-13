@@ -1,3 +1,5 @@
+@font-face { font-family: Delicious; src: url('fonts/PixelCowboy-l7we.ttf'); } 
+
 * {
     padding: 0;
     margin: 0;
@@ -11,7 +13,8 @@ body {
     justify-content: space-around;
     gap: 10px;
     background-color: gold;
-    font-family: sans-serif;
+    font-family: Delicious;
+    background-image: url("../../assets/graphics/bg_hay.png");
     
 }
 
@@ -25,6 +28,7 @@ body {
     background-color: red;
     padding: 15px 32px;
     font-size: 150%;
+    font-family: Delicious;
 }
 
 #submit:hover{
@@ -35,7 +39,7 @@ video {
     border: groove black 20px;
 }
 
-h1{
+h1, h2{
     background-color: lightgoldenrodyellow;
     padding: 1%;
     border: groove darkolivegreen 5px;

@@ -1,4 +1,4 @@
-class Horse {
+export default class Horse {
     #speed;
     #balance;
     constructor({ speed = 10, balance = 0 } = {}) {
@@ -21,5 +21,3 @@ class Horse {
     }
   
   }
-  
-  export default Horse

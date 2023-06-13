@@ -1,0 +1,28 @@
+@font-face { font-family: Delicious; src: url('fonts/PixelCowboy-l7we.ttf'); } 
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    font-family: Delicious;
+}
+
+
+.heading {
+    background-color: pink;
+}
+
+.raceCanvas {
+    background-color: blue;
+    width: 80%;
+    height: 400px;
+}
