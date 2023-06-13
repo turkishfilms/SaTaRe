@@ -21,6 +21,16 @@ body {
     font-family: Impact;
 }
 
+#submit{
+    background-color: red;
+    padding: 15px 32px;
+    font-size: 150%;
+}
+
+#submit:hover{
+    background-color: greenyellow;
+}
+
 video {
     border: groove black 20px;
 }
