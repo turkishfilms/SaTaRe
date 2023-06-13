@@ -3,27 +3,28 @@ import Horse from "./Horse.js";
 
 const main = (p) => {
   p.horse;
+  p.horseImg;
   p.preload = () => {
-    p.horseImg = loadImage("../assets/graphics/horse RGB f1.png");
+    // p.horseImg = p.loadImage("../assets/graphics/horse RGB f1.png");
+    p.horseImg = p.loadImage("./assets/graphics/horse/horse RGB f2.png", () =>
+      console.log("Image loaded successfully! hoe")
+    );
   };
   p.horses;
   p.setup = () => {
-    const { clientWidth, clientHeight } = document.getElementById("raceCanvas");
-    let cnv = p.createCanvas(clientWidth, clientHeight);
-    cnv.parent("canvasContainer");
+    const div = document.getElementById("raceCanvas");
+    let cnv = p.createCanvas(div.clientWidth, div.clientHeight);
+    cnv.parent("raceCanvas");
     p.background(0);
 
-    p.horses = makeHorses(10);
+    p.horses = makeHorses(p, 10);
   };
 
   p.moveHorse = (horse) => {
-    if (random(100) < horse.stats.balance) return; //tripped
+    if (p.random(100) < horse.stats.balance) return; //tripped
 
-    horse.stats.speed = Math.max(
-      Math.min(
-        horse.stats.speed + horse.stats.acceleration,
-        horse.stats.maxSpeed
-      ),
+    horse.stats.speed = p.max(
+      p.min(horse.stats.speed + horse.stats.acceleration, horse.stats.maxSpeed),
       0
     );
 
@@ -31,14 +32,14 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
-    image(p.imageImg)
+    p.image(p.horseImg, horse.x, horse.y);
   };
 
   p.draw = () => {
-    background(0);
+    p.background(0);
     p.horses.forEach((horse) => {
-      moveHorse(horse);
-      showHorse(horse);
+      // p.moveHorse(horse);
+      p.showHorse(horse);
     });
   };
 };
@@ -46,14 +47,14 @@ const main = (p) => {
 const myP5 = new p5(main);
 window.myP5 = myP5;
 
-const makeHorses = (number) => {
+const makeHorses = (p, number) => {
   return Array.from({ length: number }, () => {
     return {
       x: 0,
       y: 0,
       stats: new Horse({
-        speed: Math.random() * 20,
-        balance: Math.random() * 30,
+        speed: p.random() * 20,
+        balance: p.random() * 30,
       }),
     };
   });
