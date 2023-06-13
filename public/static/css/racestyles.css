@@ -1,6 +1,23 @@
 @font-face { font-family: Delicious; src: url('fonts/PixelCowboy-l7we.ttf'); } 
 
 
+
+#road {
+    animation: myAnim 5s linear 0s infinite normal forwards;
+    overflow: inherit;
+}
+
+@keyframes myAnim {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-1692px, 0, 0); /* The image width */
+    }
+  }
+
+
+
 * {
     padding: 0;
     margin: 0;
@@ -26,3 +43,4 @@ body{
     width: 80%;
     height: 400px;
 }
+
