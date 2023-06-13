@@ -1,8 +1,16 @@
 import Horse from "./Horse.js";
 
-let h = new Horse(12, 45);
+let horses;
 
-let s = h.speed;
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background(0);
+  horses = Array.from("iiiii", (item) => {
+    return new Horse(random(20), random(30));
+  });
+  horses.forEach((horse) => console.log([horse.speed, horse.balance]));
+}
 
-h.speed = 20;
-console.log(s, h.speed);
+function draw() {}
+
+export default horses
