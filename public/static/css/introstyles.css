@@ -7,15 +7,27 @@
 body {
     display: flex;
     flex-direction: column;
-    background-color: pink;
     align-items: center;
     justify-content: space-around;
     gap: 10px;
+    border: outset black 20px;
+    background-color: gold;
     font-family: sans-serif;
     
 }
 
-input{
+#name{
     text-align: center;
-    text-size: 200%;
+    font-size: 300%;
+    font-family: Impact;
+}
+
+video {
+    border: groove black 20px;
+}
+
+h1{
+    background-color: lightgoldenrodyellow;
+    padding: 1%;
+    border: groove darkolivegreen 5px;
 }
