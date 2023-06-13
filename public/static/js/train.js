@@ -13,8 +13,10 @@ for (let action in actions) {
 function changeStat(stat) {
   //stat += 1; edit the class of the horse here to change stat based on parameter stat which receives walk, feed, and rest
   const statChanged = document.createElement("h2");
-  statChanged.style.backgroundColor = "greenyellow";
+  statChanged.style.backgroundColor = "grey";
+  statChanged.style.opacity = "0.95";
   statChanged.textContent = "You have " + stat + " your horse.";
+  statChanged.style.borderBottom = 'solid black 3px';
 
   trainedHistory.prepend(statChanged);
 }
