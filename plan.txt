@@ -25,3 +25,30 @@ Dede - Horse racing code
 
 tabor intro video homapage
 salem horse art ad background
+
+
+
+
+
+stats:
+
+    weight: weight of horse
+
+    speed: current speed
+
+    max speed: max possible movement in one step. heavier horse = higher max speed. 
+
+    acceleration: rate of speed increase. heavier horse = slower. 
+
+    balance: chance of slipping per step. slipping means no movement (speed = 0 that turn). 
+
+    place: horses current position in the race (first, second, third, etc)
+
+
+ways to train stats:
+
+    feed: increases weight (max speed). decreases acceleration.
+
+    walk: increases balance, lowers weight
+
+    rest: descreases weight, decreases balance
