@@ -1,0 +1,54 @@
+@font-face { font-family: Delicious; src: url('fonts/PixelCowboy-l7we.ttf'); } 
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    font-family: Delicious;
+}
+
+h1{
+    text-decoration: underline;
+}
+
+#currentStats{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-family: Delicious;
+    justify-content: space-evenly;
+    background-color: pink;
+    width: 80%;
+}
+
+#currentStats > p {
+    width: 50%;
+    padding: 20px;
+    font-size: 140%;
+}
+
+#trainedHistory {
+    height: 30vh;
+    max-height: 30vh;
+    width: 100%;
+    text-align: center;
+    background-color: blue;
+    overflow: auto;
+}
+
+#readyUp {
+    position: fixed;
+    text-align: center;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    font-size: 400%;
+}
