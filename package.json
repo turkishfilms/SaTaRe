@@ -1,0 +1,25 @@
+{
+  "name": "satare",
+  "version": "1.0.0",
+  "description": "\"Ya Horses\"",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turkishfilms/SaTaRe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/turkishfilms/SaTaRe/issues"
+  },
+  "homepage": "https://github.com/turkishfilms/SaTaRe#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22"
+  }
+}
