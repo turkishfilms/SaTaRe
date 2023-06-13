@@ -13,6 +13,7 @@ body{
     justify-content: space-around;
     font-family: Delicious;
     background-color: skyblue;
+    font-size: 12px;
 }
 
 
@@ -24,6 +25,10 @@ h1{
     overflow: hidden;
     text-align: center;
 
+}
+
+button {
+    font-family: Delicious;
 }
 
 #currentStats{
