@@ -7,8 +7,36 @@
 body {
     display: flex;
     flex-direction: column;
-    background-color: pink;
     align-items: center;
     justify-content: space-around;
     gap: 10px;
+    background-color: gold;
+    font-family: sans-serif;
+    
+}
+
+#name{
+    text-align: center;
+    font-size: 300%;
+    font-family: Impact;
+}
+
+#submit{
+    background-color: red;
+    padding: 15px 32px;
+    font-size: 150%;
+}
+
+#submit:hover{
+    background-color: greenyellow;
+}
+
+video {
+    border: groove black 20px;
+}
+
+h1{
+    background-color: lightgoldenrodyellow;
+    padding: 1%;
+    border: groove darkolivegreen 5px;
 }
