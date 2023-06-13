@@ -2,8 +2,8 @@ export default class Horse {
   #speed;
   #balance;
   #weight;
-#name;
-#color
+  #name;
+  #color;
   constructor({ speed = 10, balance = 0, weight = 100 } = {}) {
     this.#speed = speed;
     this.#balance = balance;
