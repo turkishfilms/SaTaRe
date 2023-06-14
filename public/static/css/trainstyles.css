@@ -16,6 +16,15 @@ body{
     font-size: 12px;
 }
 
+audio{
+    position: fixed;
+    top: 10px;
+    left: 5px;
+    width:120px;
+    height: 15px;
+    border: gold 1px outset;
+    border-radius: 10px;
+}
 
 h1{
     text-decoration: underline;
