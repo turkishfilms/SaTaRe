@@ -1,6 +1,5 @@
 import express from "express";
 import { join } from "path";
-import ejs from "ejs";
 
 const app = express(),
   // router = express.Router(),
@@ -8,6 +7,8 @@ const app = express(),
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(express.static(join(process.cwd(), "public")));
+
+const horses = [];
 
 app.get("/", (req, res) => {
   console.log("brokeboi");
@@ -20,24 +21,26 @@ app.get("/race", (req, res) => {
 });
 
 app.get("/train", (req, res) => {
-  console.log("entered training")
+  console.log("entered training");
   res.sendFile(join(process.cwd(), "public/train.html"));
 });
 
-app.post("/horse", (req, res) => {
-  const horse = req.body.name;
-  horses.push({ client: id, name: horse });
+app.post("/submitHorseName", (req, res) => {
+  const { name: horse, id } = req.body;
+  horses.push({ client: id, name: horse, stats: {} });
   console.log("new horse " + horse + " was added");
 });
 
 app.post("/statsUp", (req, res) => {
-  const horse = horses.find((horsey) => horsey.name === req.body.name);
-  const { stats } = req.body;
+  const { name: name, stats } = req.body;
+  const horse = horses.find((h) => h.name == name);
   horse.stats = { ...horse.stats, ...stats };
   console.log(" horse " + horse + " was updated");
+  console.log(horses)
 });
 
-app.get("/horseName", (req, res) => {
+app.get("/retrieveHorseName", (req, res) => {
+  console.log("they asked  for ", horses[horses.length - 1]);
   res.send(horses[horses.length - 1]);
 });
 
@@ -66,8 +69,6 @@ const keepTrackOfClients = (req, res) => {
     }
   });
 };
-
-const horses = [];
 
 const areAllPlayersready = (players) => {
   return players.filter((player) => player == false);

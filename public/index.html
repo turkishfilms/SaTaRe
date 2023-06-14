@@ -20,7 +20,6 @@
 
     <h2>Enter Your Horse's Name:</h2>
 
-
     <form action="/train" method="GET">
       <input
         type="text"
@@ -31,16 +30,17 @@
         maxlength="14"
         size="14"
         placeholder="unnamed"
+        ,
+        onchange="newHorseName(value)"
       />
 
       <script>
         const nameBox = document.getElementById("name");
-        const giddyUpAudio =  new Audio("./assets/audio/giddyUp.mp3");
+        const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
         nameBox.addEventListener("click", () => giddyUpAudio.play());
       </script>
-        
-      <input type="submit" id="submit" value="Start Your Racing Adventure"/>
-    </form onsubmit="newHorsename()">
-</body>
 
+      <input type="submit" id="submit" value="Start Your Racing Adventure" />
+    </form>
+  </body>
 </html>
