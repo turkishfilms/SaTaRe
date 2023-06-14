@@ -1,11 +1,13 @@
 //putting horse name in the title
 let horseName;
-fetch("/horseName")
-  .then((response) => response.text())
-  .then((name) => {
+fetch("/retrieveHorseName")
+  .then((response) => {
+    return response.text();
+  })
+  .then((data) => {
+    const { name } = JSON.parse(data);
     horseName = name;
     document.getElementById("trainTitle").textContent = `Train ${name}`;
-    console.log("yeah");
   });
 
 const actions = {
@@ -69,6 +71,7 @@ function changeStat(stat) {
 
 const readiedUp = () => {
   horseNeighAudio.play();
+  console.log("name", horseName);
   //send stat updates to server
   //tell them we are ready
   fetch("/statsUp", {
