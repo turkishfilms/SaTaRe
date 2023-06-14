@@ -20,19 +20,22 @@
 
     <h2>Enter Your Horse's Name:</h2>
 
-    <input
-      type="text"
-      id="name"
-      name="name"
-      required
-      minlength="4"
-      maxlength="14"
-      size="14"
-      onchange="newHorseName( value)"
-    />
 
-    <a href="/train">
-      <input type="submit" id="submit" value="Start Your Racing Adventure" />
-    </a>
-  </body>
+    <form>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        minlength="3"
+        maxlength="14"
+        size="14"
+        placeholder="unnamed"
+      />
+
+        
+        <input type="submit" id="submit" value="Start Your Racing Adventure"/>
+    </form onsubmit="newHorsename()">
+</body>
+
 </html>
