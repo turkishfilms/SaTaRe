@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome To The Horse Races</title>
-    <script src="static/js/scripts/p5.min.js"></script>
+    <script src="static/js/communication.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/introstyles.css" />
-    <link rel="icon" href="assets/graphics/horse/s_horseG.png">
+    <link rel="icon" href="assets/graphics/horse/s_horseG.png" />
   </head>
 
-<body>
+  <body>
     <h1>Welcome To The Horse Races</h1>
 
     <video controls autoplay muted loop>
@@ -28,11 +28,11 @@
       minlength="4"
       maxlength="14"
       size="14"
+      onchange="newHorseName( value)"
     />
 
-    <a href="train.html">
-      <input type="submit" id="submit" value="Start Your Racing Adventure"/>
+    <a href="/train">
+      <input type="submit" id="submit" value="Start Your Racing Adventure" />
     </a>
-</body>
-
+  </body>
 </html>
