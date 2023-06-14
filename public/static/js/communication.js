@@ -5,7 +5,7 @@ const newHorseName = (name) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: name }),
+    body: JSON.stringify({ name: name,  }),
   })
     // .then((response) => {
     //   return response.json()

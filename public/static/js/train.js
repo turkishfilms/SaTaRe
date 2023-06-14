@@ -5,28 +5,46 @@ fetch("/horseName")
   .then((name) => {
     horseName = name;
     document.getElementById("trainTitle").textContent = `Train ${name}`;
+    console.log("yeah");
   });
 
-const savedStats = { balance: 0, weight: 0 };
-const horseEatAudio = new Audio("assets/audio//horseEat.mp3");
-const horseWalkAudio = new Audio("assets/audio//horseRun.mp3");
-const horseRestAudio = new Audio("assets/audio/horseSleep.mp3");
-const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
+const actions = {
+  walked: {
+    text: "Walk",
+    sound: new Audio("assets/audio//horseRun.mp3"),
+    stats: { weight: 1, balance: -1 },
+  },
+  fed: {
+    text: "Feed",
+    sound: new Audio("assets/audio//horseEat.mp3"),
+    stats: { weight: -1, balance: 1 },
+  },
+  rested: {
+    text: "Rest",
+    sound: new Audio("assets/audio/horseSleep.mp3"),
+    stats: { weight: -1, balance: -1 },
+  },
+};
+
+const makeActionsIntoButtons = () => {
+  for (let act in actions) {
+    const action = actions[act];
+    const button = document.createElement("button");
+    button.id = action.text;
+    button.textContent = action.text;
+    button.addEventListener("click", () => changeStat(action.text));
+    document.getElementById("trainOptions").appendChild(button);
+  }
+};
 
 const trainedHistory = document.getElementById("trainedHistory");
-
 const submitButton = document.getElementById("readyUp");
-submitButton.addEventListener("click", () => horseNeighAudio.play());
+makeActionsIntoButtons();
+const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
 
-const actions = { walked: "Walk", fed: "Feed", rested: "Rest" };
+submitButton.addEventListener("click", () => readiedUp());
 
-for (let action in actions) {
-  const button = document.createElement("button");
-  button.id = action;
-  button.textContent = actions[action];
-  button.addEventListener("click", () => changeStat(action));
-  document.getElementById("trainOptions").appendChild(button);
-}
+const savedStats = { balance: 0, weight: 0 };
 
 function changeStat(stat) {
   //stat += 1; edit the class of the horse here to change stat based on parameter stat which receives walk, feed, and rest
@@ -36,29 +54,21 @@ function changeStat(stat) {
   statChanged.textContent = "You have " + stat + " your horse.";
   statChanged.style.borderBottom = "solid black 3px";
 
-  switch (stat) {
-    case "walked":
-      horseWalkAudio.play();
-      savedStats.weight--;
-      savedStats.balance++;
-      break;
-    case "fed":
-      horseEatAudio.play();
-      savedStats.weight++;
-      savedStats.balance--;
-
-      break;
-    case "rested":
-      horseRestAudio.play();
-      savedStats.weight--;
-      savedStats.balance--;
-      break;
+  for (let act in actions) {
+    const action = actions[act];
+    if (action.text == stat) {
+      action.sound.play();
+      for (let delta in action.stats) {
+        savedStats[delta] += action.stats[delta];
+      }
+    }
   }
 
   trainedHistory.prepend(statChanged);
 }
 
 const readiedUp = () => {
+  horseNeighAudio.play();
   //send stat updates to server
   //tell them we are ready
   fetch("/statsUp", {
@@ -67,11 +77,11 @@ const readiedUp = () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ name: horseName, stats: savedStats }),
-  });
-  // .then((response) => {
-  //   return response.json()
-  // })
-  // .then((Rs) => {
-  //   console.log("nice",Rs);
-  // });
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((Rs) => {
+      console.log("nice", Rs);
+    });
 };

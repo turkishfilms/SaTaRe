@@ -22,6 +22,12 @@ Balance: likliehood of stalling
 
 Dede - server express done fam lightwork
 Dede - Horse racing code
+Dede - Server client communication
+Dede - server needs to hold horses
+Dede - send horse to client based on client identifier
+Dede - create client id
+Dede - store client id with horse data
+Dede - 
 
 tabor intro video homapage done
 

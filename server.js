@@ -12,6 +12,7 @@ app.use(express.static(join(process.cwd(), "public")));
 app.get("/", (req, res) => {
   console.log("brokeboi");
   res.sendFile(join(process.cwd(), "public/index.html"));
+  keepTrackOfClients(req, res);
 });
 
 app.get("/race", (req, res) => {
@@ -19,23 +20,21 @@ app.get("/race", (req, res) => {
 });
 
 app.get("/train", (req, res) => {
+  console.log("entered training")
   res.sendFile(join(process.cwd(), "public/train.html"));
 });
 
 app.post("/horse", (req, res) => {
   const horse = req.body.name;
-  horses.push(horse);
+  horses.push({ client: id, name: horse });
   console.log("new horse " + horse + " was added");
 });
 
 app.post("/statsUp", (req, res) => {
-  const horse = req.body.name;
-  const stats = req.body.stats
-  for(let stat in stats){
-    horses
-  }
-  horses.push(horse);
-  console.log("new horse " + horse + " was added");
+  const horse = horses.find((horsey) => horsey.name === req.body.name);
+  const { stats } = req.body;
+  horse.stats = { ...horse.stats, ...stats };
+  console.log(" horse " + horse + " was updated");
 });
 
 app.get("/horseName", (req, res) => {
@@ -50,6 +49,23 @@ app.get("*", (req, res) => {
 // app.use("/", router);
 
 const server = app.listen(port, () => console.log("lets go " + port));
+
+const keepTrackOfClients = (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // Store the response object in the array of connected clients
+  connectedClients.push(res);
+
+  // Remove the response object from the array when the client disconnects
+  req.on("close", () => {
+    const index = connectedClients.indexOf(res);
+    if (index !== -1) {
+      connectedClients.splice(index, 1);
+    }
+  });
+};
 
 const horses = [];
 
