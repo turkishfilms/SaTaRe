@@ -4,39 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="static/css/trainstyles.css" />
-    <link rel="icon" href="assets/graphics/horse/s_horseG.png">
+    <link rel="icon" href="assets/graphics/horse/s_horseG.png" />
     <!-- <script src="/public/static/js/scripts/ejs.js"></script> -->
     <title>Train Your Horse</title>
   </head>
   <body>
-  
-    
     <h1 id="trainTitle">Train</h1>
     <div id="statsGUI">
-        <div id="currentStats">
-            <p id="maxSpeed">Max Speed: </p>
-            <p id="Weight">Weight: </p>
-            <p id="Acceleration">Acceleration: </p>
-            <p id="Balance">Balance: </p>
-        </div>
+      <div id="currentStats">
+        <p id="maxSpeed">Max Speed:</p>
+        <p id="Weight">Weight:</p>
+        <p id="Acceleration">Acceleration:</p>
+        <p id="Balance">Balance:</p>
+      </div>
 
-        <div id="trainOptions">
-        </div>
+      <div id="trainOptions"></div>
     </div>
 
     <div id="trainedHistory"></div>
 
     <button id="readyUp">READY</button>
 
-
-    
     <audio autoplay controls loop>
       <source src="assets/audio/msc_stableTheme.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
     </audio>
 
     <script src="static/js/train.js"></script>
-
-
   </body>
 </html>
