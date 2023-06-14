@@ -12,11 +12,23 @@ body{
     align-items: center;
     justify-content: space-around;
     font-family: Delicious;
+    background-color: skyblue;
+    font-size: 12px;
 }
+
 
 h1{
     text-decoration: underline;
+    text-shadow: #FC0 1px 0 10px;
     height: 10vh;
+    color: whitesmoke;
+    overflow: hidden;
+    text-align: center;
+
+}
+
+button {
+    font-family: Delicious;
 }
 
 #currentStats{
@@ -27,6 +39,7 @@ h1{
     justify-content: space-evenly;
     width: 80%;
     height: 30vh;
+    text-align: center;
 }
 
 #currentStats > p {
@@ -41,12 +54,13 @@ h1{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    
 }
 
 #trainOptions > button {
-    width: 13vw;
+    width: 150px;
     font-size: 200%;
-    height: 50%;
+    height: 40px;
 }
 
 
@@ -56,7 +70,12 @@ h1{
     width: 100%;
     text-align: center;
     overflow: auto;
+    border-top: 5px solid black;
+    border-bottom: solid black 5px;
+    background-image: url("../../assets/graphics/bg_hay.png");
+  
 }
+
 
 #readyUp {
     position: fixed;
@@ -65,4 +84,9 @@ h1{
     height: 15vh;
     width: 100%;
     font-size: 400%;
+    background-color: rgb(145, 106, 34);
+}
+
+#readyUp:hover {
+    background-color: gold;
 }
