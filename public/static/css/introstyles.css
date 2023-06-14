@@ -49,6 +49,11 @@ h1, h2{
     padding: 1%;
     border: groove darkolivegreen 5px;
 }
+
 h1 {
     margin-top: 10px;
+}
+
+#name::placeholder {
+    color: lightgrey;
 }
