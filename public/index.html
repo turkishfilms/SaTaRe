@@ -13,7 +13,7 @@
   <body>
     <h1>Welcome To The Horse Races</h1>
 
-    <video controls autoplay muted loop>
+    <video controls>
       <source src="assets/intro.mp4" type="video/mp4" />
       Your browser does not support the epic video unfortunately.
     </video>
@@ -33,8 +33,13 @@
         placeholder="unnamed"
       />
 
+      <script>
+        const nameBox = document.getElementById("name");
+        const giddyUpAudio =  new Audio("./assets/audio/giddyUp.mp3");
+        nameBox.addEventListener("click", () => giddyUpAudio.play());
+      </script>
         
-        <input type="submit" id="submit" value="Start Your Racing Adventure"/>
+      <input type="submit" id="submit" value="Start Your Racing Adventure"/>
     </form onsubmit="newHorsename()">
 </body>
 

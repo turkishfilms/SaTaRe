@@ -2,21 +2,6 @@
 
 
 
-#road {
-    animation: myAnim 5s linear 0s infinite normal forwards;
-    overflow: inherit;
-}
-
-@keyframes myAnim {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(-1692px, 0, 0); /* The image width */
-    }
-  }
-
-
 
 * {
     padding: 0;
@@ -34,13 +19,8 @@ body{
 }
 
 
-.heading {
-    background-color: pink;
-}
 
-.raceCanvas {
-    background-color: blue;
-    width: 80%;
-    height: 400px;
+#raceCanvas {
+    background-image: url("../../assets/graphics/bg_raceAnim.gif");
 }
 
