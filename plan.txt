@@ -29,7 +29,16 @@ Dede - create client id
 Dede - store client id with horse data
 Dede - 
 
-tabor intro video homapage done
+tabor   (mainly html and css layouts. going for classic 2000's feel)
+    - Home page (index.html) with introduction video and name submission
+    - training page with stats list, options to train horse, and history of past trainings posted.
+      ready button to start race at bottom.
+    - racing page
+    - page for winner of the race
+    - page for the losers
+
+    
+
 
 salem horse art ad background
 
