@@ -88,3 +88,11 @@ const readiedUp = () => {
       console.log("nice", Rs);
     });
 };
+
+const updateScoreDivs = (stats) => {
+  const divs = ["maxSpeed", "Weight", "Acceleration", "Balance"];
+  divs.forEach((div) => {
+    const statDiv = document.getElementById(div);
+
+  });
+};
