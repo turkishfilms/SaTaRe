@@ -10,14 +10,12 @@ app.use(express.static(join(process.cwd(), "public")));
 
 const horses = [];
 
-app.get("/", (req, res) => {
-  console.log("brokeboi");
-  res.sendFile(join(process.cwd(), "public/index.html"));
-  keepTrackOfClients(req, res);
-});
+app.get("/", (req, res) => {});
 
-app.get("/race", (req, res) => {
-  res.sendFile(join(process.cwd(), "public/race.html"));
+app.post("/submitHorseName", (req, res) => {
+  const { name: horse, id } = req.body;
+  horses.push({ client: id, name: horse, stats: {} });
+  console.log("new horse " + horse + " was added");
 });
 
 app.get("/train", (req, res) => {
@@ -25,10 +23,9 @@ app.get("/train", (req, res) => {
   res.sendFile(join(process.cwd(), "public/train.html"));
 });
 
-app.post("/submitHorseName", (req, res) => {
-  const { name: horse, id } = req.body;
-  horses.push({ client: id, name: horse, stats: {} });
-  console.log("new horse " + horse + " was added");
+app.get("/retrieveHorseName", (req, res) => {
+  console.log("they asked  for ", horses[horses.length - 1]);
+  res.send(horses[horses.length - 1]);
 });
 
 app.post("/statsUp", (req, res) => {
@@ -39,10 +36,11 @@ app.post("/statsUp", (req, res) => {
   console.log(horses)
 });
 
-app.get("/retrieveHorseName", (req, res) => {
-  console.log("they asked  for ", horses[horses.length - 1]);
-  res.send(horses[horses.length - 1]);
+
+app.get("/race", (req, res) => {
+  res.sendFile(join(process.cwd(), "public/race.html"));
 });
+
 
 app.get("*", (req, res) => {
   console.log("req", req.body);
