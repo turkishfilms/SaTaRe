@@ -97,9 +97,42 @@ button {
     height: 15vh;
     width: 100%;
     font-size: 400%;
-    background-color: rgb(145, 106, 34);
+    background-color: rgb(207, 167, 33);
 }
 
 #readyUp:hover {
-    background-color: gold;
+    background-color: rgb(145, 106, 34);
 }
+
+#profilePic {
+    position: fixed;
+    left: -2px;
+    top: 25%;
+}
+
+#shotgun {
+    position: fixed;
+    right: 20px;
+    top: 25%;
+    transform-origin: top left;
+}
+
+#shotgun:hover {
+    background-color: rgb(190, 222, 235);
+}
+
+@keyframes bulletShoot {
+    from {right: 75px; top: 28%;}
+    to {right: 105%; top: 28%;} 
+  }
+
+  #bullet {
+    position: fixed;
+    width: 10px;
+    height: 6px;
+    top: -25%;
+    background-color: black;
+    animation-name: bulletShoot;
+    animation-duration: 0.4s;
+    transform-origin: center;
+  }

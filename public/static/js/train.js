@@ -105,10 +105,19 @@ const updateScoreDivs = (stats) => {
   });
 };
 
-socket.on("raceStart", () => {
-  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-});
 
-socket.on("disconnect", () => {
-  console.log(socket.id); // undefined
-});
+
+const shotgun = document.getElementById("shotgun");
+
+shotgun.addEventListener("click", ()=> {
+
+  
+  const bullet = document.createElement("div");
+  bullet.id = "bullet";
+  document.body.append(bullet);
+
+  document.getElementById("profilePic").src = ("assets/graphics/s_horseHeadDead.png");
+
+
+})
+
