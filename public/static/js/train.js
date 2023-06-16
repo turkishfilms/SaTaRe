@@ -96,3 +96,20 @@ const updateScoreDivs = (stats) => {
 
   });
 };
+
+
+
+const shotgun = document.getElementById("shotgun");
+
+shotgun.addEventListener("click", ()=> {
+
+  
+  const bullet = document.createElement("div");
+  bullet.id = "bullet";
+  document.body.append(bullet);
+
+  document.getElementById("profilePic").src = ("assets/graphics/s_horseHeadGS.png");
+
+
+})
+

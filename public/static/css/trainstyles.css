@@ -103,3 +103,36 @@ button {
 #readyUp:hover {
     background-color: rgb(145, 106, 34);
 }
+
+#profilePic {
+    position: fixed;
+    left: -2px;
+    top: 25%;
+}
+
+#shotgun {
+    position: fixed;
+    right: 20px;
+    top: 25%;
+    transform-origin: top left;
+}
+
+#shotgun:hover {
+    background-color: rgb(190, 222, 235);
+}
+
+@keyframes bulletShoot {
+    from {right: 75px; top: 27%;}
+    to {right: 98%; top: 28%;} 
+  }
+
+  #bullet {
+    position: fixed;
+    width: 10px;
+    height: 6px;
+    top: -25%;
+    background-color: black;
+    animation-name: bulletShoot;
+    animation-duration: 0.6s;
+    transform-origin: center;
+  }
