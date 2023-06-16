@@ -122,8 +122,8 @@ button {
 }
 
 @keyframes bulletShoot {
-    from {right: 75px; top: 27%;}
-    to {right: 98%; top: 28%;} 
+    from {right: 75px; top: 28%;}
+    to {right: 105%; top: 28%;} 
   }
 
   #bullet {
@@ -133,6 +133,6 @@ button {
     top: -25%;
     background-color: black;
     animation-name: bulletShoot;
-    animation-duration: 0.6s;
+    animation-duration: 0.4s;
     transform-origin: center;
   }

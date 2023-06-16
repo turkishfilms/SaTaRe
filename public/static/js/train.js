@@ -108,7 +108,7 @@ shotgun.addEventListener("click", ()=> {
   bullet.id = "bullet";
   document.body.append(bullet);
 
-  document.getElementById("profilePic").src = ("assets/graphics/s_horseHeadGS.png");
+  document.getElementById("profilePic").src = ("assets/graphics/s_horseHeadDead.png");
 
 
 })
