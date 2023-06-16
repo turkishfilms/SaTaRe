@@ -51,8 +51,7 @@ app.get("/race", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  console.log("req", req.body);
-  console.log("you are a pumpkin");
+  console.log("wildcard activated", req.body, "client is off the amp");
 });
 
 // app.use("/", router);
@@ -72,9 +71,11 @@ io.on("connection", (request) => {
   // response({ clientId: socket.handshake.session.clientId });
 
   socket.on("giveHorse", (request, response) => {
+    console.log("give horse")
     const horse = request;
     horses.push({ clientId: socket.id, name: horse, stats: {} });
     console.log("new horse " + horse + " was added");
+    console.log(horses)
   });
 
   socket.on("askForHorse", (message, response) => {
@@ -106,5 +107,5 @@ io.on("connection", (request) => {
 });
 
 const isAllHorsesReady = () => {
-  return horses.filter((horse) => horse.ready == false);
+  return horses.filter((horse) => horse.ready == false).length == 0;
 };

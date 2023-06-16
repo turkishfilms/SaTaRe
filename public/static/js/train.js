@@ -17,7 +17,10 @@ socket.emit("askForHorse", "lol", ({ name: data }) => {
 });
 
 socket.on("start", (horses)=>{
-  fetch("/race")
+  socket.on("start", (horses) => {
+    console.log(horses)
+    window.location.href = '/race';
+  });
 })
 const actions = {
   walked: {
