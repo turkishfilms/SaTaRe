@@ -1,14 +1,22 @@
+const socket = io();
+console.log(socket);
+
 //putting horse name in the title
 let horseName;
-fetch("/retrieveHorseName")
-  .then((response) => {
-    return response.text();
-  })
-  .then((data) => {
-    const { name } = JSON.parse(data);
-    horseName = name;
-    document.getElementById("trainTitle").textContent = `Train ${name}`;
-  });
+// fetch("/retrieveHorseName")
+//   .then((response) => {
+//     return response.text();
+//   })
+//   .then((data) => {
+//     const { name } = JSON.parse(data);
+//     horseName = name;
+//     document.getElementById("trainTitle").textContent = `Train ${name}`;
+//   });
+socket.on("askForHorse", "hi", (name) => {
+  console.log("cold")
+  horseName = name;
+  console.log("HNN", horseName);
+});
 
 const actions = {
   walked: {
@@ -87,12 +95,20 @@ const readiedUp = () => {
     .then((Rs) => {
       console.log("nice", Rs);
     });
+  socket.emit("ready");
 };
 
 const updateScoreDivs = (stats) => {
   const divs = ["maxSpeed", "Weight", "Acceleration", "Balance"];
   divs.forEach((div) => {
     const statDiv = document.getElementById(div);
-
   });
 };
+
+socket.on("raceStart", () => {
+  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+});
+
+socket.on("disconnect", () => {
+  console.log(socket.id); // undefined
+});
