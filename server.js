@@ -6,18 +6,16 @@ import sharedsession from "express-socket.io-session";
 
 const app = express(),
   port = process.env.PORT || 3007;
-  
+
+const sessionMiddleware = session({
+  secret: "changeit",
+  resave: false,
+  saveUninitialized: false,
+});
+
+app.use(sessionMiddleware);
 app.use(express.json());
-app.use(
-  session({
-    secret: "horse-killer",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-    },
-  })
-);
+
 app.use(express.static(join(process.cwd(), "public")));
 
 const horses = [];
@@ -61,7 +59,7 @@ const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
-io.on("connection", (request, response) => {
+io.on("connection", (request) => {
   const socket = request;
   console.log(socket.id + "Just Joined");
   if (!socket.handshake.session.clientId) {
@@ -69,17 +67,17 @@ io.on("connection", (request, response) => {
       Date.now().toString() + Math.random().toPrecision(2).toString();
     socket.handshake.session.save();
   }
-  response({ clientId: socket.handshake.session.clientId });
+  // response({ clientId: socket.handshake.session.clientId });
+
 
   socket.on("giveHorse", (request, response) => {
     const horse = request;
     horses.push({ client: socket.id, name: horse, stats: {} });
     console.log("new horse " + horse + " was added");
-    response({ yuck: "snoopy" });
-    console.log("emmitted", horse);
   });
 
-  socket.on("askForHorse", (response) => {
+  socket.on("askForHorse", (message, response) => {
+    console.log("yay",message)
     response({ name: horses[horses.length - 1] });
   });
 
