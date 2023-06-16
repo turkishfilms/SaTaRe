@@ -20,10 +20,23 @@ Balance: likliehood of stalling
 
 
 
-Dede - server express done fam lightwork
+Dede + server express done fam lightwork
+Dede + server needs to hold horses
+
 Dede - Horse racing code
++ Make Canvas
+- Bring in horses from server
+- Add horses to Canvas
+- Run a frame of the race
+- Show endscreen?
 Dede - Server client communication
-Dede - server needs to hold horses
++ give name of horse to server
+- retrieve correct name from server
+- send stats and name to server
+- send ready status to server
+- send start race signal to all clients simultaneously
+- send current race data each frame to client
+
 Dede - send horse to client based on client identifier
 Dede - create client id
 Dede - store client id with horse data

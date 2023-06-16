@@ -19,10 +19,11 @@ app.use(express.json());
 app.use(express.static(join(process.cwd(), "public")));
 
 const horses = [];
+// filled with {client id, Horse}
 
 app.post("/submitHorseName", (req, res) => {
   const { name: horse, id } = req.body;
-  horses.push({ client: id, name: horse, stats: {} });
+  horses.push({ client: id, name: horse, stats: {} }); // client and Horse
   console.log("new horse " + horse + " was added");
 });
 
@@ -45,6 +46,7 @@ app.post("/statsUp", (req, res) => {
 });
 
 app.get("/race", (req, res) => {
+  console.log("off to the races, ");
   res.sendFile(join(process.cwd(), "public/race.html"));
 });
 
@@ -69,16 +71,33 @@ io.on("connection", (request) => {
   }
   // response({ clientId: socket.handshake.session.clientId });
 
-
   socket.on("giveHorse", (request, response) => {
     const horse = request;
-    horses.push({ client: socket.id, name: horse, stats: {} });
+    horses.push({ clientId: socket.id, name: horse, stats: {} });
     console.log("new horse " + horse + " was added");
   });
 
   socket.on("askForHorse", (message, response) => {
-    console.log("yay",message)
+    console.log("yay", message);
     response({ name: horses[horses.length - 1] });
+  });
+
+  socket.on("newStats", (request, response) => {
+    const { name, stats } = request;
+    const mainHorse = horses[Math.floor(Math.random() * horses.length)];
+    mainHorse.stats = { ...mainHorse.stats, ...stats };
+    console.log(horses);
+  });
+
+  socket.on("ready", () => {
+    const r = Math.floor(Math.random() * horses.length);
+
+    const ourHorse = horses[r]; //FIXME: find the horse based on clientID
+    ourHorse.ready = true;
+    console.log("ready ready " + socket.id, horses);
+    if (isAllHorsesReady()) {
+      io.emit("start", horses);
+    }
   });
 
   socket.on("disconnect", () => {
@@ -86,28 +105,6 @@ io.on("connection", (request) => {
   });
 });
 
-const keepTrackOfClients = (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  // Store the response object in the array of connected clients
-  connectedClients.push(res);
-
-  // Remove the response object from the array when the client disconnects
-  req.on("close", () => {
-    const index = connectedClients.indexOf(res);
-    if (index !== -1) {
-      connectedClients.splice(index, 1);
-    }
-  });
-};
-
-const areAllPlayersready = (players) => {
-  return players.filter((player) => player == false);
-  for (let i = 0; i < areAllPlayersready.length; i++) {
-    if (players[i] == false) {
-      return false;
-    }
-  }
+const isAllHorsesReady = () => {
+  return horses.filter((horse) => horse.ready == false);
 };

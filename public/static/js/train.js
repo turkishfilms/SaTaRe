@@ -16,6 +16,9 @@ socket.emit("askForHorse", "lol", ({ name: data }) => {
   document.getElementById("trainTitle").textContent = `Train ${horseName}`;
 });
 
+socket.on("start", (horses)=>{
+  fetch("/race")
+})
 const actions = {
   walked: {
     text: "Walk",
@@ -52,7 +55,7 @@ const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
 
 submitButton.addEventListener("click", () => readiedUp());
 
-const savedStats = { balance: 0, weight: 0 };
+const savedStats = { balance: 10, weight: 10 };
 
 function changeStat(stat) {
   //stat += 1; edit the class of the horse here to change stat based on parameter stat which receives walk, feed, and rest
@@ -71,6 +74,8 @@ function changeStat(stat) {
       }
     }
   }
+
+  //FIXME: this is horrendous but fix later
   const statDivMaxSpeed = document.getElementById("maxSpeed");
   const statDiv1Weight = document.getElementById("Weight");
   const statDiv2Acceleration = document.getElementById("Acceleration");
@@ -80,36 +85,30 @@ function changeStat(stat) {
   statDiv1Weight.textContent = "Weight:  " + savedStats.weight;
   statDiv2Acceleration.textContent = "Acceleration:  " + -savedStats.weight;
   statDiv3Balance.textContent = "Balance:  " + savedStats.balance;
+  //FIXME: this is horrendous but fix later
 
   trainedHistory.prepend(statChanged);
 }
 
 const readiedUp = () => {
   horseNeighAudio.play();
-  console.log("name", horseName);
   //send stat updates to server
   //tell them we are ready
-  fetch("/statsUp", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name: horseName, stats: savedStats }),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((Rs) => {
-      console.log("nice", Rs);
-    });
+  // fetch("/statsUp", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ name: horseName, stats: savedStats }),
+  // })
+  //   .then((response) => {
+  //     return response.json();
+  //   })
+  //   .then((Rs) => {
+  //     console.log("nice", Rs);
+  //   });
+  socket.emit("newStats", { name: horseName, stats: savedStats });
   socket.emit("ready");
-};
-
-const updateScoreDivs = (stats) => {
-  const divs = ["maxSpeed", "Weight", "Acceleration", "Balance"];
-  divs.forEach((div) => {
-    const statDiv = document.getElementById(div);
-  });
 };
 
 const shotgun = document.getElementById("shotgun");
