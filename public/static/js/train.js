@@ -1,7 +1,5 @@
 const socket = io();
-console.log(socket);
 
-//putting horse name in the title
 let horseName;
 // fetch("/retrieveHorseName")
 //   .then((response) => {
@@ -10,12 +8,12 @@ let horseName;
 //   .then((data) => {
 //     const { name } = JSON.parse(data);
 //     horseName = name;
-//     document.getElementById("trainTitle").textContent = `Train ${name}`;
+// document.getElementById("trainTitle").textContent = `Train ${name}`;
 //   });
-socket.on("askForHorse", "hi", (name) => {
-  console.log("cold")
-  horseName = name;
+socket.emit("askForHorse", "lol", ({ name: data }) => {
+  horseName = data.name;
   console.log("HNN", horseName);
+  document.getElementById("trainTitle").textContent = `Train ${horseName}`;
 });
 
 const actions = {
@@ -73,6 +71,15 @@ function changeStat(stat) {
       }
     }
   }
+  const statDivMaxSpeed = document.getElementById("maxSpeed");
+  const statDiv1Weight = document.getElementById("Weight");
+  const statDiv2Acceleration = document.getElementById("Acceleration");
+  const statDiv3Balance = document.getElementById("Balance");
+
+  statDivMaxSpeed.textContent = "Max Speed:  " + savedStats.weight;
+  statDiv1Weight.textContent = "Weight:  " + savedStats.weight;
+  statDiv2Acceleration.textContent = "Acceleration:  " + -savedStats.weight;
+  statDiv3Balance.textContent = "Balance:  " + savedStats.balance;
 
   trainedHistory.prepend(statChanged);
 }
@@ -105,19 +112,13 @@ const updateScoreDivs = (stats) => {
   });
 };
 
-
-
 const shotgun = document.getElementById("shotgun");
 
-shotgun.addEventListener("click", ()=> {
-
-  
+shotgun.addEventListener("click", () => {
   const bullet = document.createElement("div");
   bullet.id = "bullet";
   document.body.append(bullet);
 
-  document.getElementById("profilePic").src = ("assets/graphics/s_horseHeadDead.png");
-
-
-})
-
+  document.getElementById("profilePic").src =
+    "assets/graphics/s_horseHeadDead.png";
+});
