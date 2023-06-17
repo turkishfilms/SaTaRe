@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io();
 let horseName;
 // fetch("/retrieveHorseName")
 //   .then((response) => {
@@ -15,12 +15,12 @@ socket.emit("askForHorse", ({ name: data }) => {
   document.getElementById("trainTitle").textContent = `Train ${horseName}`;
 });
 
-socket.on("start", (horses)=>{
+socket.on("start", (horses) => {
   socket.on("start", (horses) => {
-    console.log(horses)
-    window.location.href = '/race';
+    console.log(horses);
+    window.location.href = "/race";
   });
-})
+});
 const actions = {
   walked: {
     text: "Walk",
@@ -60,12 +60,17 @@ submitButton.addEventListener("click", () => readiedUp());
 const savedStats = { balance: 10, weight: 10 };
 
 function changeStat(stat) {
-  //stat += 1; edit the class of the horse here to change stat based on parameter stat which receives walk, feed, and rest
   const statChanged = document.createElement("h2");
-  statChanged.style.backgroundColor = "grey";
-  statChanged.style.opacity = "0.9";
+  const updates = {
+    backgroundColor: "grey",
+    opacity: "0.9",
+    borderBottom: "solid black 3px",
+  };
+  Object.keys(updates).forEach((key) => {
+    statChanged.style[key] = updates[key];
+  });
+
   statChanged.textContent = "You have " + stat + " your horse.";
-  statChanged.style.borderBottom = "solid black 3px";
 
   for (let act in actions) {
     const action = actions[act];
@@ -77,38 +82,22 @@ function changeStat(stat) {
     }
   }
 
-  //FIXME: this is horrendous but fix later
-  const statDivMaxSpeed = document.getElementById("maxSpeed");
-  const statDiv1Weight = document.getElementById("Weight");
-  const statDiv2Acceleration = document.getElementById("Acceleration");
-  const statDiv3Balance = document.getElementById("Balance");
+  const stats = {
+    maxSpeed: { str: "Max Speed:  ", statDelta: savedStats.weight },
+    Weight: { str: "Weight:  ", statDelta: savedStats.weight },
+    Acceleration: { str: "Acceleration:  ", statDelta: -savedStats.weight },
+    Balance: { str: "Balance:  ", statDelta: savedStats.balance },
+  };
 
-  statDivMaxSpeed.textContent = "Max Speed:  " + savedStats.weight;
-  statDiv1Weight.textContent = "Weight:  " + savedStats.weight;
-  statDiv2Acceleration.textContent = "Acceleration:  " + -savedStats.weight;
-  statDiv3Balance.textContent = "Balance:  " + savedStats.balance;
-  //FIXME: this is horrendous but fix later
-
+  Object.keys(stats).forEach((stat) => {
+    document.getElementById(stat).textContent = stats[stat].str + stats[stat].statDelta
+  });
+  
   trainedHistory.prepend(statChanged);
 }
 
 const readiedUp = () => {
   horseNeighAudio.play();
-  //send stat updates to server
-  //tell them we are ready
-  // fetch("/statsUp", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({ name: horseName, stats: savedStats }),
-  // })
-  //   .then((response) => {
-  //     return response.json();
-  //   })
-  //   .then((Rs) => {
-  //     console.log("nice", Rs);
-  //   });
   socket.emit("newStats", { name: horseName, stats: savedStats });
   socket.emit("ready");
 };
