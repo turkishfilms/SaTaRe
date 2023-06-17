@@ -2,7 +2,7 @@
 
 ## Description
 
-This prject is a fun horse racing game. You are able to name your horse, train it, and then race it against your friends.
+This project is a fun horse racing game. You are able to name your horse, train it, and then race it against your friends.
 
 ## Table of Contents
 
