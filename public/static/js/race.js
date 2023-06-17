@@ -27,7 +27,7 @@ const main = (p) => {
     );
   };
   p.setup = () => {
-    p.frameRate(1);
+    p.frameRate(2);
     socket.on("frame", (data) => {
       Object.keys(data).forEach((client) => {
         const horse = data[client].physics.position;
@@ -48,8 +48,8 @@ const main = (p) => {
 
   p.showHorse = (horse) => {
     // p.ellipse(horse.x, horse.y, 20);
-    
-    p.image(p.frameCount % 2==0 ?p.horseImg:p.horseImg2, horse.x, horse.y);
+
+    p.image(p.frameCount % 2 == 0 ? p.horseImg : p.horseImg2, horse.x, horse.y);
   };
 
   p.keyPressed = () => {
@@ -60,6 +60,7 @@ const main = (p) => {
 
   p.draw = () => {
     if (!p.pause) {
+      p.clear();
       socket.emit("frame");
     }
   };
