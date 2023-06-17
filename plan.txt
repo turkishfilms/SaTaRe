@@ -23,24 +23,26 @@ Balance: likliehood of stalling
 Dede + server express done fam lightwork
 Dede + server needs to hold horses
 
-Dede - Horse racing code
-+ Make Canvas
-- Bring in horses from server
-- Add horses to Canvas
-- Run a frame of the race
-- Show endscreen?
-Dede - Server client communication
-+ give name of horse to server
+Dede  Horse racing code
++ Make Canvas --weird p5 mode
++ Bring in horses from server 
++ Add horses to Canvas
++ Run a frame of the race
++ ##Server client communication
++ give name of horse to server 
 + retrieve correct name from server
 + send stats and name to server
 + send ready status to server
 + send start race signal to all clients simultaneously
-- send current race data each frame to client
++ send current race data each frame to client
++ send horse to client based on client identifier -- clients[clientKey]
++ create client id  --- socket.handshake.session.id
++ store client id with horse data {clientKey: {horse:Horse, ready:Bool, Physics:{}}}
+- Show endscreen?
+- make horses rgb dependant
+- only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it 
 
-Dede - send horse to client based on client identifier
-Dede - create client id
-Dede - store client id with horse data
-Dede - 
+
 
 tabor   (mainly html and css layouts. going for classic 2000's feel)
     - Home page (index.html) with introduction video and name submission
@@ -49,14 +51,17 @@ tabor   (mainly html and css layouts. going for classic 2000's feel)
     - racing page
     - page for winner of the race
     - page for the losers
-
+    
+    - endscreen
     
 
 
 salem horse art ad background
 
-
-
+TEAM:
+-tweak and decide on stats, training speed etc
+-We need to add gambling or crypto into it somehow lol even if its in a silly way.
+-NFT HORSES??
 
 
 stats:
@@ -101,3 +106,4 @@ natural selection ideas:
     until only one horse alive (collects all the other players stats)
     by winning and spending well while others slowly get drained
     then once you win your horse is put into hall of fame
+MVP COMPLETED
