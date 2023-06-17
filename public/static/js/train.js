@@ -77,7 +77,7 @@ function handleStats(stat) {
   };
 
   makeActionCard(stat);
-  updateSavedStats(stat)
+  updateSavedStats(stat);
   updateStatsDisplay(stats, stat);
 }
 
@@ -103,7 +103,9 @@ const updateStatsDisplay = (stats) => {
 const readiedUp = () => {
   const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
   horseNeighAudio.play();
-  socket.emit("newStats", { name: horseName, stats: savedStats });
+  socket.emit("newStats", ({ name: horseName, stats: savedStats }) => {
+    console.log("new stats");
+  });
   socket.emit("ready");
 };
 
