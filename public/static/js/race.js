@@ -20,9 +20,14 @@ const main = (p) => {
       () => console.log("Image loaded barely!"),
       (err) => console.error("Error loading image:", err)
     );
+    p.horseImg2 = p.loadImage(
+      "./assets/graphics/horse/s_horseRun2.png",
+      () => console.log("Image loaded fully!"),
+      (err) => console.error("Error loading image:", err)
+    );
   };
   p.setup = () => {
-    p.frameRate(10);
+    p.frameRate(1);
     socket.on("frame", (data) => {
       Object.keys(data).forEach((client) => {
         const horse = data[client].physics.position;
@@ -43,7 +48,8 @@ const main = (p) => {
 
   p.showHorse = (horse) => {
     // p.ellipse(horse.x, horse.y, 20);
-    p.image(p.horseImg, horse.x, horse.y);
+    
+    p.image(p.frameCount % 2==0 ?p.horseImg:p.horseImg2, horse.x, horse.y);
   };
 
   p.keyPressed = () => {
