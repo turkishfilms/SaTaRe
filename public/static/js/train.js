@@ -103,9 +103,7 @@ const updateStatsDisplay = (stats) => {
 const readiedUp = () => {
   const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
   horseNeighAudio.play();
-  socket.emit("newStats", ({ name: horseName, stats: savedStats }) => {
-    console.log("new stats");
-  });
+  socket.emit("newStats", { stats: savedStats });
   socket.emit("ready");
 };
 
