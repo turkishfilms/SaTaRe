@@ -38,65 +38,83 @@ const io = new Server(server);
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
 io.on("connection", (socket) => {
-  console.log("New connection: " + socket.id);
-
   const clientKey = socket.handshake.session.id;
-
   if (
     Object.keys(clients).find((key) => {
       return key === clientKey;
     }) == undefined
   ) {
-    // socket.handshake.session.clientId =
-    // Date.now().toString() + Math.floor(Math.random()).toString();
-    // socket.handshake.session.save();
     clients[clientKey] = {};
-    console.log("New Client Added: " + clientKey);
-  } else {
-    console.log("You have been here before: " + clientKey);
   }
+  const user = clients[clientKey];
 
-  socket.on("newHorseName", (request, response) => {
+  socket.on("newHorseName", (request) => {
     const horseName = request;
     clients[clientKey] = {
       horse: new Horse({ name: horseName }),
       ready: false,
     };
+    console.log("here is the new client  entry: ", JSON.stringify(user));
     console.log("New horse " + horseName + " was added");
   });
 
   socket.on("askForHorse", (response) => {
-    console.log(
-      "Horse name was asked for by: ",
-      clientKey,
-      clients[clientKey].horse
-    );
-    response({ name: clients[clientKey].horse });
+    console.log("Horse name was asked for by: ", clientKey, user.horse.name);
+    console.log(Object.keys(user["horse"]));
+    response({ name: user.horse.name });
   });
 
   socket.on("newStats", (request, response) => {
-    const { name, stats } = request;
+    const { name, stats } = request 
     console.log(name, " Is getting new stats!: " + stats);
-    const horse = clients[clientKey].horse;
+    const horse = user.horse;
+    console.log("WHAT THE DEVIL", JSON.stringify(clients));
     horse.stats = { ...horse.stats, ...stats };
   });
 
   socket.on("ready", () => {
-    const client = clients[clientKey]; //FIXME: find the horse based on id
+    const client = user;
     client.ready = true;
-    console.log("Readied up: "+ clientKey);
+    console.log("Readied up: " + clientKey);
     if (isAllClientsReady()) {
+      Object.keys(clients).forEach((client) => {
+        clients[client].physics = { speed: 0, position: { x: 0, y: 0 } };
+      });
       io.emit("start", clients);
+    } else {
+      console.log("Not everyone is ready");
     }
   });
 
+  socket.on("frame", () => {
+    io.emit("frame", nextFrame());
+  });
+
   socket.on("disconnect", () => {
-    console.log(
-      "Departed Socket: " + socket.id + "Client: " + socket.handshake.session.id
-    );
+    console.log("Bye Client: " + socket.handshake.session.id);
   });
 });
 
 const isAllClientsReady = () => {
   return Object.values(clients).every((client) => client.ready === true);
+};
+
+const nextFrame = () => {
+  Object.keys(clients).forEach((client) => {
+    const horse = clients[client.horse];
+    const physics = clients[client].physics;
+
+    if (Math.random(100) < horse.stats.balance) {
+      console.log(client, "tripped");
+    }
+
+    physics.speed = Math.max(
+      Math.min(physics.speed + horse.stats.acceleration, horse.stats.maxSpeed),
+      0
+    );
+
+    physics.position.x += physics.speed;
+  });
+
+  return clients;
 };
