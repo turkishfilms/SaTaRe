@@ -1,5 +1,4 @@
-const socket = io();
-
+const socket = io()
 let horseName;
 // fetch("/retrieveHorseName")
 //   .then((response) => {
@@ -10,7 +9,7 @@ let horseName;
 //     horseName = name;
 // document.getElementById("trainTitle").textContent = `Train ${name}`;
 //   });
-socket.emit("askForHorse", "lol", ({ name: data }) => {
+socket.emit("askForHorse", ({ name: data }) => {
   horseName = data.name;
   console.log("HNN", horseName);
   document.getElementById("trainTitle").textContent = `Train ${horseName}`;

@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import { join } from "path";
 import { Server } from "socket.io";
 import session from "express-session";
 import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
+import router from "./routes.js";
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -11,76 +13,88 @@ const app = express(),
 const sessionMiddleware = session({
   secret: "changeit",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // sets the cookie to expire in 1 day
+    secure: false, // true for https
+    httpOnly: false, // if true prevents client side JS from reading the cookie
+    sameSite: "lax", // protection against cross site request forgery attacks
+  },
 });
 
 app.use(sessionMiddleware);
 app.use(express.json());
-
+app.use(cors());
 app.use(express.static(join(process.cwd(), "public")));
 
-const clients = [];
-// filled with {clientId:id, horse:Horse, ready:Bool}
+const clients = {};
+// filled with key =id, value= {horse:Horse, ready:Bool}
 
-app.get("/train", (req, res) => {
-  console.log("entered training");
-  res.sendFile(join(process.cwd(), "public/train.html"));
-});
+app.use("/", router);
 
-app.get("/race", (req, res) => {
-  console.log("off to the races");
-  res.sendFile(join(process.cwd(), "public/race.html"));
-});
-
-app.get("*", (req, res) => {
-  console.log("wildcard activated", "Someone's off the map");
-});
-
-// app.use("/", router);
 const server = app.listen(port, () => console.log("lets go " + port));
 const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
-io.on("connection", (request) => {
-  const socket = request;
-  console.log(socket.id + "Just Joined");
+io.on("connection", (socket) => {
+  console.log("New connection: " + socket.id);
 
-  if (!socket.handshake.session.clientId) {
-    socket.handshake.session.clientId =
-      Date.now().toString() + Math.random().toPrecision(2).toString();
-    socket.handshake.session.save();
+  const clientKey = socket.handshake.session.id;
+  for (let key in clients) {
+    console.log("bag", key);
   }
 
-  socket.on("giveHorse", (request, response) => {
-    console.log("give horse");
+  if (
+    Object.keys(clients).find((key) => {
+      return key === clientKey;
+    }) == undefined
+  ) {
+    // socket.handshake.session.clientId =
+    // Date.now().toString() + Math.floor(Math.random()).toString();
+    // socket.handshake.session.save();
+    clients[clientKey] = {};
+    console.log("Handshake started, New Client Added: " + clientKey);
+  } else {
+    console.log("You have been here before: " + clientKey);
+  }
+
+  socket.on("newHorseName", (request, response) => {
+    console.log("New name entered");
     const horseName = request;
-    clients.push({
-      clientId: socket.id,
+    clients[clientKey] = {
       horse: new Horse({ name: horseName }),
       ready: false,
-    });
+    };
+    const somrh = Object.keys(clients[clientKey].horse);
+    console.log(somrh, "somrh", somrh.length);
+    for (let i = 0; i < somrh.length; i++) {
+      console.log("YAAAAAAA", somrh[i]);
+    }
     console.log("New horse " + horseName + " was added");
     console.log(clients);
+    response({ yeah: clients });
   });
 
-  socket.on("askForHorse", (message, response) => {
-    console.log("Horse name was asked for: ", message);
-    response({ name: clients[clients.length - 1].horse.name });
+  socket.on("askForHorse", (response) => {
+    console.log(
+      "Horse name was asked for by: ",
+      clientKey,
+      clients[clientKey].horse
+    );
+    response({ name: clients[clientKey].horse });
   });
 
   socket.on("newStats", (request, response) => {
     const { name, stats } = request;
     console.log(name, " Is getting new stats!: " + stats);
-    const horse = clients[Math.floor(Math.random() * clients.length)].horse; //FIXME: Random horse instead of clients
+    const horse = clients[clientKey].horse; //FIXME: Random horse instead of clients
     horse.stats = { ...horse.stats, ...stats };
     console.log(clients);
   });
 
   socket.on("ready", () => {
-    const r = Math.floor(Math.random() * clients.length);
-
-    const client = clients[r]; //FIXME: find the horse based on clientID
+    const client = clients[clientKey]; //FIXME: find the horse based on id
     client.ready = true;
     console.log("ready ready " + socket.id, clients);
     if (isAllClientsReady()) {
@@ -89,12 +103,12 @@ io.on("connection", (request) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(socket.id + " disconnected");
+    console.log(
+      "Left-- Socket: " + socket.id + "Client: " + socket.handshake.session.id
+    );
   });
 });
 
 const isAllClientsReady = () => {
-  return (
-    clients.filter((client) => client.ready !== true).length == 0
-  );
+  return Object.values(clients).every((client) => client.ready === true);
 };
