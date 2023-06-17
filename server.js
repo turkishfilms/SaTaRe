@@ -32,7 +32,7 @@ const clients = {};
 
 app.use("/", router);
 
-const server = app.listen(port, () => console.log("lets go " + port));
+const server = app.listen(port, () => console.log("Horses are racing " + port));
 const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
@@ -41,9 +41,6 @@ io.on("connection", (socket) => {
   console.log("New connection: " + socket.id);
 
   const clientKey = socket.handshake.session.id;
-  for (let key in clients) {
-    console.log("bag", key);
-  }
 
   if (
     Object.keys(clients).find((key) => {
@@ -54,13 +51,12 @@ io.on("connection", (socket) => {
     // Date.now().toString() + Math.floor(Math.random()).toString();
     // socket.handshake.session.save();
     clients[clientKey] = {};
-    console.log("Handshake started, New Client Added: " + clientKey);
+    console.log("New Client Added: " + clientKey);
   } else {
     console.log("You have been here before: " + clientKey);
   }
 
   socket.on("newHorseName", (request, response) => {
-    console.log("New name entered");
     const horseName = request;
     clients[clientKey] = {
       horse: new Horse({ name: horseName }),
@@ -81,15 +77,14 @@ io.on("connection", (socket) => {
   socket.on("newStats", (request, response) => {
     const { name, stats } = request;
     console.log(name, " Is getting new stats!: " + stats);
-    const horse = clients[clientKey].horse; //FIXME: Random horse instead of clients
+    const horse = clients[clientKey].horse;
     horse.stats = { ...horse.stats, ...stats };
-    console.log(clients);
   });
 
   socket.on("ready", () => {
     const client = clients[clientKey]; //FIXME: find the horse based on id
     client.ready = true;
-    console.log("ready ready " + socket.id, clients);
+    console.log("Readied up: "+ clientKey);
     if (isAllClientsReady()) {
       io.emit("start", clients);
     }
@@ -97,7 +92,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(
-      "Left-- Socket: " + socket.id + "Client: " + socket.handshake.session.id
+      "Departed Socket: " + socket.id + "Client: " + socket.handshake.session.id
     );
   });
 });

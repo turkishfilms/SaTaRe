@@ -1,26 +1,15 @@
 const socket = io();
-let horseName;
-// fetch("/retrieveHorseName")
-//   .then((response) => {
-//     return response.text();
-//   })
-//   .then((data) => {
-//     const { name } = JSON.parse(data);
-//     horseName = name;
-// document.getElementById("trainTitle").textContent = `Train ${name}`;
-//   });
-socket.emit("askForHorse", ({ name: data }) => {
-  horseName = data.name;
-  console.log("HNN", horseName);
-  document.getElementById("trainTitle").textContent = `Train ${horseName}`;
+
+socket.emit("askForHorse", ({ name }) => {
+  document.getElementById("trainTitle").textContent = `Train ${name}`;
 });
 
 socket.on("start", (horses) => {
-  socket.on("start", (horses) => {
-    console.log(horses);
-    window.location.href = "/race";
-  });
+  window.location.href = "/race";
 });
+
+const savedStats = { balance: 10, weight: 10 };
+
 const actions = {
   walked: {
     text: "Walk",
@@ -39,39 +28,60 @@ const actions = {
   },
 };
 
-const makeActionsIntoButtons = () => {
+const makeActionsIntoButtons = (actions) => {
   for (let act in actions) {
     const action = actions[act];
     const button = document.createElement("button");
     button.id = action.text;
     button.textContent = action.text;
-    button.addEventListener("click", () => changeStat(action.text));
+    button.addEventListener("click", () => handleStats(action.text));
     document.getElementById("trainOptions").appendChild(button);
   }
 };
 
-const trainedHistory = document.getElementById("trainedHistory");
-const submitButton = document.getElementById("readyUp");
-makeActionsIntoButtons();
-const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
+const makeShotgun = () => {
+  const shotgun = document.getElementById("shotgun");
 
-submitButton.addEventListener("click", () => readiedUp());
+  shotgun.addEventListener("click", () => {
+    const bullet = document.createElement("div");
+    bullet.id = "bullet";
+    document.body.append(bullet);
 
-const savedStats = { balance: 10, weight: 10 };
+    document.getElementById("profilePic").src =
+      "assets/graphics/s_horseHeadDead.png";
+  });
+};
 
-function changeStat(stat) {
-  const statChanged = document.createElement("h2");
-  const updates = {
+const makeActionCard = (stat) => {
+  const trainedHistory = document.getElementById("trainedHistory");
+
+  const statCard = document.createElement("h2");
+  const styles = {
     backgroundColor: "grey",
     opacity: "0.9",
     borderBottom: "solid black 3px",
   };
-  Object.keys(updates).forEach((key) => {
-    statChanged.style[key] = updates[key];
+  Object.keys(styles).forEach((style) => {
+    statCard.style[style] = styles[style];
   });
+  statCard.textContent = "You have " + stat + " your horse.";
+  trainedHistory.prepend(statCard);
+};
 
-  statChanged.textContent = "You have " + stat + " your horse.";
+function handleStats(stat) {
+  const stats = {
+    maxSpeed: { str: "Max Speed:  ", statDelta: savedStats.weight },
+    Weight: { str: "Weight:  ", statDelta: savedStats.weight },
+    Acceleration: { str: "Acceleration:  ", statDelta: -savedStats.weight },
+    Balance: { str: "Balance:  ", statDelta: savedStats.balance },
+  };
 
+  makeActionCard(stat);
+  updateSavedStats(stat)
+  updateStatsDisplay(stats, stat);
+}
+
+const updateSavedStats = (stat) => {
   for (let act in actions) {
     const action = actions[act];
     if (action.text == stat) {
@@ -81,34 +91,21 @@ function changeStat(stat) {
       }
     }
   }
+};
 
-  const stats = {
-    maxSpeed: { str: "Max Speed:  ", statDelta: savedStats.weight },
-    Weight: { str: "Weight:  ", statDelta: savedStats.weight },
-    Acceleration: { str: "Acceleration:  ", statDelta: -savedStats.weight },
-    Balance: { str: "Balance:  ", statDelta: savedStats.balance },
-  };
-
+const updateStatsDisplay = (stats) => {
   Object.keys(stats).forEach((stat) => {
-    document.getElementById(stat).textContent = stats[stat].str + stats[stat].statDelta
+    document.getElementById(stat).textContent =
+      stats[stat].str + stats[stat].statDelta;
   });
-  
-  trainedHistory.prepend(statChanged);
-}
+};
 
 const readiedUp = () => {
+  const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
   horseNeighAudio.play();
   socket.emit("newStats", { name: horseName, stats: savedStats });
   socket.emit("ready");
 };
 
-const shotgun = document.getElementById("shotgun");
-
-shotgun.addEventListener("click", () => {
-  const bullet = document.createElement("div");
-  bullet.id = "bullet";
-  document.body.append(bullet);
-
-  document.getElementById("profilePic").src =
-    "assets/graphics/s_horseHeadDead.png";
-});
+makeActionsIntoButtons(actions);
+makeShotgun();
