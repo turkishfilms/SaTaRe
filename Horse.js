@@ -29,7 +29,7 @@ export default class Horse {
   }
 
   get acceleration() {
-    return 1 / this.stats.weight;
+    return 2 /// this.stats.weight;
   }
 
 

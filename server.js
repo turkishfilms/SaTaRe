@@ -37,12 +37,34 @@ const yetHorse = new Horse({
 const clientso = {
   client1: {
     ready: false,
+    horse: new Horse({ name: "cade", stats: { balance: 100, weight: 100 } }),
+    physics: {
+      speed: 0,
+      position: {
+        x: 0,
+        y: 150,
+      },
+    },
+  },
+  client2: {
+    ready: false,
     horse: yetHorse,
     physics: {
       speed: 0,
       position: {
         x: 0,
-        y: 0,
+        y: 50,
+      },
+    },
+  },
+  client3: {
+    ready: false,
+    horse: yetHorse,
+    physics: {
+      speed: 0,
+      position: {
+        x: 0,
+        y: 100,
       },
     },
   },
@@ -75,14 +97,12 @@ io.on("connection", (socket) => {
       horse: newHorse,
       ready: false,
     };
-    console.log("here is the new client  entry: ", JSON.stringify(user));
     console.log("New horse " + horseName + " was added");
   });
 
   socket.on("askForHorse", (response) => {
     console.log("Horse name was asked for by: ", clientKey, user.horse.name);
-    console.log(Object.keys(user["horse"]));
-    response({ name: user.horse.name });
+    response({ horse: { name: user.horse.name }, name: user.horse.name });
   });
 
   socket.on("newStats", (request, response) => {
@@ -142,11 +162,11 @@ const nextFrame = () => {
     console.log("maxs", horse.maxSpeed);
 
     physics.position.x += physics.speed;
-    if (physics.position.x > 100) {
+    if (physics.position.x > 1000) {
       console.log("we hacve a winner", client);
       io.emit("over", horse.name);
     }
   });
-  console.log("clientso", clientso);
-  return yetHorse;
+  // console.log("clientso", clientso);
+  return clientso;
 };

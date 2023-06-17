@@ -1,23 +1,20 @@
 import "./scripts/p5.min.js";
 const socket = io();
 
-socket.on("over", (winner) => {
-  console.log(winner);
-  noLoop();
-});
+// socket.emit("askForHorse", ({ horse }) => {
+//   const name = horse.name;
+//   console.log("horse", horse);
+//   console.log("name", name);
+// });
 
 const main = (p) => {
   p.horse;
   p.horseImg;
   p.backImg;
   p.pause = false;
+  p.cir = true;
+  p.x = 100;
   p.preload = () => {
-    // p.horseImg = p.loadImage("../assets/graphics/horse RGB f1.png");
-    p.backImg = p.loadImage(
-      "./assets/graphics/horse/bg_mountains.png",
-      () => console.log("Image2 loaded successfully!"),
-      (err) => console.error("Error loading image:", err)
-    );
     p.horseImg = p.loadImage(
       "./assets/graphics/horse/s_horseRun1.png",
       () => console.log("Image loaded barely!"),
@@ -25,25 +22,28 @@ const main = (p) => {
     );
   };
   p.setup = () => {
-    p.frameRate(1);
+    p.frameRate(10);
     socket.on("frame", (data) => {
-      console.log("data: ", data);
-      // Object.keys(data).forEach((client) => {
-      //   const horse = data[client].physics;
-      //   p.showHorse(horse);
-      image(horseImg)
+      Object.keys(data).forEach((client) => {
+        const horse = data[client].physics.position;
+        p.showHorse(horse);
+      });
+    });
+    socket.on("over", (winner) => {
+      console.log(winner);
+      p.noLoop();
     });
     const div = document.getElementById("raceCanvas");
     const { clientWidth, clientHeight } = div;
-    console.log("CLH", clientHeight);
     let cnv = p.createCanvas(clientWidth, clientHeight);
     cnv.parent("raceCanvas");
-    background()
+    // p.background(150);
+    p.fill(255);
   };
 
   p.showHorse = (horse) => {
-    p.ellipse(horse.x, horse.y, 20);
-    // p.image(p.horseImg, horse.x, horse.y);
+    // p.ellipse(horse.x, horse.y, 20);
+    p.image(p.horseImg, horse.x, horse.y);
   };
 
   p.keyPressed = () => {
