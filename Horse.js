@@ -32,12 +32,17 @@ export default class Horse {
     return 1 / this.#stats.weight;
   }
 
+  
   get balance() {
     return this.#stats.balance;
   }
 
   set balance(balance) {
     this.#stats.balance = balance;
+  }
+
+  get stats() {
+    return this.#stats;
   }
 
   set stats(stats) {
