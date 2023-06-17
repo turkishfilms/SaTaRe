@@ -25,14 +25,14 @@ export default class Horse {
   }
 
   get maxSpeed() {
-    return this.#stats.weight;
+    return this.stats.weight;
   }
 
   get acceleration() {
-    return 1 / this.#stats.weight;
+    return 1 / this.stats.weight;
   }
 
-  
+
   get balance() {
     return this.#stats.balance;
   }
@@ -47,6 +47,7 @@ export default class Horse {
 
   set stats(stats) {
     for (let stat in stats) {
+      console.log(stat, stats[stat])
       this.#stats[stat] = stats[stat];
     }
   }
