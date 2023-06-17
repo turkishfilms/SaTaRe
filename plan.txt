@@ -31,10 +31,10 @@ Dede - Horse racing code
 - Show endscreen?
 Dede - Server client communication
 + give name of horse to server
-- retrieve correct name from server
-- send stats and name to server
-- send ready status to server
-- send start race signal to all clients simultaneously
++ retrieve correct name from server
++ send stats and name to server
++ send ready status to server
++ send start race signal to all clients simultaneously
 - send current race data each frame to client
 
 Dede - send horse to client based on client identifier
