@@ -1,8 +1,8 @@
 "IDEA 1: Horse Racing WebApp"
 
-TODO:
 
-wishlist--
+
+WISHLIST
 trianing page for Horses    see stats and feed horses to grow xp, 
 training page is minigames to increase stats
 
@@ -18,11 +18,22 @@ Balance: likliehood of stalling
 
 
 
+---WORK SECTION---
 
+REGINALD
+(Backend)
+TODO;
+- Show endscreen?
+- make horses rgb dependant
+- only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
+-Refine README
+-TIDY all code
+-make all code solid
+-bug hunt
+-robustify lol
+-add placements 1st 2nd 3rd
 
-Dede + server express done fam lightwork
-Dede + server needs to hold horses
-
+TODONE:
 Dede  Horse racing code
 + Make Canvas --weird p5 mode
 + Bring in horses from server 
@@ -38,39 +49,81 @@ Dede  Horse racing code
 + send horse to client based on client identifier -- clients[clientKey]
 + create client id  --- socket.handshake.session.id
 + store client id with horse data {clientKey: {horse:Horse, ready:Bool, Physics:{}}}
-- Show endscreen?
-- make horses rgb dependant
-- only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it 
++ server express done fam lightwork
++ server needs to hold horses
++ README
 
 
+TABOR 
+(HTML and CSS layouts. Design classic 2000's feel)
 
-tabor   (mainly html and css layouts. going for classic 2000's feel)
-    - Home page (index.html) with introduction video and name submission
-    - training page with stats list, options to train horse, and history of past trainings posted.
-      ready button to start race at bottom.
-    - racing page
-    - page for winner of the race
-    - page for the losers
-    
-    - endscreen
-    
+TODO;
+- Winner Page
+- Loser Page
+
+TODDNE:
++ Home page (index.html) 
++ Introduction video 
++ Name Submission
++ Borders
++ Backgrounds
++ Styling
++ Fonts
++ Training page 
++ Stats list
++ Horse training
++ History of past trainings posted.
++ Borders
++ Backgrounds
++ Styling
++ Fonts
++ Ready button to start race at bottom.
++ Bullet Div
++ Racing page
++ Title
++ Stats divs
 
 
-salem horse art ad background
+SALEM
+(Art Production and Composer)
+TODO;
+- End Screen Music
+
+TODONE: 
++ Favicon
++ Still Horse
++ Running Horse
++ RGB Still Horse
++ RGB Running Horse
++ Dead Horse Head
++ Not Dead Horse Head
++ Shotgun
++ Mountains
++ Trees
++ Bushes
++ Road
++ Hay Background
++ Training Music
++ Race Music
+
 
 TEAM:
+TODO;
 -tweak and decide on stats, training speed etc
 -We need to add gambling or crypto into it somehow lol even if its in a silly way.
 -NFT HORSES??
+TODONE:
++ General stats
++ Training
 
 
-stats:
 
-    weight: weight of horse
+General Stats:
+    Weight: weight of horse; Effects Max Speed(+), Balance(-) and Acceleration(-)
 
-    speed: current speed
+    Speed: current speed
 
-    max speed: max possible movement in one step. heavier horse = higher max speed. 
+    Max speed: Max possible movement in one step. heavier horse = higher max speed. 
 
     acceleration: rate of speed increase. heavier horse = slower. 
 
@@ -79,16 +132,13 @@ stats:
     place: horses current position in the race (first, second, third, etc)
 
 
-ways to train stats:
+Training:
 
     feed: increases weight (max speed). decreases acceleration.
 
     walk: increases balance, lowers weight
 
     rest: descreases weight, decreases balance
-
-
-
 
 
 natural selection ideas:
