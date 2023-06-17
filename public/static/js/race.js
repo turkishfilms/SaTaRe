@@ -1,5 +1,5 @@
 import "./scripts/p5.min.js";
-import Horse from "./Horse.js";
+import Horse from "../../../Horse.js";
 
 const main = (p) => {
   p.horse;
