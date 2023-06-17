@@ -66,14 +66,7 @@ io.on("connection", (socket) => {
       horse: new Horse({ name: horseName }),
       ready: false,
     };
-    const somrh = Object.keys(clients[clientKey].horse);
-    console.log(somrh, "somrh", somrh.length);
-    for (let i = 0; i < somrh.length; i++) {
-      console.log("YAAAAAAA", somrh[i]);
-    }
     console.log("New horse " + horseName + " was added");
-    console.log(clients);
-    response({ yeah: clients });
   });
 
   socket.on("askForHorse", (response) => {
