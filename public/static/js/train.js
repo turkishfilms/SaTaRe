@@ -6,7 +6,7 @@ socket.emit("askForHorse", ({ name }) => {
 
 socket.on("start", (horses) => {
   window.location.href = "/race";
-});
+}); 
 
 const savedStats = { balance: 10, weight: 10 };
 
