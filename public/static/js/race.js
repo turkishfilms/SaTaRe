@@ -8,12 +8,13 @@ const socket = io();
 // });
 
 const main = (p) => {
-  p.horse;
+  const { clientWidth, clientHeight } = document.getElementById("raceCanvas");
+  p.clientHeight = clientHeight;
+  p.clientWidth = clientWidth;
   p.horseImg;
   p.backImg;
-  p.pause = false;
-  p.cir = true;
-  p.x = 100;
+  p.order;
+
   p.preload = () => {
     p.horseImg = p.loadImage(
       "./assets/graphics/horse/s_horseRun1.png",
@@ -26,43 +27,52 @@ const main = (p) => {
       (err) => console.error("Error loading image:", err)
     );
   };
+
   p.setup = () => {
-    p.frameRate(2);
+    p.frameRate(60);
+
     socket.on("frame", (data) => {
-      Object.keys(data).forEach((client) => {
-        const horse = data[client].physics.position;
-        p.showHorse(horse);
+      p.clear()
+      Object.keys(data).forEach((horse) => {
+        p.showHorse({ name: horse, position: data[horse].position });
       });
     });
+
     socket.on("over", (winner) => {
       console.log(winner);
       p.noLoop();
     });
-    const div = document.getElementById("raceCanvas");
-    const { clientWidth, clientHeight } = div;
-    let cnv = p.createCanvas(clientWidth, clientHeight);
+
+    socket.emit("raceOrder", (order) => {
+      p.order = order;
+    });
+    
+    let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("raceCanvas");
-    // p.background(150);
-    p.fill(255);
   };
 
   p.showHorse = (horse) => {
-    // p.ellipse(horse.x, horse.y, 20);
-
-    p.image(p.frameCount % 2 == 0 ? p.horseImg : p.horseImg2, horse.x, horse.y);
+    // console.log("horse shown, "+horse)
+    const y = p.clientHeight - 100 - horse.position.y;
+    p.text(horse.name, horse.position.x, y);
+    p.image(
+      p.frameCount % 3 == 0 ? p.horseImg : p.horseImg2,
+      horse.position.x,
+      y
+    );
   };
 
   p.keyPressed = () => {
-    if (p.key == " ") {
-      p.pause = !p.pause;
+    if (p.key === " ") {
+      p.order = -1;
     }
   };
 
   p.draw = () => {
-    if (!p.pause) {
-      p.clear();
+    if (p.order == -1) {
       socket.emit("frame");
     }
+      // p.clear();
   };
 };
 
