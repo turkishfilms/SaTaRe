@@ -13,6 +13,7 @@ import {
   handleReady,
   handleFrame,
   handleDisconnect,
+  handleRaceOrder,
 } from "./socketHandlers.js";
 
 
@@ -38,18 +39,34 @@ app.use(express.static(join(process.cwd(), "public")));
 
 const clients = {};
 
-const testHorse = new Horse({
-  name: "Harold",
-  stats: {
-    balance: 11,
-    weight: 20,
-  },
-});
+const testHorses = [
+  new Horse({
+    name: "Harold",
+    stats: {
+      balance: 10,
+      weight: 10,
+    },
+  }),
+  new Horse({
+    name: "cade",
+    stats: {
+      balance: 20,
+      weight: 20,
+    },
+  }),
+  new Horse({
+    name: "LightningSmith",
+    stats: {
+      weight: 21,
+      balance: 19,
+    },
+  }),
+];
 
 const testClientsList = {
   client1: {
     ready: false,
-    horse: new Horse({ name: "cade", stats: { balance: 100, weight: 100 } }),
+    horse: testHorses[0],
     physics: {
       speed: 0,
       position: {
@@ -60,7 +77,7 @@ const testClientsList = {
   },
   client2: {
     ready: false,
-    horse: testHorse,
+    horse: testHorses[1],
     physics: {
       speed: 0,
       position: {
@@ -71,7 +88,7 @@ const testClientsList = {
   },
   client3: {
     ready: false,
-    horse: testHorse,
+    horse: testHorses[2],
     physics: {
       speed: 0,
       position: {
@@ -88,6 +105,11 @@ const server = app.listen(port, () => console.log("Horses are racing " + port));
 const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
+
+Object.keys(testClientsList).forEach((client, i) => {
+  const height = (i / Object.keys(testClientsList).length) * 100;
+  testClientsList[client].physics = { speed: 0, position: { x: 0, y: height } };
+});
 
 io.on("connection", (socket) => {
   const clientKey = socket.handshake.session.id;
@@ -109,11 +131,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("ready", () => {
-    handleReady(user, clientKey, clients, io);
+    handleReady(user, clientKey, testClientsList, io);
   });
 
+  socket.on("raceOrder", (response) =>
+    handleRaceOrder(testClientsList, clientKey, response)
+  );
+
   socket.on("frame", () => {
-    handleFrame(clients, io);
+    handleFrame(testClientsList, io);
   });
 
   socket.on("disconnect", () => {
@@ -122,5 +148,13 @@ io.on("connection", (socket) => {
 });
 
 export const isAllClientsReady = (clients) => {
-  return Object.values(clients).every((client) => client.ready === true);
+  const clientel = Object.values(clients);
+  let counter = 0;
+  for (let i = 0; i < clientel.length; i++) {
+    if (clientel[i].ready === true) {
+      counter++;
+    }
+  }
+  return counter === 3;
+  // return Object.values(clients).every((client) => client.ready === true);
 };

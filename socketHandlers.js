@@ -31,8 +31,9 @@ export const handleReady = (user, clientKey, clients, io) => {
   console.log("Readied up: " + clientKey);
 
   if (isAllClientsReady(clients)) {
-    Object.keys(clients).forEach((client) => {
-      clients[client].physics = { speed: 0, position: { x: 0, y: 0 } };
+    Object.keys(clients).forEach((client, i) => {
+      const height = (i / Object.keys(clients).length) * 100;
+      clients[client].physics = { speed: 0, position: { x: 0, y: height } };
     });
     io.emit("start", clients);
   } else {
@@ -40,11 +41,15 @@ export const handleReady = (user, clientKey, clients, io) => {
   }
 };
 
-export const handleFrame = (clients, io) => {
-  Object.keys(clients).forEach((client) => {
-    const horse = clients[client].horse;
-    const physics = clients[client].physics;
-    if (Math.random() * 100 < horse["stats"].balance) {
+export const handleFrame = (clientsList, io) => {
+  const horses = {};
+console.log("handling frame")
+  Object.keys(clientsList).forEach((client) => {
+    const horse = clientsList[client].horse;
+    const physics = clientsList[client].physics;
+    // console.log("lemon", horse.name, physics);
+
+    if (Math.random() * 100 > horse.stats.balance) {
       console.log("tripped");
       physics.speed = 0;
     }
@@ -52,17 +57,28 @@ export const handleFrame = (clients, io) => {
       Math.min(physics["speed"] + horse.acceleration, horse.maxSpeed),
       0
     );
-
     physics.position.x += physics.speed;
+
+    horses[horse.name] = { color: horse.color, position: physics.position };
+
     if (physics.position.x > 1000) {
       console.log("we have a winner", client);
       io.emit("over", horse.name);
     }
   });
 
-  io.emit("frame", clients);
+  io.emit("frame", horses);
 };
 
 export const handleDisconnect = (clientKey) => {
   console.log("Bye Client: " + clientKey);
+};
+
+export const handleRaceOrder = (clientsList, clientKey, response) => {
+  console.log("handling race order", "list", clientsList, "key", clientKey);
+  response({
+    order: Object.keys(clientsList).findIndex((client) => {
+      return client == clientKey;
+    }),
+  });
 };

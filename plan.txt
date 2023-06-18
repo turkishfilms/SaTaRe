@@ -26,15 +26,23 @@ TODO;
 - Show endscreen?
 - make horses rgb dependant
 - only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
--Refine README
--TIDY all code
--make all code solid
--bug hunt
--robustify lol
--add placements 1st 2nd 3rd
+- Refine README
+- TIDY all code
+- make all code solid
+- bug hunt
+- robustify lol
+- add placements 1st 2nd 3rd
+- add color options for horses
+- Number of ready clients displayed to user on train page
+- Horse Race Progress 
+- End race Banner
+
 
 TODONE:
-Dede  Horse racing code
++ Horse racing code
++ Clients only need horse data  
++ Name of horse above horse
++ Clients horses y value correct
 + Make Canvas --weird p5 mode
 + Bring in horses from server 
 + Add horses to Canvas
@@ -48,7 +56,7 @@ Dede  Horse racing code
 + send current race data each frame to client
 + send horse to client based on client identifier -- clients[clientKey]
 + create client id  --- socket.handshake.session.id
-+ store client id with horse data {clientKey: {horse:Horse, ready:Bool, Physics:{}}}
++ store client id with horse data {clKey: {horse:Horse, ready:Bool, Physics:{}}}
 + server express done fam lightwork
 + server needs to hold horses
 + README
@@ -60,6 +68,9 @@ TABOR
 TODO;
 - Winner Page
 - Loser Page
+- Horses grayscale
+- Color pick
+- Progress Bars
 
 TODDNE:
 + Home page (index.html) 
