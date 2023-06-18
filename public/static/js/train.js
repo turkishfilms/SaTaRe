@@ -1,4 +1,4 @@
-const socket = io();
+/*const socket = io();
 
 socket.emit("askForHorse", ({ name }) => {
   document.getElementById("trainTitle").textContent = `Train ${name}`;
@@ -6,7 +6,7 @@ socket.emit("askForHorse", ({ name }) => {
 
 socket.on("start", (horses) => {
   window.location.href = "/race";
-});
+}); */
 
 const savedStats = { balance: 10, weight: 10 };
 
