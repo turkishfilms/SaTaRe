@@ -157,3 +157,8 @@ natural selection ideas:
     by winning and spending well while others slowly get drained
     then once you win your horse is put into hall of fame
 MVP COMPLETED
+
+
+
+
+http://127.0.0.1:3007/
