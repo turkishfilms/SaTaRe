@@ -108,8 +108,10 @@ button {
 
 #profilePic {
     position: fixed;
-    left: -2px;
+    left: 32px;
     top: 25%;
+    height: auto;
+    scale: 200%;
 }
 
 #shotgun {
@@ -117,6 +119,7 @@ button {
     right: 20px;
     top: 25%;
     transform-origin: top left;
+
 }
 
 #shotgun:hover {
@@ -138,3 +141,4 @@ button {
     animation-duration: 0.4s;
     transform-origin: center;
   }
+

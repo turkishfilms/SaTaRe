@@ -38,12 +38,24 @@
         onchange="newHorseName(value)"
       />
 
-      <input type="color" value="#FC0FC0" id="horseColor"/>
+    <div>
+      <input type="range" id="colorChooser"
+       min="0" max="360" step="any"
+       value="0" oninput="changeColor()">
+    </div>
+
+    
+
+  
+    <img id="horse" src="assets/graphics/s_horseHead.png" /> 
 
       <script>
         const nameBox = document.getElementById("name");
         const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
         nameBox.addEventListener("click", () => giddyUpAudio.play());
+        function changeColor() {
+            document.getElementById("horse").style.filter  = `hue-rotate(${document.getElementById("colorChooser").value}deg)`;
+        }
       </script>
 
       <input type="submit" id="submit" value="Start Your Racing Adventure" />
