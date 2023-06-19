@@ -1,12 +1,6 @@
 import "./scripts/p5.min.js";
 const socket = io();
 
-// socket.emit("askForHorse", ({ horse }) => {
-//   const name = horse.name;
-//   console.log("horse", horse);
-//   console.log("name", name);
-// });
-
 const main = (p) => {
   p.clientHeight;
   p.clientWidth;
@@ -26,11 +20,6 @@ const main = (p) => {
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
-    p.horseImg3 = p.loadImage(
-      "./assets/graphics/horse/s_horse.png",
-      () => console.log("Image loaded fully!"),
-      (err) => console.error("Error loading image:", err)
-    );
   };
 
   p.setup = () => {
@@ -43,7 +32,7 @@ const main = (p) => {
 
     socket.on("frame", (data) => {
       p.clear();
-      Object.keys(data).forEach((horse) => {
+      Object.keys(data).reverse().forEach((horse) => {
         p.showHorse({ name: horse, position: data[horse].position });
       });
     });
@@ -62,25 +51,19 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
-    const win = 50;
-    let x = horse.position.x
-    let y = p.clientHeight - 100 - horse.position.y;
-    let textX = horse.position.x;
-    let textY = p.clientHeight - 100 - horse.position.y;
-    let pic;
-
-    if (p.frameCount % win <= (2 * win) / (win/10)) {
-      pic = p.horseImg2;
-    } else if (p.frameCount % win <= (4 * win) / (win/10)) {
-      pic = p.horseImg;
-    } else {
-      y = p.clientHeight - 85 - horse.position.y;
-      x = horse.position.x + 10
-      pic = p.horseImg3;
-    }
-
-    p.text(horse.name, textX, textY);
+    const x = horse.position.x;
+    const y = p.clientHeight - 100 - horse.position.y;
+    const pic = p.frameCount % 20 <= 10 ? p.horseImg : p.horseImg2;
+    p.text(horse.name, x, y);
     p.image(pic, x, y);
+
+    // p.blendMode(p.MULTIPLY);
+    // console.log(horse)
+    // const col = horse.color;
+    // p.fill(col[0], col[1], col[2], 100); // Adjust color and transparency here
+    // p.rect(yx, y, pic.width, pic.height);
+
+    // p.blendMode(p.BLEND);
   };
 
   p.keyPressed = () => {
