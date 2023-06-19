@@ -11,12 +11,12 @@ const main = (p) => {
 
   p.preload = () => {
     p.horseImg = p.loadImage(
-      "./assets/graphics/horse/s_horseRun1.png",
+      "./assets/graphics/horse/s_horseRunG1.png",
       () => console.log("Image loaded barely!"),
       (err) => console.error("Error loading image:", err)
     );
     p.horseImg2 = p.loadImage(
-      "./assets/graphics/horse/s_horseRun2.png",
+      "./assets/graphics/horse/s_horseRun2S.png",
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );

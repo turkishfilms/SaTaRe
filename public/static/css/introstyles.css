@@ -23,6 +23,10 @@ form > input{
     width: 100%;
 }
 
+#horseColor{
+    margin-bottom: 70px;
+}
+
 #name{
     text-align: center;
     font-size: 300%;

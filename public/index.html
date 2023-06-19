@@ -21,7 +21,8 @@
       Your browser does not support the epic video unfortunately.
     </video>
 
-    <h2>Enter Your Horse's Name:</h2>
+    <h2>Choose a Name and Color For Your Horse:</h2>
+   
 
     <form action="train.html" method="GET">
       <input
@@ -30,12 +31,14 @@
         name="name" 
         required
         minlength="3"
-        maxlength="14"
+        maxlength="20"
         size="14"
         placeholder="unnamed"
         ,
         onchange="newHorseName(value)"
       />
+
+      <input type="color" value="#FC0FC0" id="horseColor"/>
 
       <script>
         const nameBox = document.getElementById("name");
