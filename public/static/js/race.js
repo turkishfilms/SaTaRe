@@ -8,12 +8,12 @@ const socket = io();
 // });
 
 const main = (p) => {
-  const { clientWidth, clientHeight } = document.getElementById("raceCanvas");
-  p.clientHeight = clientHeight;
-  p.clientWidth = clientWidth;
+  p.clientHeight;
+  p.clientWidth;
   p.horseImg;
-  p.backImg;
-  p.order;
+  p.horseImg2;
+  p.horseImg3;
+  p.order = 1;
 
   p.preload = () => {
     p.horseImg = p.loadImage(
@@ -26,13 +26,23 @@ const main = (p) => {
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
+    p.horseImg3 = p.loadImage(
+      "./assets/graphics/horse/s_horse.png",
+      () => console.log("Image loaded fully!"),
+      (err) => console.error("Error loading image:", err)
+    );
   };
 
   p.setup = () => {
+    const div = document.getElementById("raceCanvas");
+    const { clientWidth, clientHeight } = div;
+    p.clientHeight = clientHeight;
+    p.clientWidth = clientWidth;
+
     p.frameRate(60);
 
     socket.on("frame", (data) => {
-      p.clear()
+      p.clear();
       Object.keys(data).forEach((horse) => {
         p.showHorse({ name: horse, position: data[horse].position });
       });
@@ -46,20 +56,31 @@ const main = (p) => {
     socket.emit("raceOrder", (order) => {
       p.order = order;
     });
-    
+
     let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("raceCanvas");
   };
 
   p.showHorse = (horse) => {
-    // console.log("horse shown, "+horse)
-    const y = p.clientHeight - 100 - horse.position.y;
-    p.text(horse.name, horse.position.x, y);
-    p.image(
-      p.frameCount % 3 == 0 ? p.horseImg : p.horseImg2,
-      horse.position.x,
-      y
-    );
+    const win = 50;
+    let x = horse.position.x
+    let y = p.clientHeight - 100 - horse.position.y;
+    let textX = horse.position.x;
+    let textY = p.clientHeight - 100 - horse.position.y;
+    let pic;
+
+    if (p.frameCount % win <= (2 * win) / (win/10)) {
+      pic = p.horseImg2;
+    } else if (p.frameCount % win <= (4 * win) / (win/10)) {
+      pic = p.horseImg;
+    } else {
+      y = p.clientHeight - 85 - horse.position.y;
+      x = horse.position.x + 10
+      pic = p.horseImg3;
+    }
+
+    p.text(horse.name, textX, textY);
+    p.image(pic, x, y);
   };
 
   p.keyPressed = () => {
@@ -72,7 +93,6 @@ const main = (p) => {
     if (p.order == -1) {
       socket.emit("frame");
     }
-      // p.clear();
   };
 };
 

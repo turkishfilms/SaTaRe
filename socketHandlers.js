@@ -59,7 +59,7 @@ console.log("handling frame")
     );
     physics.position.x += physics.speed;
 
-    horses[horse.name] = { color: horse.color, position: physics.position };
+    horses[horse.name] = { color: horse.color, position: physics.position,speed:3 };
 
     if (physics.position.x > 1000) {
       console.log("we have a winner", client);
