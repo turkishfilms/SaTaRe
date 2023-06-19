@@ -24,7 +24,8 @@ form > input{
 }
 
 #horseColor{
-    margin-bottom: 70px;
+    margin-bottom: 45px;
+    height: 50px;
 }
 
 #name{
