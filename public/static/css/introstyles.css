@@ -13,9 +13,12 @@ body {
     justify-content: space-around;
     gap: 10px;
     background-color: gold;
+    padding: 40px;
     font-family: Delicious;
     background-image: url("../../assets/graphics/bg_hay.png");
-    
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
 }
 
 
@@ -23,10 +26,18 @@ form > input{
     width: 100%;
 }
 
+
+
 #name{
     text-align: center;
     font-size: 300%;
     font-family: Impact;
+}
+
+#horse {
+    border: solid black 3px;
+    border-radius: 10px;
+    background-color: lightgoldenrodyellow;
 }
 
 #submit{
@@ -34,10 +45,17 @@ form > input{
     padding: 15px 32px;
     font-size: 150%;
     font-family: Delicious;
+    height: 80px;
 }
 
 #submit:hover{
     background-color: greenyellow;
+}
+
+@media (max-width: 800px) {
+    video {
+        width: 85vw;
+    }
 }
 
 video {
@@ -51,9 +69,11 @@ h1, h2{
 }
 
 h1 {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 #name::placeholder {
     color: lightgrey;
 }
+
+
