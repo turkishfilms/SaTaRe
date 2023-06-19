@@ -32,9 +32,11 @@ const main = (p) => {
 
     socket.on("frame", (data) => {
       p.clear();
-      Object.keys(data).reverse().forEach((horse) => {
-        p.showHorse({ name: horse, position: data[horse].position });
-      });
+      Object.keys(data)
+        .reverse()
+        .forEach((horse) => {
+          p.showHorse({ name: horse, position: data[horse].position });
+        });
     });
 
     socket.on("over", (winner) => {
@@ -51,9 +53,14 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
+    const cadence = 1 / 2;
+    const animationWindow = 20;
     const x = horse.position.x;
     const y = p.clientHeight - 100 - horse.position.y;
-    const pic = p.frameCount % 20 <= 10 ? p.horseImg : p.horseImg2;
+    const pic =
+      p.frameCount % animationWindow <= animationWindow / cadence
+        ? p.horseImg
+        : p.horseimg2;
     p.text(horse.name, x, y);
     p.image(pic, x, y);
 
