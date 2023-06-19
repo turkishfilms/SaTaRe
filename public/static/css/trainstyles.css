@@ -14,6 +14,8 @@ body{
     font-family: Delicious;
     background-color: skyblue;
     font-size: 12px;
+    height: 100vh;
+    overflow: hidden;
 }
 
 audio{
