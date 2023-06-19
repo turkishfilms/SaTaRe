@@ -15,6 +15,9 @@ body {
     background-color: gold;
     font-family: Delicious;
     background-image: url("../../assets/graphics/bg_hay.png");
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
     
 }
 
@@ -39,6 +42,7 @@ form > input{
     padding: 15px 32px;
     font-size: 150%;
     font-family: Delicious;
+    height: 80px;
 }
 
 #submit:hover{
