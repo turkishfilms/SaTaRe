@@ -54,7 +54,8 @@
         const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
         nameBox.addEventListener("click", () => giddyUpAudio.play());
         function changeColor() {
-            document.getElementById("horse").style.filter  = `hue-rotate(${document.getElementById("colorChooser").value}deg)`;
+            currColor = document.getElementById("colorChooser").value;
+            document.getElementById("horse").style.filter  = `hue-rotate(${currColor}deg)`;
         }
       </script>
 
