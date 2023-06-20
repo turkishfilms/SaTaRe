@@ -30,9 +30,9 @@ audio{
 
 h1{
     text-decoration: underline;
-    text-shadow: #FC0 1px 0 10px;
+    font-size: 300%;
     height: 10vh;
-    color: whitesmoke;
+    color: Black;
     overflow: hidden;
     text-align: center;
 
@@ -50,6 +50,7 @@ button {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    margin: auto;
     font-family: Delicious;
     justify-content: space-evenly;
     width: 80%;
@@ -76,6 +77,7 @@ button {
     width: 150px;
     font-size: 200%;
     height: 40px;
+    cursor: pointer;
 }
 
 
@@ -100,6 +102,7 @@ button {
     width: 100%;
     font-size: 400%;
     background-color: rgb(207, 167, 33);
+    cursor: pointer;
 }
 
 #readyUp:hover {
@@ -116,9 +119,11 @@ button {
 
 #shotgun {
     position: fixed;
-    right: 20px;
+    right: 64px;
     top: 25%;
-    transform-origin: top left;
+    height: auto;
+    scale: 200%;
+    cursor: pointer;
 
 }
 
@@ -127,7 +132,7 @@ button {
 }
 
 @keyframes bulletShoot {
-    from {right: 75px; top: 28%;}
+    from {right: 128px; top: 28%;}
     to {right: 105%; top: 28%;} 
   }
 
