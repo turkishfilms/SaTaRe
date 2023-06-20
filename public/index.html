@@ -9,11 +9,9 @@
     <link rel="icon" href="assets/graphics/horse/s_horse.png" />
     <script src="/static/js/scripts/socket.io.min.js"></script>
     <script src="static/js/index.js"></script>
-
   </head>
 
   <body>
-
     <h1>Welcome To The Horse Races</h1>
 
     <video controls>
@@ -22,13 +20,12 @@
     </video>
 
     <h2>Choose a Name and Color For Your Horse:</h2>
-   
 
     <form action="train.html" method="GET">
       <input
         type="text"
         id="name"
-        name="name" 
+        name="name"
         required
         minlength="3"
         maxlength="20"
@@ -38,26 +35,19 @@
         onchange="newHorseName(value)"
       />
 
-    <div>
-      <input type="range" id="colorChooser"
-       min="0" max="360" step="any"
-       value="0" oninput="changeColor()">
-    </div>
+      <div>
+        <input
+          type="range"
+          id="colorChooser"
+          min="0"
+          max="360"
+          step="any"
+          value="0"
+          oninput="changeColor()"
+        />
+      </div>
 
-    
-
-  
-    <img id="horse" src="assets/graphics/s_horseHead.png" /> 
-
-      <script>
-        const nameBox = document.getElementById("name");
-        const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
-        nameBox.addEventListener("click", () => giddyUpAudio.play());
-        function changeColor() {
-            currColor = document.getElementById("colorChooser").value;
-            document.getElementById("horse").style.filter  = `hue-rotate(${currColor}deg)`;
-        }
-      </script>
+      <img id="horse" src="assets/graphics/s_horseHead.png" />
 
       <input type="submit" id="submit" value="Start Your Racing Adventure" />
     </form>
