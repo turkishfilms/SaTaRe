@@ -63,7 +63,7 @@ TODONE:
 
 
 TABOR 
-(HTML and CSS layouts. Design classic 2000's feel)
+(Front-end webdesign. Design classic 2000's feel)
 
 TODO;
 - Winner Page
