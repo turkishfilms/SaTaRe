@@ -35,7 +35,7 @@ const main = (p) => {
       Object.keys(data)
         .reverse()
         .forEach((horse) => {
-          p.showHorse({ name: horse, position: data[horse].position });
+          p.showHorse({ name: horse, position: data[horse].position,color:data[horse].color });
         });
     });
 
@@ -52,6 +52,25 @@ const main = (p) => {
     cnv.parent("raceCanvas");
   };
 
+p.addFilter = (image,color)=>{
+   loadPixels();
+   for (let y = 0; y < height; y++) {
+     for (let x = 0; x < width; x++) {
+       const index = (x + y * width) * 4;
+       const r = pixels[index + 0];
+       const g = pixels[index + 1];
+       const b = pixels[index + 2];
+       const a = pixels[index + 3];
+       if (a !== 0) {
+         pixels[index + 0] += color.r
+         pixels[index + 1] += color.g
+         pixels[index + 2] += color.b
+       }
+     }
+   }
+      updatePixels(); 
+}
+
   p.showHorse = (horse) => {
     const cadence = 1 / 2;
     const animationWindow = 20;
@@ -63,14 +82,7 @@ const main = (p) => {
         : p.horseimg2;
     p.text(horse.name, x, y);
     p.image(pic, x, y);
-
-    // p.blendMode(p.MULTIPLY);
-    // console.log(horse)
-    // const col = horse.color;
-    // p.fill(col[0], col[1], col[2], 100); // Adjust color and transparency here
-    // p.rect(yx, y, pic.width, pic.height);
-
-    // p.blendMode(p.BLEND);
+    p.addFilter(image, horse.color);
   };
 
   p.keyPressed = () => {

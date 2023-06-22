@@ -1,15 +1,17 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
 
-export const handleNewHorseName = (request, clientKey, clients) => {
-  const horseName = request;
+export const ROADHEIGHT = 100
+
+export const handleNewHorse = (request, clientKey, clients) => {
+  const { name, color } = request;
   console.log("handler", request);
-  let newHorse = new Horse({ name: horseName });
+  let newHorse = new Horse({ name: name, color: color });
   clients[clientKey] = {
     horse: newHorse,
     ready: false,
   };
-  console.log("New horse " + horseName + " was added");
+  console.log("New horse " + name + " was added", " with " + color + " color");
 };
 
 export const handleAskForHorse = (response, user) => {
@@ -32,8 +34,8 @@ export const handleReady = (user, clientKey, clients, io) => {
 
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
-      const height = (i / Object.keys(clients).length) * 100;
-      clients[client].physics = { speed: 0, position: { x: 0, y: height } };
+      const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
+      clients[client].physics = { speed: 0, position: { x: 0, y: raceLane } };
     });
     io.emit("start", clients);
   } else {
@@ -43,11 +45,10 @@ export const handleReady = (user, clientKey, clients, io) => {
 
 export const handleFrame = (clientsList, io) => {
   const horses = {};
-console.log("handling frame")
+  console.log("handling frame");
   Object.keys(clientsList).forEach((client) => {
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
-    // console.log("lemon", horse.name, physics);
 
     if (Math.random() * 100 > horse.stats.balance) {
       console.log("tripped");
@@ -59,14 +60,19 @@ console.log("handling frame")
     );
     physics.position.x += physics.speed;
 
-    horses[horse.name] = { color: horse.color, position: physics.position,speed:3 };
+    horses[horse.name] = {
+      color: horse.color,
+      position: physics.position,
+      speed: 3,
+      rank: 1
+    };
 
     if (physics.position.x > 1000) {
       console.log("we have a winner", client);
       io.emit("over", horse.name);
     }
   });
-
+//check here for position and update the horses to show their rank (1st 2nd 3rd)
   io.emit("frame", horses);
 };
 

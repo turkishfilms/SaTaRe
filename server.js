@@ -7,7 +7,7 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
-  handleNewHorseName,
+  handleNewHorse,
   handleAskForHorse,
   handleNewStats,
   handleReady,
@@ -49,6 +49,7 @@ const testHorses = [
   }),
   new Horse({
     name: "cade",
+    color: { r: 255, g: 0, b: 0 },
     stats: {
       balance: 20,
       weight: 20,
@@ -118,8 +119,8 @@ io.on("connection", (socket) => {
 
   const user = clients[clientKey];
 
-  socket.on("newHorseName", (socket) => {
-    handleNewHorseName(socket, clientKey, clients);
+  socket.on("newHorse", (socket) => {
+    handleNewHorse(socket, clientKey, clients);
   });
 
   socket.on("askForHorse", (response) => {
