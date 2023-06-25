@@ -5,27 +5,28 @@ export const ROADHEIGHT = 100
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
-  console.log("handler", request);
   let newHorse = new Horse({ name: name, color: color });
   clients[clientKey] = {
     horse: newHorse,
     ready: false,
   };
-  console.log("New horse " + name + " was added", " with " + color + " color");
+  console.log("New Horse Handled", request);
 };
 
 export const handleAskForHorse = (response, user) => {
-  console.log("the user", user)
-  console.log("Horse name was asked for by: ", user.horse.name);
-  response({ horse: { name: user.horse.name }, name: user.horse.name });
+  console.log("Handling ask for horse", user);
+  if (Object.keys(user).length !== 0) {
+    console.log("Horse name was asked for by: ", user.horse.name);
+     response({ horse: { name: user.horse.name }, name: user.horse.name });
+  }
 };
 
 export const handleNewStats = (request, user) => {
   const { stats } = request;
-  console.log("reg", request);
-  console.log(user, " Is getting new stats!: " + stats);
+  
   const horse = user.horse;
   horse.stats = { ...horse.stats, ...stats };
+  console.log(user.horse.name, " Is getting new stats!: " + stats);
 };
 
 export const handleReady = (user, clientKey, clients, io) => {
@@ -40,7 +41,6 @@ export const handleReady = (user, clientKey, clients, io) => {
     });
     io.emit("start", clients);
   } else {
-    
     console.log("Not everyone is ready", clients);
   }
 };
@@ -51,38 +51,38 @@ export const handleClients = (socket, clients) => (data, response) => {
 };
 
 export const handleFrame = (clientsList, io) => {
-  console.log("this is a frame")
   const horses = {};
-  console.log("handling frame");
+  // console.log("Handling frame: ClientsList", clientsList)
   Object.keys(clientsList).forEach((client) => {
+    // console.log("client,", clientsList[client] )
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
 
     if (Math.random() * 100 > horse.stats.balance) {
       console.log("tripped");
       physics.speed = 0;
-    }
+     }
     physics.speed = Math.max(
       Math.min(physics["speed"] + horse.acceleration, horse.maxSpeed),
       0
     );
     physics.position.x += physics.speed;
-console.log(physics);
-horses[horse.name] = {
-  color: horse.color,
-  position: physics.position,
-  speed: 3,
-  rank: 1,
-};
+    console.log(physics);
+    horses[horse.name] = {
+      //problematic, multiple identical keys possible
+      color: horse.color,
+      position: physics.position,
+      speed: 3,
+      rank: 1,
+    };
 
     if (physics.position.x > 1000) {
       console.log("we have a winner", client);
       io.emit("over", horse.name);
     }
   });
-//check here for position and update the horses to show their rank (1st 2nd 3rd)
+  //check here for position and update the horses to show their rank (1st 2nd 3rd)
   io.emit("frame", horses);
-
 };
 
 export const handleDisconnect = (clientKey) => {

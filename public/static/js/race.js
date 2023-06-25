@@ -1,4 +1,4 @@
-import "./scripts/p5.min.js" 
+import "./scripts/p5.min.js";
 
 const socket = io();
 
@@ -10,13 +10,13 @@ const main = (p) => {
   p.horseImg3;
   p.order = 1;
   p.horses = new Map();
-  
+
   p.sendClients = () => {
     socket.emit("clients", {}, (data) => {
       console.log(data);
     });
   };
-  
+
   p.preload = () => {
     p.horseImg = p.loadImage(
       "/assets/graphics/horse/s_horseRunG1.png",
@@ -40,22 +40,21 @@ const main = (p) => {
     socket.on("frame", (data) => {
       p.clear();
 
-      console.log("noway", p.horses);
       if (p.horses.size === 0) {
         Object.keys(data)
           .reverse()
           .forEach((horse) => {
-            debugger
+            const pic1 = p.horseImg.get();
+            const pic2 = p.horseImg.get();
+            data[horse].color.a = 5; // hack, put this in server or soemthing
+            p.addFilter(pic1, data[horse].color);
+            p.addFilter(pic2, data[horse].color);
             p.horses.set(data[horse].position.y, {
               name: horse,
-              images: [
-                p.addFilter(p.horseImg.get(), data[horse].color),
-                p.addFilter(p.horseImg2.get(), data[horse].color),
-              ],
+              images: [pic1, pic2],
             });
           });
       }
-      console.log("hey", p.horses);
 
       Object.keys(data)
         .reverse()
@@ -67,9 +66,8 @@ const main = (p) => {
           });
         });
     });
-    p.horses.set(200, {name:"harvey", color:{r:255,g:0,b:0,a:25}})
 
-socket.emit("frame")
+    socket.emit("frame");
     socket.on("over", (winner) => {
       console.log(winner);
       // p.noLoop();
@@ -85,7 +83,7 @@ socket.emit("frame")
 
   p.addFilter = (img, { r, g, b, a }) => {
     img.loadPixels();
-    console.log("filtering");
+    console.log("filtering", r, g, b, a);
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
         let index = 4 * (j * img.width + i);
@@ -105,18 +103,15 @@ socket.emit("frame")
   };
 
   p.showHorse = (horse) => {
-    console.log("showing");
-    const cadence = 2;
-    const animationWindow = 5;
-    const x = horse.position.x;
-    const y = p.clientHeight - 100 - horse.position.y;
-    const stepInCycle = p.frameCount % animationWindow;
-    const cycleRatio = animationWindow / cadence;
-    const pic = p.horses.get(horse.position.y).images[
-      stepInCycle <= cycleRatio ? 0 : 1
-    ];
+    const cadence = 2,
+      animationWindow = 5,
+      x = horse.position.x,
+      y = p.clientHeight - 100 - horse.position.y,
+      stepInCycle = p.frameCount % animationWindow,
+      cycleRatio = animationWindow / cadence,
+      horseData = p.horses.get(horse.position.y),
+      pic = horseData.images[stepInCycle <= cycleRatio ? 0 : 1];
     p.text(horse.name, x, y);
-    console.log("about ot add filter",pic);
     p.image(pic, x, y);
   };
 
@@ -127,11 +122,8 @@ socket.emit("frame")
   };
 
   p.draw = () => {
-    console.log("drawing");
-    p.showHorse(horse);
-    console.log("horsse is shown");
     // if (p.order == -1) {
-    // socket.emit("frame");
+    socket.emit("frame");
     // }
   };
 };

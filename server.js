@@ -119,10 +119,11 @@ io.on("connection", (socket) => {
 
   const user = clients[clientKey];
 
+  console.log("User Assigned", user,user.horse);
   socket.on("clients",handleClients(socket, clients))
-
-  console.log("user is " + user);
+  
   socket.on("newHorse", (socket) => {
+    console.log("New Horse Message received:", socket)
     handleNewHorse(socket, clientKey, clients);
   });
 
@@ -155,10 +156,10 @@ export const isAllClientsReady = (clients) => {
   const clientel = Object.values(clients);
   let counter = 0;
   for (let i = 0; i < clientel.length; i++) {
-    if (clientel[i].ready === true) {
+    if (clientel[i].ready === false) {
       counter++;
     }
   }
-  return counter >= 1;
+  return counter === 0;
   // return Object.values(clients).every((client) => client.ready === true);
 };
