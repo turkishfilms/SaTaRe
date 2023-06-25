@@ -15,6 +15,7 @@ export const handleNewHorse = (request, clientKey, clients) => {
 };
 
 export const handleAskForHorse = (response, user) => {
+  console.log("the user", user)
   console.log("Horse name was asked for by: ", user.horse.name);
   response({ horse: { name: user.horse.name }, name: user.horse.name });
 };
@@ -39,11 +40,18 @@ export const handleReady = (user, clientKey, clients, io) => {
     });
     io.emit("start", clients);
   } else {
+    
     console.log("Not everyone is ready", clients);
   }
 };
 
+export const handleClients = (socket, clients) => (data, response) => {
+  console.log("clients asked for", clients);
+  response(clients);
+};
+
 export const handleFrame = (clientsList, io) => {
+  console.log("this is a frame")
   const horses = {};
   console.log("handling frame");
   Object.keys(clientsList).forEach((client) => {
@@ -59,13 +67,13 @@ export const handleFrame = (clientsList, io) => {
       0
     );
     physics.position.x += physics.speed;
-
-    horses[horse.name] = {
-      color: horse.color,
-      position: physics.position,
-      speed: 3,
-      rank: 1
-    };
+console.log(physics);
+horses[horse.name] = {
+  color: horse.color,
+  position: physics.position,
+  speed: 3,
+  rank: 1,
+};
 
     if (physics.position.x > 1000) {
       console.log("we have a winner", client);
@@ -74,6 +82,7 @@ export const handleFrame = (clientsList, io) => {
   });
 //check here for position and update the horses to show their rank (1st 2nd 3rd)
   io.emit("frame", horses);
+
 };
 
 export const handleDisconnect = (clientKey) => {

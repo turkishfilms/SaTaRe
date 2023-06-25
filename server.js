@@ -1,4 +1,4 @@
-import express from "express";
+import express from "express"; 
 import cors from "cors";
 import { join } from "path";
 import { Server } from "socket.io";
@@ -7,6 +7,7 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
+  handleClients,
   handleNewHorse,
   handleAskForHorse,
   handleNewStats,
@@ -40,8 +41,7 @@ app.use(express.static(join(process.cwd(), "public")));
 const clients = {};
 
 const testHorses = [
-  new Horse({
-    name: "Harold",
+  new Horse({name: "Harold Jr.",
     stats: {
       balance: 10,
       weight: 10,
@@ -51,7 +51,7 @@ const testHorses = [
     name: "cade",
     color: { r: 255, g: 0, b: 0 },
     stats: {
-      balance: 20,
+      balance: 21,
       weight: 20,
     },
   }),
@@ -106,7 +106,7 @@ const server = app.listen(port, () => console.log("Horses are racing " + port));
 const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
-
+ 
 Object.keys(testClientsList).forEach((client, i) => {
   const height = (i / Object.keys(testClientsList).length) * 100;
   testClientsList[client].physics = { speed: 0, position: { x: 0, y: height } };
@@ -119,6 +119,9 @@ io.on("connection", (socket) => {
 
   const user = clients[clientKey];
 
+  socket.on("clients",handleClients(socket, clients))
+
+  console.log("user is " + user);
   socket.on("newHorse", (socket) => {
     handleNewHorse(socket, clientKey, clients);
   });
@@ -132,15 +135,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("ready", () => {
-    handleReady(user, clientKey, testClientsList, io);
+    handleReady(user, clientKey, clients, io);
   });
 
   socket.on("raceOrder", (response) =>
-    handleRaceOrder(testClientsList, clientKey, response)
+    handleRaceOrder(clients, clientKey, response)
   );
 
   socket.on("frame", () => {
-    handleFrame(testClientsList, io);
+    handleFrame(clients, io);
   });
 
   socket.on("disconnect", () => {
@@ -156,6 +159,6 @@ export const isAllClientsReady = (clients) => {
       counter++;
     }
   }
-  return counter === 3;
+  return counter >= 1;
   // return Object.values(clients).every((client) => client.ready === true);
 };

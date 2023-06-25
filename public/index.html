@@ -7,6 +7,8 @@
     <title>Welcome To The Horse Races</title>
     <link rel="stylesheet" type="text/css" href="static/css/introstyles.css" />
     <link rel="icon" href="assets/graphics/horse/s_horse.png" />
+    <link rel="icon" href="/assets/graphics/horse/s_horseRunG1.png"/>
+    <link rel="icon" href="/assets/graphics/horse/s_horseRun2S.png"/>
     <script src="/static/js/scripts/socket.io.min.js"></script>
     <script src="static/js/index.js"></script>
   </head>
@@ -21,7 +23,7 @@
 
     <h2>Choose a Name and Color For Your Horse:</h2>
 
-    <form action="train.html" method="GET">
+    <form onsubmit="submitForm(event)">
       <input
         type="text"
         id="name"
@@ -32,7 +34,7 @@
         size="14"
         placeholder="Enter name..."
         ,
-        onchange="newHorseName(value)"
+        onchange="setName(value)" 
       />
 
       <div>
@@ -43,7 +45,7 @@
           max="360"
           step="any"
           value="0"
-          oninput="changeColor()"
+          oninput="setColor(value)"
         />
       </div>
 
@@ -51,5 +53,6 @@
 
       <input type="submit" id="submit" value="Start Your Racing Adventure" />
     </form>
+
   </body>
 </html>

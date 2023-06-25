@@ -17,7 +17,7 @@ body {
     font-family: Delicious;
     background-image: url("../../assets/graphics/bg_hay.png");
     height: 100vh;
-    overflow: hidden;
+    /* overflow: hidden; */
     text-align: center;
 }
 

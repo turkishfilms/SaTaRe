@@ -109,3 +109,10 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
+
+
+const sendClients=()=>{
+  socket.emit("clients",{},(data)=>{
+    console.log(data)
+  })
+}
