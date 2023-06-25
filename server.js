@@ -1,4 +1,4 @@
-import express from "express"; 
+import express from "express";
 import cors from "cors";
 import { join } from "path";
 import { Server } from "socket.io";
@@ -16,7 +16,6 @@ import {
   handleDisconnect,
   handleRaceOrder,
 } from "./socketHandlers.js";
-
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -41,7 +40,8 @@ app.use(express.static(join(process.cwd(), "public")));
 const clients = {};
 
 const testHorses = [
-  new Horse({name: "Harold Jr.",
+  new Horse({
+    name: "Harold Jr.",
     stats: {
       balance: 10,
       weight: 10,
@@ -106,7 +106,7 @@ const server = app.listen(port, () => console.log("Horses are racing " + port));
 const io = new Server(server);
 
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
- 
+
 Object.keys(testClientsList).forEach((client, i) => {
   const height = (i / Object.keys(testClientsList).length) * 100;
   testClientsList[client].physics = { speed: 0, position: { x: 0, y: height } };
@@ -114,16 +114,14 @@ Object.keys(testClientsList).forEach((client, i) => {
 
 io.on("connection", (socket) => {
   const clientKey = socket.handshake.session.id;
-  console.log("Howdy: ", clientKey);
   clients[clientKey] = clients[clientKey] || {};
 
   const user = clients[clientKey];
 
-  console.log("User Assigned", user,user.horse);
-  socket.on("clients",handleClients(socket, clients))
-  
+  console.log("User Assigned", user, "Everyone", clients);
+  socket.on("clients", handleClients(socket, clients));
+
   socket.on("newHorse", (socket) => {
-    console.log("New Horse Message received:", socket)
     handleNewHorse(socket, clientKey, clients);
   });
 
@@ -136,6 +134,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("ready", () => {
+    for (let client in clients) {
+      if (Object.keys(clients[client]).length === 0) {
+        delete clients[client];
+        console.log("Eliminated")
+      }
+    }
     handleReady(user, clientKey, clients, io);
   });
 

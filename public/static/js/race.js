@@ -70,7 +70,7 @@ const main = (p) => {
     socket.emit("frame");
     socket.on("over", (winner) => {
       console.log(winner);
-      // p.noLoop();
+      p.noLoop();
     });
 
     // socket.emit("raceOrder", (order) => {
@@ -117,7 +117,11 @@ const main = (p) => {
 
   p.keyPressed = () => {
     if (p.key === " ") {
-      p.order = -1;
+      console.log("Spacebaar")
+      socket.emit("clients", {}, (data) => {
+        console.log("a thing")
+        console.log(data);
+      });
     }
   };
 

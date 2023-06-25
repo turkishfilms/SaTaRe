@@ -36,6 +36,8 @@ TODO;
 - Number of ready clients displayed to user on train page
 - Horse Race Progress 
 - End race Banner
+- Make any page visitable without error, maybe a spectator flag.
+- Only can call frame or get horse name if your clientkey is in the server, so maybe a isRacer message, which returns a bool which lets you do stuff, else its basic.
 
 
 TODONE:

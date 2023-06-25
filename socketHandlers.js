@@ -54,20 +54,17 @@ export const handleFrame = (clientsList, io) => {
   const horses = {};
   // console.log("Handling frame: ClientsList", clientsList)
   Object.keys(clientsList).forEach((client) => {
-    // console.log("client,", clientsList[client] )
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
-
-    if (Math.random() * 100 > horse.stats.balance) {
-      console.log("tripped");
+    if (Math.random() * 100 > horse.balance) {
       physics.speed = 0;
-     }
+      }
     physics.speed = Math.max(
       Math.min(physics["speed"] + horse.acceleration, horse.maxSpeed),
       0
     );
     physics.position.x += physics.speed;
-    console.log(physics);
+    // console.log(physics);
     horses[horse.name] = {
       //problematic, multiple identical keys possible
       color: horse.color,
