@@ -96,12 +96,13 @@ const main = (p) => {
       for (let j = 0; j < img.height; j++) {
         let index = 4 * (j * img.width + i);
         let alpha = img.pixels[index + 3];
+        let bright = (r+g+b)/3;
 
         if (alpha !== 0) {
           // if pixel is not transparent
-          img.pixels[index] = img.pixels[index] + r; // Red
-          img.pixels[index + 1] = img.pixels[index + 1] + g; // Green
-          img.pixels[index + 2] = img.pixels[index + 2] + b; // Blue
+          img.pixels[index] = img.pixels[index] + (r - bright) * (bright/255); // Red
+          img.pixels[index + 1] = img.pixels[index + 1] + (g - bright) * (bright/255); // Green    ///get pixel, add color, subract brightness, increase contrast
+          img.pixels[index + 2] = img.pixels[index + 2] + (b - bright) * (bright/255); // Blue
           img.pixels[index + 3] = img.pixels[index + 3] + a; // Blue
         }
       }

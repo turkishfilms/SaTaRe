@@ -128,7 +128,10 @@ button {
 }
 
 #shotgun:hover {
-    background-color: rgb(190, 222, 235);
+    filter: drop-shadow(2px 2px 0px rgb(190, 222, 235))
+            drop-shadow(-2px -2px 0px rgb(190, 222, 235))
+            drop-shadow(-2px 2px 0px rgb(190, 222, 235))
+            drop-shadow(2px -2px 0px rgb(190, 222, 235));
 }
 
 @keyframes bulletShoot {
