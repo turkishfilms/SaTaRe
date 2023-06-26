@@ -13,6 +13,11 @@ router.get("/race", (req, res) => {
   res.sendFile(join(process.cwd(), "public/race.html"));
 });
 
+router.get("/end", (req, res) => {
+  console.log("Race has concluded");
+  res.sendFile(join(process.cwd(), "public/final.html"));
+});
+
 router.get("*", (req, res) => {
   console.log("wildcard activated", "Someone's off the map");
 });

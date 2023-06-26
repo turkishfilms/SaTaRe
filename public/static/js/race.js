@@ -89,6 +89,7 @@ const main = (p) => {
     socket.on("over", (winner) => {
       console.log(winner);
       p.noLoop();
+      window.location.href = "/end"
     });
 
     // socket.emit("raceOrder", (order) => {
