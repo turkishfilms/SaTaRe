@@ -16,6 +16,8 @@ body{
     justify-content: space-around;
     gap: 10px;
     font-family: Delicious;
+    text-align: center;
+    margin: 32px;
     background-color: white
 }
 
