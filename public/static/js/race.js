@@ -61,7 +61,8 @@ const main = (p) => {
             p.addFilter(pic3, data[horse].color);
             p.horses.set(data[horse].position.y, {
               name: horse,
-              images: [pic1, pic2,pic3],
+              images: [pic1, pic2, pic3],
+              offset: Math.floor(p.random(10)),
             });
           });
       }
@@ -73,7 +74,7 @@ const main = (p) => {
             name: horse,
             position: data[horse].position,
             color: data[horse].color,
-            speed:data[horse].speed,
+            speed: data[horse].speed,
           });
           document.getElementById(
             "placement"
@@ -104,7 +105,7 @@ const main = (p) => {
       for (let j = 0; j < img.height; j++) {
         let index = 4 * (j * img.width + i);
         let alpha = img.pixels[index + 3];
-        let bright = (r+g+b)/3;
+        let bright = (r + g + b) / 3;
 
         if (alpha !== 0) {
           // if pixel is not transparent
@@ -121,11 +122,11 @@ const main = (p) => {
 
   p.showHorse = (horse) => {
     const horseData = p.horses.get(horse.position.y);
-    const animationWindow = 25 *(1-(horse.speed/10)),
+    const animationWindow = 25 * (1 - horse.speed / 10),
       x = horse.position.x,
       y = p.clientHeight - 100 - horse.position.y,
       stepInCycle = Math.floor(
-        (p.frameCount % animationWindow) /
+        ((p.frameCount + horseData.offset) % animationWindow) /
           (animationWindow / horseData.images.length)
       );
     const pic = horseData.images[stepInCycle];
@@ -135,7 +136,7 @@ const main = (p) => {
 
   p.keyPressed = () => {
     if (p.key === " ") {
-       console.log("Spacebaar");
+      console.log("Spacebaar");
       socket.emit("clients", {}, (data) => {
         console.log("a thing");
         console.log(data);
