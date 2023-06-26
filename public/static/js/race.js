@@ -73,6 +73,7 @@ const main = (p) => {
             name: horse,
             position: data[horse].position,
             color: data[horse].color,
+            speed:data[horse].speed,
           });
           document.getElementById(
             "placement"
@@ -119,20 +120,22 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
-    const cadence = 7,
-      animationWindow = 20,
+    const horseData = p.horses.get(horse.position.y);
+    const animationWindow = 25 *(1-(horse.speed/10)),
       x = horse.position.x,
       y = p.clientHeight - 100 - horse.position.y,
-      stepInCycle = Math.floor((p.frameCount % animationWindow) / cadence),
-      horseData = p.horses.get(horse.position.y),
-      pic = horseData.images[stepInCycle];
+      stepInCycle = Math.floor(
+        (p.frameCount % animationWindow) /
+          (animationWindow / horseData.images.length)
+      );
+    const pic = horseData.images[stepInCycle];
     p.text(horse.name, x, y);
     p.image(pic, x, y);
   };
 
   p.keyPressed = () => {
     if (p.key === " ") {
-      console.log("Spacebaar");
+       console.log("Spacebaar");
       socket.emit("clients", {}, (data) => {
         console.log("a thing");
         console.log(data);
