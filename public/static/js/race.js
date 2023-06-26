@@ -31,6 +31,11 @@ const main = (p) => {
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
+    p.horseImg3 = p.loadImage(
+      "/assets/graphics/horse/s_horseRunG3.png",
+      () => console.log("Image loaded fully!"),
+      (err) => console.error("Error loading image:", err)
+    );
   };
 
   p.setup = () => {
@@ -49,12 +54,14 @@ const main = (p) => {
           .forEach((horse) => {
             const pic1 = p.horseImg.get();
             const pic2 = p.horseImg2.get();
+            const pic3 = p.horseImg3.get();
             data[horse].color.a = 5; // hack, put this in server or soemthing
             p.addFilter(pic1, data[horse].color);
             p.addFilter(pic2, data[horse].color);
+            p.addFilter(pic3, data[horse].color);
             p.horses.set(data[horse].position.y, {
               name: horse,
-              images: [pic1, pic2],
+              images: [pic1, pic2,pic3],
             });
           });
       }
@@ -112,14 +119,13 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
-    const cadence = 2,
+    const cadence = 7,
       animationWindow = 20,
       x = horse.position.x,
       y = p.clientHeight - 100 - horse.position.y,
-      stepInCycle = p.frameCount % animationWindow,
-      cycleRatio = animationWindow / cadence,
+      stepInCycle = Math.floor((p.frameCount % animationWindow) / cadence),
       horseData = p.horses.get(horse.position.y),
-      pic = horseData.images[stepInCycle <= cycleRatio ? 0 : 1];
+      pic = horseData.images[stepInCycle];
     p.text(horse.name, x, y);
     p.image(pic, x, y);
   };
