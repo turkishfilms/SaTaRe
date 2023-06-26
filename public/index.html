@@ -57,6 +57,18 @@
         value="Start Your Racing Adventure" 
       />
 
+      <script>
+        const butt = document.getElementById('submit');
+        const slid = document.getElementById('colorChooser');
+
+        function transferData() {
+          setColor(slid.value);
+        }
+
+        butt.addEventListener('click', transferData);
+
+      </script>
+
     </form>
 
   </body>
