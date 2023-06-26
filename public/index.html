@@ -60,9 +60,11 @@
       <script>
         const butt = document.getElementById('submit');
         const slid = document.getElementById('colorChooser');
+        const nameTxt = document.getElementById('name');
 
         function transferData() {
           setColor(slid.value);
+          setName(nameTxt.value);
         }
 
         butt.addEventListener('click', transferData);
