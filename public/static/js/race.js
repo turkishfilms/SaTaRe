@@ -100,10 +100,10 @@ const main = (p) => {
 
         if (alpha !== 0) {
           // if pixel is not transparent
-          img.pixels[index] = img.pixels[index] + (r - bright) * (bright/255); // Red
-          img.pixels[index + 1] = img.pixels[index + 1] + (g - bright) * (bright/255); // Green    ///get pixel, add color, subract brightness, increase contrast
-          img.pixels[index + 2] = img.pixels[index + 2] + (b - bright) * (bright/255); // Blue
-          img.pixels[index + 3] = img.pixels[index + 3] + a; // Blue
+          img.pixels[index] += (r - bright) * (bright / 255); // Red
+          img.pixels[index + 1] += (g - bright) * (bright / 255); // Green    ///get pixel, add color, subract brightness, increase contrast
+          img.pixels[index + 2] += (b - bright) * (bright / 255); // Blue
+          img.pixels[index + 3] += a; // Blue
         }
       }
 
