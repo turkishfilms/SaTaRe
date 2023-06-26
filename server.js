@@ -100,6 +100,15 @@ const testClientsList = {
   },
 };
 
+const clearEmptyClients = ()=>{
+    for (let client in clients) {
+      if (Object.keys(clients[client]).length === 0) {
+        delete clients[client];
+        console.log("Eliminated")
+      }
+    }
+}
+
 app.use("/", router);
 
 const server = app.listen(port, () => console.log("Horses are racing " + port));
@@ -126,28 +135,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("askForHorse", (response) => {
+    if (Object.keys(user).length === 0) return;
     handleAskForHorse(response, user);
   });
 
-  socket.on("newStats", (request) => {
+  socket.on("newStats", (request) => { 
+    if (Object.keys(user).length === 0) return;
     handleNewStats(request, user);
   });
 
   socket.on("ready", () => {
-    for (let client in clients) {
-      if (Object.keys(clients[client]).length === 0) {
-        delete clients[client];
-        console.log("Eliminated")
-      }
-    }
+    clearEmptyClients()
+    if (Object.keys(user).length === 0) return;
     handleReady(user, clientKey, clients, io);
   });
 
-  socket.on("raceOrder", (response) =>
-    handleRaceOrder(clients, clientKey, response)
-  );
-
   socket.on("frame", () => {
+    if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });
 

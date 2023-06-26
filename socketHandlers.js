@@ -1,7 +1,7 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
 
-export const ROADHEIGHT = 100
+export const ROADHEIGHT = 100;
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
@@ -14,16 +14,15 @@ export const handleNewHorse = (request, clientKey, clients) => {
 };
 
 export const handleAskForHorse = (response, user) => {
-  console.log("Handling ask for horse", user);
   if (Object.keys(user).length !== 0) {
-    console.log("Horse name was asked for by: ", user.horse.name);
-     response({ horse: { name: user.horse.name }, name: user.horse.name });
+    // console.log("Horse name was asked for by: ", user.horse.name);
+    response({ horse: { name: user.horse.name }, name: user.horse.name });
   }
 };
 
 export const handleNewStats = (request, user) => {
   const { stats } = request;
-  
+
   const horse = user.horse;
   horse.stats = { ...horse.stats, ...stats };
   console.log(user.horse.name, " Is getting new stats!: " + stats);
@@ -58,19 +57,17 @@ export const handleFrame = (clientsList, io) => {
     const physics = clientsList[client].physics;
     if (Math.random() * 100 > horse.balance) {
       physics.speed = 0;
-      }
+    }
     physics.speed = Math.max(
       Math.min(physics["speed"] + horse.acceleration, horse.maxSpeed),
       0
     );
     physics.position.x += physics.speed;
-    // console.log(physics);
     horses[horse.name] = {
       //problematic, multiple identical keys possible
       color: horse.color,
       position: physics.position,
-      speed: 3,
-      rank: 1,
+      speed: physics.speed,
     };
 
     if (physics.position.x > 1000) {
@@ -78,7 +75,11 @@ export const handleFrame = (clientsList, io) => {
       io.emit("over", horse.name);
     }
   });
-  //check here for position and update the horses to show their rank (1st 2nd 3rd)
+  let horseNames = Object.keys(horses);
+  horseNames.sort((a, b) => horses[b].position.x - horses[a].position.x);
+  for (let i = 0; i < horseNames.length; i++) {
+    horses[horseNames[i]].rank = i + 1;
+  }
   io.emit("frame", horses);
 };
 

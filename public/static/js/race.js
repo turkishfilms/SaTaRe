@@ -11,6 +11,9 @@ const main = (p) => {
   p.order = 1;
   p.horses = new Map();
 
+  socket.emit("askForHorse", ({ name }) => {
+    document.getElementById("horsename").textContent = `Name: ${name}`;
+  });
   p.sendClients = () => {
     socket.emit("clients", {}, (data) => {
       console.log(data);
@@ -45,7 +48,7 @@ const main = (p) => {
           .reverse()
           .forEach((horse) => {
             const pic1 = p.horseImg.get();
-            const pic2 = p.horseImg.get();
+            const pic2 = p.horseImg2.get();
             data[horse].color.a = 5; // hack, put this in server or soemthing
             p.addFilter(pic1, data[horse].color);
             p.addFilter(pic2, data[horse].color);
@@ -64,6 +67,12 @@ const main = (p) => {
             position: data[horse].position,
             color: data[horse].color,
           });
+          document.getElementById(
+            "placement"
+          ).textContent = `Place: ${data[horse].rank}`;
+          document.getElementById(
+            "speed"
+          ).textContent = `Speed: ${data[horse].speed}`;
         });
     });
 
@@ -83,7 +92,6 @@ const main = (p) => {
 
   p.addFilter = (img, { r, g, b, a }) => {
     img.loadPixels();
-    console.log("filtering", r, g, b, a);
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
         let index = 4 * (j * img.width + i);
@@ -104,7 +112,7 @@ const main = (p) => {
 
   p.showHorse = (horse) => {
     const cadence = 2,
-      animationWindow = 5,
+      animationWindow = 20,
       x = horse.position.x,
       y = p.clientHeight - 100 - horse.position.y,
       stepInCycle = p.frameCount % animationWindow,
@@ -117,9 +125,9 @@ const main = (p) => {
 
   p.keyPressed = () => {
     if (p.key === " ") {
-      console.log("Spacebaar")
+      console.log("Spacebaar");
       socket.emit("clients", {}, (data) => {
-        console.log("a thing")
+        console.log("a thing");
         console.log(data);
       });
     }
