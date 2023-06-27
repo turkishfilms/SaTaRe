@@ -1,9 +1,7 @@
 
+import "./scripts/p5.min.js";
   const socket = io();
   const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
-
-  let currentColor;
-  let currentName;
 
   const submitForm = (event) =>{
     event.preventDefault()
@@ -15,14 +13,6 @@
     console.log(data);
     socket.emit("newHorse", data);
     window.location.href = "/train" 
-  };
-
-  const setName = (name) => {
-    currentName = name || `Horse${Math.random().toFixed(5)}`;
-  };
-
-  const setColor = (degree) => {
-    currentColor = changeColor(degree);
   };
 
   const numberToRGB = (number) => {
@@ -75,6 +65,7 @@ window.onload = () => {
   document
     .getElementById("name")
     .addEventListener("click", () => giddyUpAudio.play());
+
 }  
 
 const sendClients=()=>{
@@ -83,3 +74,81 @@ const sendClients=()=>{
   })
   
 }
+//---------
+/**
+ * COlored horse itnro image
+ * todo
+ * add canvas to div
+ * set w and h 
+ * preload image
+ * add updete image fx
+ * UIF(deg)
+ * when slider change run updateimgfx
+ * slider outputs deg
+ * convert to rgb
+ * feed into add filter
+ * add copy of img into add filter
+ * display copied image
+ * 
+ * todone
+ * bring in p5
+ */
+
+
+const main = (p) => {
+  p.clientHeight;
+  p.clientWidth;
+  p.horseHeadLiving
+  p.horseHeadDead;
+
+  p.preload = () => {
+    p.horseHeadDead = p.loadImage(
+      "/assets/graphics/horse/s_horseRunG1.png",
+      () => console.log("Image loaded barely!"),
+      (err) => console.error("Error loading image:", err)
+    );
+    p.horseHeadLiving = p.loadImage(
+      "/assets/graphics/horse/s_horseRunG2.png",
+      () => console.log("Image loaded fully!"),
+      (err) => console.error("Error loading image:", err)
+    );
+  };
+
+  p.setup = () => {
+    const div = document.getElementById("horseHead");
+    const { clientWidth, clientHeight } = div;
+    let cnv = p.createCanvas(clientWidth, clientHeight);
+    cnv.parent("raceCanvas");
+  };
+
+  p.addFilter = (img, { r, g, b, a }) => {
+    img.loadPixels();
+    for (let i = 0; i < img.width; i++) {
+      for (let j = 0; j < img.height; j++) {
+        let index = 4 * (j * img.width + i);
+        let alpha = img.pixels[index + 3];
+        let bright = (r + g + b) / 3;
+
+        if (alpha !== 0) {
+          // if pixel is not transparent
+          img.pixels[index] += (r - bright) * (bright / 255); // Red
+          img.pixels[index + 1] += (g - bright) * (bright / 255); // Green    ///get pixel, add color, subract brightness, increase contrast
+          img.pixels[index + 2] += (b - bright) * (bright / 255); // Blue
+          img.pixels[index + 3] += a; // Blue
+        }
+      }
+
+      img.updatePixels();
+    }
+  };
+
+  p.showHorse = (horse) => {
+    const pic = horseHead.get()
+    p.image(pic, x, y);
+  };
+
+
+};
+
+const my = new p5(main);
+window.my = moy
