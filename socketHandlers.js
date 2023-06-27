@@ -106,14 +106,12 @@ export const handleDisconnect = (clientKey) => {
 
 export const getReadiness = (clients) => {
   console.log("bloatwareready", clients)
-  const horses = new Map();
+  const horses = {}
   for (let client in clients) {
-    // console.log("idiota",client)
     if (clients[client].horse) {
       console.log("same", client, clients[client].horse);
-      horses.set(clients[client].horse.name, { ready: clients[client].ready });
-      console.log("curretn state of horses", horses);
+      horses[clients[client].horse.name]= { ready: clients[client].ready };
     }
   }
-  return Object.fromEntries(horses);
+  return horses;
 };

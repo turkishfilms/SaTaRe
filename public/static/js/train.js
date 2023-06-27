@@ -31,7 +31,6 @@ const createClientDiv = (name, horse) => {
   const clientDiv = document.createElement("p");
   clientDiv.textContent = name;
   clientDiv.id = name;
-  clientDiv.style.display = "inline";
   // clientDiv.style.marginRight = "3rem";
   clientDiv.classList.add(horse.ready ? "ready" : "unready");
   return clientDiv;

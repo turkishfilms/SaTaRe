@@ -39,32 +39,6 @@ app.use(express.static(join(process.cwd(), "public")));
 
 const clients = {};
 
-const testHorses = [
-  new Horse({
-    name: "Harold Jr.",
-    stats: {
-      balance: 10,
-      weight: 10,
-    },
-  }),
-  new Horse({
-    name: "cade",
-    color: { r: 255, g: 0, b: 0 },
-    stats: {
-      balance: 21,
-      weight: 20,
-    },
-  }),
-  new Horse({
-    name: "LightningSmith",
-    stats: {
-      weight: 21,
-      balance: 19,
-    },
-  }),
-];
-
-
 const clearEmptyClients = ()=>{
     for (let client in clients) {
       if (Object.keys(clients[client]).length === 0) {
@@ -80,7 +54,6 @@ const server = app.listen(port, () => console.log("Horses are racing " + port));
 
 const io = new Server(server);
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
-
 
 io.on("connection", (socket) => {
   const clientKey = socket.handshake.session.id;
