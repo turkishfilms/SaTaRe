@@ -7,11 +7,11 @@
 
   const submitForm = (event) =>{
     event.preventDefault()
-    newHorse(currentColor, currentName);
+    newHorse(changeColor(document.getElementById('colorChooser').value), document.getElementById('name').value || `Horse${Math.random().toFixed(5)}`);
   } 
 
   const newHorse = (color, name) => {
-    const data = { name: name, color: color || [255, 255, 255] };
+    const data = { name: name, color: color || {r:255,g:0,b:0} };
     console.log(data);
     socket.emit("newHorse", data);
     window.location.href = "/train" 
