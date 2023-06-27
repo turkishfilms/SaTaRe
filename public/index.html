@@ -7,12 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome To The Horse Races</title>
     <link rel="stylesheet" type="text/css" href="static/css/introstyles.css" />
+    <link rel="icon" href="assets/graphics/s_horseHead.png"/>
     <link rel="icon" href="assets/graphics/horse/s_horse.png" />
-    <link rel="icon" href="/assets/graphics/horse/s_horseRunG1.png"/>
-    <link rel="icon" href="/assets/graphics/horse/s_horseRun2S.png"/>
     <script src="/static/js/scripts/socket.io.min.js"></script>
     <script src="/static/js/scripts/p5.min.js"></script>
-    <script src="static/js/index.js"></script>
+    <script type="module" src="static/js/index.js"></script>
   </head>
 
   <body>
@@ -35,8 +34,6 @@
         maxlength="20"
         size="14"
         placeholder="Enter name..."
-        ,
-        onchange="setName(value)" 
       />
 
       <div>
@@ -47,12 +44,11 @@
           max="360"
           step="any"
           value="0"
-          oninput="setColor(value)"
         />
       </div>
 
-      <div id="horseHead" style="width: 1024px; height: 400px"><!--FIX THE SIZE TO BE SIZE OF THE IMAGE IDK IF HARD CODED LOL-->
-        <img id="horse" src="assets/graphics/s_horseHead.png" style="filter: hue-rotate(0);" /> <!--this is where we need to set horse color on load-->
+      <div id="horseHead" style="width: 128px; height: 128px"> <!---need ti center the canvas in there-->
+        <!-- <img id="horse" src="assets/graphics/s_horseHead.png" style="filter: hue-rotate(0);" /> this is where we need to set horse color on load -->
       </div>
         <input
           type="submit" 
