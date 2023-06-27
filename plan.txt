@@ -23,24 +23,24 @@ Balance: likliehood of stalling
 REGINALD
 (Backend)
 TODO;
-- Show endscreen?
-- make horses rgb dependant
-- only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
 - Refine README
 - TIDY all code
 - make all code solid
 - bug hunt
 - robustify lol
-- add placements 1st 2nd 3rd
-- add color options for horses
 - Number of ready clients displayed to user on train page
-- Horse Race Progress 
-- End race Banner
-- Make any page visitable without error, maybe a spectator flag.
-- Only can call frame or get horse name if your clientkey is in the server, so maybe a isRacer message, which returns a bool which lets you do stuff, else its basic.
+ - Horse Race Progress 
 
 
 TODONE:
++ only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
++ make horses rgb dependant
++ Show endscreen?
++ add color options for horses
++ add placements 1st 2nd 3rd
++ End race Banner
++ Make any page visitable without error, maybe a spectator flag.
++ Only can call frame or get horse name if your clientkey is in the server, so maybe a isRacer message, which returns a bool which lets you do stuff, else its basic.
 + Horse racing code
 + Clients only need horse data  
 + Name of horse above horse

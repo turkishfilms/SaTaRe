@@ -7,6 +7,7 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
+  getReadiness,
   handleClients,
   handleNewHorse,
   handleAskForHorse,
@@ -14,7 +15,6 @@ import {
   handleReady,
   handleFrame,
   handleDisconnect,
-  handleRaceOrder,
 } from "./socketHandlers.js";
 
 const app = express(),
@@ -64,41 +64,6 @@ const testHorses = [
   }),
 ];
 
-const testClientsList = {
-  client1: {
-    ready: false,
-    horse: testHorses[0],
-    physics: {
-      speed: 0,
-      position: {
-        x: 0,
-        y: 220,
-      },
-    },
-  },
-  client2: {
-    ready: false,
-    horse: testHorses[1],
-    physics: {
-      speed: 0,
-      position: {
-        x: 0,
-        y: 250,
-      },
-    },
-  },
-  client3: {
-    ready: false,
-    horse: testHorses[2],
-    physics: {
-      speed: 0,
-      position: {
-        x: 0,
-        y: 280,
-      },
-    },
-  },
-};
 
 const clearEmptyClients = ()=>{
     for (let client in clients) {
@@ -112,31 +77,28 @@ const clearEmptyClients = ()=>{
 app.use("/", router);
 
 const server = app.listen(port, () => console.log("Horses are racing " + port));
-const io = new Server(server);
 
+const io = new Server(server);
 io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
-Object.keys(testClientsList).forEach((client, i) => {
-  const height = (i / Object.keys(testClientsList).length) * 100;
-  testClientsList[client].physics = { speed: 0, position: { x: 0, y: height } };
-});
 
 io.on("connection", (socket) => {
   const clientKey = socket.handshake.session.id;
   clients[clientKey] = clients[clientKey] || {};
 
   const user = clients[clientKey];
+  socket.emit("test", "tesing animal")
 
   console.log("User Assigned", user, "Everyone", clients);
   socket.on("clients", handleClients(socket, clients));
-
+ 
   socket.on("newHorse", (socket) => {
     handleNewHorse(socket, clientKey, clients);
   });
 
   socket.on("askForHorse", (response) => {
     if (Object.keys(user).length === 0) return;
-    handleAskForHorse(response, user);
+    handleAskForHorse(response, {user:user,clients:clients,io:io});
   });
 
   socket.on("newStats", (request) => { 
@@ -150,7 +112,7 @@ io.on("connection", (socket) => {
     handleReady(user, clientKey, clients, io);
   });
 
-  socket.on("frame", () => {
+   socket.on("frame", () => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });

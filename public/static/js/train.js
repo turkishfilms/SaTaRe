@@ -1,12 +1,57 @@
 const socket = io();
-
+socket.on("test", (data) => {
+  console.log("wait, ", data);
+});
 socket.emit("askForHorse", ({ name }) => {
+  console.log("Server responded to askforHorse wiht: ", name);
   document.getElementById("trainTitle").textContent = `Train ${name}`;
 });
 
 socket.on("start", (horses) => {
   window.location.href = "/race";
-}); 
+});
+
+socket.on("updateReadied", (horses)=>{
+  updateReadied(horses)
+})
+const clearDiv = (id) => {
+  const div = document.getElementById(id);
+  while (div.firstChild) {
+    div.removeChild(div.firstChild);
+  }
+};
+
+const updateReadied = (horses) => {
+  clearDiv("clientsBar");
+  fillDiv("clientsBar",horses);
+  console.log("horses nigrumps",horses)
+};
+
+const createClientDiv = (name, horse) => {
+  const clientDiv = document.createElement("p");
+  clientDiv.textContent = name;
+  clientDiv.id = name;
+  clientDiv.style.display = "inline";
+  // clientDiv.style.marginRight = "3rem";
+  clientDiv.classList.add(horse.ready ? "ready" : "unready");
+  return clientDiv;
+};
+
+const fillDiv = (div,horses) => {
+  const clientsBar = document.getElementById(div);
+  for (let horse in horses) {
+    if (Object.keys(horses[horse]).length === 0) {
+      continue;
+    }
+    console.log("omghedid it");
+    clientsBar.appendChild(createClientDiv(horse, horses[horse]));
+  }
+};
+
+socket.on("clientsSend", (horses) => {
+  console.log("horses reeturned based on the clients messgae: ", horses);
+  // fillDiv("clientsBar",horses);
+});
 
 const savedStats = { balance: 10, weight: 10 };
 
@@ -27,6 +72,12 @@ const actions = {
     stats: { weight: -1, balance: -1 },
   },
 };
+
+const setUpClientsBar = () => {
+  socket.emit("clients", {});
+};
+
+const updateClientBar = () => {};
 
 const makeActionsIntoButtons = (actions) => {
   for (let act in actions) {
@@ -109,10 +160,11 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
+//setUpClientsBar();
+console.log("barstuff");
 
-
-const sendClients=()=>{
-  socket.emit("clients",{},(data)=>{
-    console.log(data)
-  })
-}
+const sendClients = () => {
+  socket.emit("clients", {}, (data) => {
+    console.log(data);
+  });
+};

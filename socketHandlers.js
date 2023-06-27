@@ -13,9 +13,11 @@ export const handleNewHorse = (request, clientKey, clients) => {
   console.log("New Horse Handled", request);
 };
 
-export const handleAskForHorse = (response, user) => {
+export const handleAskForHorse = (response, {user,clients,io}) => {
   if (Object.keys(user).length !== 0) {
     // console.log("Horse name was asked for by: ", user.horse.name);
+    console.log("wtw", clients)
+    io.emit("updateReadied", getReadiness(clients))
     response({ horse: { name: user.horse.name }, name: user.horse.name });
   }
 };
@@ -33,6 +35,12 @@ export const handleReady = (user, clientKey, clients, io) => {
   client.ready = true;
   console.log("Readied up: " + clientKey);
 
+  if (Object.keys(user).length === 0) {
+    return;
+  }
+  const horses = getReadiness(clients)
+  io.emit("updateReadied", horses);
+
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
       const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
@@ -44,9 +52,18 @@ export const handleReady = (user, clientKey, clients, io) => {
   }
 };
 
-export const handleClients = (socket, clients) => (data, response) => {
-  console.log("clients asked for", clients);
-  response(clients);
+export const handleClients = (socket, clients) => (user) => {
+  console.log("clients asked for", clients, "by", user);
+  // if (Object.keys(user).length !== 0) {
+  console.log("omg he sent it");
+  const horses = getReadiness(clients);
+  console.log(
+    "about to send out horses, it looks like this: ",
+    horses,
+    horses instanceof Map
+  );
+  socket.emit("clientsSend", horses);
+  //
 };
 
 export const handleFrame = (clientsList, io) => {
@@ -87,11 +104,16 @@ export const handleDisconnect = (clientKey) => {
   console.log("Bye Client: " + clientKey);
 };
 
-export const handleRaceOrder = (clientsList, clientKey, response) => {
-  console.log("handling race order", "list", clientsList, "key", clientKey);
-  response({
-    order: Object.keys(clientsList).findIndex((client) => {
-      return client == clientKey;
-    }),
-  });
+export const getReadiness = (clients) => {
+  console.log("bloatwareready", clients)
+  const horses = new Map();
+  for (let client in clients) {
+    // console.log("idiota",client)
+    if (clients[client].horse) {
+      console.log("same", client, clients[client].horse);
+      horses.set(clients[client].horse.name, { ready: clients[client].ready });
+      console.log("curretn state of horses", horses);
+    }
+  }
+  return Object.fromEntries(horses);
 };
