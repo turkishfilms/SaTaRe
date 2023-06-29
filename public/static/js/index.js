@@ -1,17 +1,17 @@
-import "./scripts/p5.min.js";
+// import "./scripts/p5.min.js";
 
 const socket = io();
 const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
 
 const submitForm = (event) => {
   event.preventDefault();
+  // console.log("submitting form, heres an event: ", event)
+
   newHorse(
     numberToRGB(document.getElementById("colorChooser").value),
     document.getElementById("name").value || `Horse${Math.random().toFixed(5)}`
   );
- setTimeout(() => {
-    window.location.href = "/train";
-  }, 100);  
+  window.location.href = '/train'
 };
 
 const setColor = (p,degree) => {

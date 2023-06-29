@@ -31,7 +31,7 @@ const sessionMiddleware = session({
     sameSite: "lax", // protection against cross site request forgery attacks
   },
 });
-
+ 
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors());

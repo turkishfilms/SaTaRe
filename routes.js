@@ -19,7 +19,7 @@ router.get("/end", (req, res) => {
 });
 
 router.get("*", (req, res) => {
-  console.log("wildcard activated", "Someone's off the map");
+  console.log("wildcard activated");
 });
 
 export default router;
