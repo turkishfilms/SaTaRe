@@ -11,10 +11,10 @@
     <link rel="icon" href="assets/graphics/horse/s_horse.png" />
     <script src="/static/js/scripts/socket.io.min.js"></script>
     <script src="/static/js/scripts/p5.min.js"></script>
-    <script type="module" src="static/js/index.js"></script>
   </head>
 
   <body>
+    <script src="static/js/index.js"></script>
     <h1>Welcome To The Horse Races</h1>
 
     <video controls>
@@ -47,28 +47,13 @@
         />
       </div>
 
-      <div id="horseHead" style="width: 128px; height: 128px"> <!---need ti center the canvas in there-->
-        <!-- <img id="horse" src="assets/graphics/s_horseHead.png" style="filter: hue-rotate(0);" /> this is where we need to set horse color on load -->
+      <div id="horseHead" style="width: 128px; height: 128px;">
       </div>
-        <input
-          type="submit" 
+      <input 
+        type="submit" 
         id="submit" 
-        value="Start Your Racing Adventure" 
-      />
-
-      <!--<script>
-        const butt = document.getElementById('submit');
-        const slid = document.getElementById('colorChooser');
-        const nameTxt = document.getElementById('name');
-
-        function transferData() {
-          setColor(slid.value);
-          setName(nameTxt.value);
-        }
-
-        butt.addEventListener('click', transferData);
-      </script>-->
-
-    </form>
+        value="Start Your Racing Adventure"
+        />
+      </form>
   </body>
 </html>
