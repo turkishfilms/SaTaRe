@@ -30,6 +30,7 @@ TODO;
 - robustify lol
 - Number of ready clients displayed to user on train page
  - Horse Race Progress 
+-Client keys map to an array of horses not just one horse
 
 
 TODONE:
