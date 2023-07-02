@@ -15,7 +15,7 @@ router.get("/race", (req, res) => {
 
 router.get("/end", (req, res) => {
   console.log("Race has concluded");
-  res.sendFile(join(process.cwd(), "public/final.html"));
+  res.sendFile(join(process.cwd(), "public/raceWin.html"));
 });
 
 router.get("*", (req, res) => {

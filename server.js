@@ -7,6 +7,8 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
+  generateStandings,
+  handleFinale,
   getReadiness,
   handleClients,
   handleNewHorse,
@@ -89,6 +91,11 @@ io.on("connection", (socket) => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });
+
+  socket.on('getStandings',()=>{
+    if (Object.keys(user).length === 0) return;
+    handleFinale(clientKey,clients)
+  })
 
   socket.on("disconnect", () => {
     handleDisconnect(clientKey);

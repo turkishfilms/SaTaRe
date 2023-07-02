@@ -123,6 +123,8 @@ const main = (p) => {
     cnv.parent("horseHead");
     p.background(255)
     p.image(p.horseHead,0,0,128,128)
+    // console.log("pic", p.horseHead);
+    // console.log("canva:", cnv);
   };
 
   p.addFilter = (img,{ r, g, b, a }) => {

@@ -29,9 +29,9 @@ TODO;
 - bug hunt
 - robustify lol
 - Number of ready clients displayed to user on train page
- - Horse Race Progress 
--Client keys map to an array of horses not just one horse
-
+- Horse Race Progress (nvm) 
+- Client keys map to an array of horses not just one horse
+- endscreen
 
 TODONE:
 + only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle

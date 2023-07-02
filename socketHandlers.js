@@ -13,11 +13,11 @@ export const handleNewHorse = (request, clientKey, clients) => {
   console.log("New Horse Handled", request);
 };
 
-export const handleAskForHorse = (response, {user,clients,io}) => {
+export const handleAskForHorse = (response, { user, clients, io }) => {
   if (Object.keys(user).length !== 0) {
     // console.log("Horse name was asked for by: ", user.horse.name);
-    console.log("wtw", clients)
-    io.emit("updateReadied", getReadiness(clients))
+    console.log("wtw", clients);
+    io.emit("updateReadied", getReadiness(clients));
     response({ horse: { name: user.horse.name }, name: user.horse.name });
   }
 };
@@ -38,7 +38,7 @@ export const handleReady = (user, clientKey, clients, io) => {
   if (Object.keys(user).length === 0) {
     return;
   }
-  const horses = getReadiness(clients)
+  const horses = getReadiness(clients);
   io.emit("updateReadied", horses);
 
   if (isAllClientsReady(clients)) {
@@ -100,18 +100,40 @@ export const handleFrame = (clientsList, io) => {
   io.emit("frame", horses);
 };
 
-export const handleDisconnect = (clientKey) => {
-  console.log("Bye Client: " + clientKey);
+export const handleFinale = (clientKey, clients) => {
+  io.emit("standings", generateStandings(clientKey, clients));
 };
 
 export const getReadiness = (clients) => {
-  console.log("bloatwareready", clients)
-  const horses = {}
+  console.log("bloatwareready", clients);
+  const horses = {};
   for (let client in clients) {
     if (clients[client].horse) {
       console.log("same", client, clients[client].horse);
-      horses[clients[client].horse.name]= { ready: clients[client].ready };
+      horses[clients[client].horse.name] = { ready: clients[client].ready };
     }
   }
   return horses;
+};
+
+export const generateStandings = (clientKey, clients) => {
+  const clientHorseName = clients[clientKey].horse.name;
+  const horses = {};
+  for (let client in clients) {
+    horses[clients[client].horse.name] = clients[client].physics.position.x;
+  }
+  const names = Object.keys(horses);
+  names.sort((a, b) => {
+    horses[a] - horses[b];
+  });
+
+  names.forEach((name, index) => {
+    horses[name] = index;
+  });
+  standings.horseStandings = horses;
+  return { myHorseName: clientHorseName, standings: horses };
+};
+
+export const handleDisconnect = (clientKey) => {
+  console.log("Bye Client: " + clientKey);
 };
