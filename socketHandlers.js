@@ -100,8 +100,8 @@ export const handleFrame = (clientsList, io) => {
   io.emit("frame", horses);
 };
 
-export const handleFinale = (clientKey, clients) => {
-  io.emit("standings", generateStandings(clientKey, clients));
+export const handleFinale = (clientKey, clients,socket) => {
+  socket.emit("standings", generateStandings(clientKey, clients));
 };
 
 export const getReadiness = (clients) => {
@@ -130,7 +130,6 @@ export const generateStandings = (clientKey, clients) => {
   names.forEach((name, index) => {
     horses[name] = index;
   });
-  standings.horseStandings = horses;
   return { myHorseName: clientHorseName, standings: horses };
 };
 

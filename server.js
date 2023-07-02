@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
 
   socket.on('getStandings',()=>{
     if (Object.keys(user).length === 0) return;
-    handleFinale(clientKey,clients)
+    handleFinale(clientKey,clients,socket)
   })
 
   socket.on("disconnect", () => {

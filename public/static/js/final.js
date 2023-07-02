@@ -12,22 +12,18 @@
  * 
  * 
  */
-console.log("the beginning")
-// const socket = io()
-console.log("bruh")
-// socket.on('standings',({myHorseName,standings})=>{
-    //  console.log("myHorseName is: ", myHorseName)
-    //  console.log("standings are: ", standings)
-    //  const podium = document.getElementById('podium')
-    // for(let horse in standings){
-        // const horseDiv = document.createElement('p')
-        // horseDiv.textContent = `${horse} finished in position ${standings[horse]}!`
-        // podium.appendChild(horseDiv)
-    // }
-// })
+const socket = io()
+socket.on('standings',({myHorseName,standings})=>{
+     const podium = document.getElementById('podium')
+     console.log("the best horse is: ",myHorseName)
+     console.log("the standings are: ", standings)
+    for(let horse in standings){
+        const horseDiv = document.createElement('p')
+        horseDiv.textContent = `${horse} finished in position ${standings[horse]}!`
+        podium.appendChild(horseDiv)
+    }
+})
 
-console.log("greg")
-// sockuet.emit('getStandings')
-console.log("harvey")
+socket.emit('getStandings')
 
 
