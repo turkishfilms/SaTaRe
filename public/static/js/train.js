@@ -72,11 +72,6 @@ const actions = {
   },
 };
 
-const setUpClientsBar = () => {
-  socket.emit("clients", {});
-};
-
-const updateClientBar = () => {};
 
 const makeActionsIntoButtons = (actions) => {
   for (let act in actions) {
@@ -159,7 +154,6 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
-//setUpClientsBar();
 console.log("barstuff");
 
 const sendClients = () => {
