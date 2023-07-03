@@ -23,21 +23,21 @@ const main = (p) => {
   p.preload = () => {
     p.horseImg = p.loadImage(
       "/assets/graphics/horse/s_horseRunG1.png",
-      () => console.log("Image loaded barely!"),
+      () => console.log("Image1 loaded barely!"),
       (err) => console.error("Error loading image:", err)
     );
     p.horseImg2 = p.loadImage(
       "/assets/graphics/horse/s_horseRunG2.png",
-      () => console.log("Image loaded fully!"),
+      () => console.log("Image2 loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
     p.horseImg3 = p.loadImage(
       "/assets/graphics/horse/s_horseRunG3.png",
-      () => console.log("Image loaded fully!"),
+      () => console.log("Image3 loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
   };
-
+  
   p.setup = () => {
     // p.loop();
     const div = document.getElementById("raceCanvas");
@@ -49,22 +49,7 @@ const main = (p) => {
       p.clear();
 
       if (p.horses.size === 0) {
-        Object.keys(data)
-          .reverse()
-          .forEach((horse) => {
-            const pic1 = p.horseImg.get();
-            const pic2 = p.horseImg2.get();
-            const pic3 = p.horseImg3.get();
-            data[horse].color.a = 5; // hack, put this in server or soemthing
-            p.addFilter(pic1, data[horse].color);
-            p.addFilter(pic2, data[horse].color);
-            p.addFilter(pic3, data[horse].color);
-            p.horses.set(data[horse].position.y, {
-              name: horse,
-              images: [pic1, pic2, pic3],
-              offset: Math.floor(p.random(10)),
-            });
-          });
+        p.dyeHorses(data);
       }
 
       Object.keys(data)
@@ -89,7 +74,7 @@ const main = (p) => {
     socket.on("over", (winner) => {
       console.log(winner);
       p.noLoop();
-      window.location.href = "/end"
+      // window.location.href = "/end";
     });
 
     // socket.emit("raceOrder", (order) => {
@@ -98,6 +83,27 @@ const main = (p) => {
 
     let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("raceCanvas");
+  };
+
+
+  p.dyeHorses = (data) => {
+    Object.keys(data)
+      .reverse()
+      .forEach((horse) => {
+        const pic1 = p.horseImg.get();
+        const pic2 = p.horseImg2.get();
+        const pic3 = p.horseImg3.get();
+        data[horse].color.a = 5; // hack, put this in server or soemthing
+        p.addFilter(pic1, data[horse].color);
+        p.addFilter(pic2, data[horse].color);
+        p.addFilter(pic3, data[horse].color);
+        p.horses.set(data[horse].position.y, {
+          name: horse,
+          images: [pic1, pic2, pic3],
+          offset: Math.floor(p.random(10)),
+          frame: 0,
+        });
+      });
   };
 
   p.addFilter = (img, { r, g, b, a }) => {
@@ -122,16 +128,20 @@ const main = (p) => {
   };
 
   p.showHorse = (horse) => {
-    const horseData = p.horses.get(horse.position.y);
-    const animationWindow = 25 * (1 - horse.speed / 10),
-      x = horse.position.x,
-      y = p.clientHeight - 100 - horse.position.y,
-      stepInCycle = Math.floor(
-        ((p.frameCount + horseData.offset) % animationWindow) /
-          (animationWindow / horseData.images.length)
-      );
+    const horseIndex = horse.position.y
+    const horseData = p.horses.get(horseIndex);
+    const x = horse.position.x,
+      y = p.clientHeight - 100 - horse.position.y;
+    // animationWindow = 25 * (1 - horse.speed / 10),
+    // stepInCycle = Math.floor(
+    // ((p.frameCount + horseData.offset) % animationWindow) /
+    // (animationWindow / horseData.images.length)
+    // );
+    // console.log("hs,aw,sic: ",horse.speed,animationWindow,stepInCycle)
+    const stepInCycle = Math.floor((p.frameCount % 20) / 7);
     const pic = horseData.images[stepInCycle];
     p.text(horse.name, x, y);
+    console.log("showhorse pic", pic, stepInCycle)
     p.image(pic, x, y);
   };
 
@@ -154,3 +164,38 @@ const main = (p) => {
 
 const my = new p5(main);
 window.my = my;
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * 
+ * 000011112222000001111122222
+ * |||||||||||||||||||||||||||||||||||||||||||||||
+ * 0123400123456789
+ * 001122330112233
+ * 0246024680
+ * frames
+ * each frame we recieve a speed
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */

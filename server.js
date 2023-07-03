@@ -7,6 +7,8 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
+  generateStandings,
+  handleFinale,
   getReadiness,
   handleClients,
   handleNewHorse,
@@ -31,7 +33,7 @@ const sessionMiddleware = session({
     sameSite: "lax", // protection against cross site request forgery attacks
   },
 });
-
+ 
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors());
@@ -89,6 +91,11 @@ io.on("connection", (socket) => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });
+
+  socket.on('getStandings',()=>{
+    if (Object.keys(user).length === 0) return;
+    handleFinale(clientKey,clients,socket)
+  })
 
   socket.on("disconnect", () => {
     handleDisconnect(clientKey);
