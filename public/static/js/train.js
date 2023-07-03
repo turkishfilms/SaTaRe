@@ -1,9 +1,5 @@
 const socket = io();
-socket.on("test", (data) => {
-  console.log("wait, ", data);
-});
 socket.emit("askForHorse", ({ name }) => {
-  console.log("Server responded to askforHorse wiht: ", name);
   document.getElementById("trainTitle").textContent = `Train ${name}`;
 });
 
@@ -14,7 +10,6 @@ socket.on("start", (horses) => {
 socket.on("updateReadied", (horses)=>{
   clearDiv("clientsBar");
   fillDiv("clientsBar",horses);
-  console.log("horses nigrumps",horses)
 })
 
 const clearDiv = (id) => {
