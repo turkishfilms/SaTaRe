@@ -148,6 +148,7 @@ const main = (p) => {
   };
 
   p.showHorse = (color) => {
+    p.background(255)
     const pic = p.horseHead.get();
     p.addFilter(pic, color);
     p.image(pic, 0, 0,128,128);
