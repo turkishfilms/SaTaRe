@@ -12,19 +12,16 @@ socket.on("start", (horses) => {
 });
 
 socket.on("updateReadied", (horses)=>{
-  updateReadied(horses)
+  clearDiv("clientsBar");
+  fillDiv("clientsBar",horses);
+  console.log("horses nigrumps",horses)
 })
+
 const clearDiv = (id) => {
   const div = document.getElementById(id);
   while (div.firstChild) {
     div.removeChild(div.firstChild);
   }
-};
-
-const updateReadied = (horses) => {
-  clearDiv("clientsBar");
-  fillDiv("clientsBar",horses);
-  console.log("horses nigrumps",horses)
 };
 
 const createClientDiv = (name, horse) => {
@@ -154,10 +151,89 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
-console.log("barstuff");
 
 const sendClients = () => {
   socket.emit("clients", {}, (data) => {
     console.log(data);
   });
 };
+
+//p5 stuff for the ready up upgrade
+const main = (p) =>{
+  p.clientHeight;
+  p.clientWidth;
+  p.horseImg;
+  p.allHorseData
+
+  p.preload = () => {
+    p.horseImg = p.loadImage(
+      "/assets/graphics/s_horseHeadGS.png",
+      () => console.log("Image3 loaded fully!"),
+      (err) => console.error("Error loading image:", err)
+    );
+  };
+  
+  p.setup = () => {
+    const div = document.getElementById("raceCanvas");
+    const { clientWidth, clientHeight } = div;
+    p.clientHeight = clientHeight;
+    p.clientWidth = clientWidth;
+    
+    let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
+    cnv.parent("clientsBar");
+
+  };
+ 
+p.addHorseToData = (horse)=>{
+
+        p.horses.set(data[horse].position.y, {
+          name: horse,
+          images: [p.horseImage.get(),p.dyeHorse(horse)],
+        });
+  p.horseData.something(horse)
+}
+
+  p.dyeHorse = (horse)=>{
+        horse.color.a = 5; // hack, put this in server or soemthing
+       return p.addFilter(p.horseImg.get(), horse.color);
+  }
+
+  p.fillHorseData = (data) => {
+    Object.keys(data)
+      .reverse()
+      .forEach((horse) => {
+        p.addHorseToData(horse)
+      });
+  };
+
+  p.addFilter = (img, { r, g, b, a }) => {
+    img.loadPixels();
+    for (let i = 0; i < img.width; i++) {
+      for (let j = 0; j < img.height; j++) {
+        let index = 4 * (j * img.width + i);
+        let alpha = img.pixels[index + 3];
+        let bright = (r + g + b) / 3;
+        if (alpha !== 0) {
+          // if pixel is not transparent
+          img.pixels[index] += (r - bright) * (bright / 255); // Red
+          img.pixels[index + 1] += (g - bright) * (bright / 255); // Green    ///get pixel, add color, subract brightness, increase contrast
+          img.pixels[index + 2] += (b - bright) * (bright / 255); // Blue
+          img.pixels[index + 3] += a; 
+        }
+      }
+      img.updatePixels();
+    }
+    return img
+  };
+
+  p.showHorse = (horse) => {
+    const horseIndex = horse.position.y
+    const horseData = p.horses.get(horseIndex);
+    const x = horse.position.x,
+      y = p.clientHeight - 100 - horse.position.y;
+    const pic = horseData.images[stepInCycle];
+    p.text(horse.name, x, y);
+    console.log("showhorse pic", pic, stepInCycle)
+    p.image(pic, x, y);
+  };
+}
