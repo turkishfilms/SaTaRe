@@ -1,6 +1,7 @@
 const socket = io();
 let clientHorseName;
 let clientHorseColor;
+
 socket.emit("askForHorse", ({ horse }) => {
   const { name, color } = horse;
   clientHorseName = name;
@@ -11,11 +12,6 @@ socket.emit("askForHorse", ({ horse }) => {
 socket.on("start", (horses) => {
   window.location.href = "/race";
 });
-
-// socket.on("updateReadied", (horses) => {
-//   clearDiv("clientsBar");
-//   fillDiv("clientsBar", horses);
-// });
 
 const clearDiv = (id) => {
   const div = document.getElementById(id);
@@ -144,8 +140,7 @@ const updateStatsDisplay = (stats) => {
 const readiedUp = () => {
   const horseNeighAudio = new Audio("assets/audio/horseNeigh.mp3");
   horseNeighAudio.play();
-  socket.emit("newStats", { stats: savedStats });
-  socket.emit("ready");
+  socket.emit("ready", { stats: savedStats });
 };
 
 makeActionsIntoButtons(actions);
@@ -180,36 +175,42 @@ const main = (p) => {
 
     let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("clientsBar");
-    p.allHorseData.push({
-      name: clientHorseName,
-      images: [
-        p.horseImg.get(),
-        p.addFilter(p.horseImg.get(), clientHorseColor),
-      ],
-    });
-    const clientHorse = {};
-    clientHorse[clientHorseName] = { name: clientHorseName, ready: false };
-    p.showHorses(clientHorse);
+    // p.allHorseData.push({
+    //   name: clientHorseName,
+    //   images: [
+    //     p.horseImg.get(),
+    //     p.addFilter(p.horseImg.get(), clientHorseColor),
+    //   ],
+    // });
 
-    socket.on("updateReadied", (horses) => {
-      console.log("these are real hoses: ", horses)
-      p.showHorses(horses);
+    socket.on("updateLobby", (horses) => {
+      p.updateHorseData(horses);
+      p.showHorses(p.allHorseData);
     });
+    socket.emit("joinLobby");
+  };
+
+  p.updateHorseData = (data) => {
+    for (let client in data) {
+      if (!p.allHorseData.some((horse) => horse.name === client)) {
+        const newHorseData = {
+          name: clientHorseName,
+          images: [
+            p.horseImg.get(),
+            p.addFilter(p.horseImg.get(), clientHorseColor),
+          ],
+        };
+        p.allHorseData.push({ ...newHorseData, ...data[client] });
+      }
+    }
+    // p.allHorseData = data;
   };
 
   p.showHorses = (horses) => {
-    // clearDiv("clientsBar");
-    console.log("are these the horse you are looking for: ", horses);
-    // Clear the canvas
-    p.background(255);
-
-    // Display each horse
+    console.log("showHorses: horses=>", horses);
+    p.clear();
     let index = 0;
-    for (let horseName in horses) {
-      if (Object.keys(horses[horseName]).length === 0) {
-        continue;
-      }
-      let horse = horses[horseName];
+    for (let horse of horses) {
       p.showHorse(horse, index);
       index++;
     }
@@ -218,6 +219,7 @@ const main = (p) => {
     p.allHorseData.push({
       name: horse.name,
       images: [p.horseImg, p.dyeHorse(horse)],
+      ready: horse.ready,
     });
   };
 
@@ -229,12 +231,12 @@ const main = (p) => {
 
     let x = (index % perRow) * (imgWidth + gap);
     let y = Math.floor(index / perRow) * (imgHeight + gap);
-
     let horseData = p.allHorseData.find((h) => h.name === horse.name);
-    let img = horse.ready ? horseData.images[1] : horseData.images[0];
+    console.log("showhorse:x,horseData,horse=>",x, horseData, horse)
+    let img = horseData.ready ? horseData.images[1] : horseData.images[0];
     p.image(img, 0, 0);
     p.fill(0); // Setting the fill color for the text
-    p.text(horse.name, x, y - 10); // Display the name above the image
+    p.text(horseData.name, x, y - 10); // Display the name above the image
     // p.image(img, x, y, imgWidth, imgHeight); // Display the image
   };
 
@@ -299,3 +301,19 @@ const main = (p) => {
   };
 };
 const my = new p5(main);
+/**
+ * first loads-> grab our name and send new unready person in lobby messag to everyonw
+ * hits ready-> send new person is ready to everyone
+ * someone else loads -> we need to show them neing unready
+ * someone else readies -> we need to show them being ready
+ *
+ * clients
+ * 1.one message to say plaer joined lobby
+ * 2.one message to say lobby player is ready
+ *
+ * server
+ * always sends updated lobby unless everyone is ready
+ * only updates ready status if 2. is fired
+ *
+ *
+ */

@@ -9,7 +9,7 @@ import router from "./routes.js";
 import {
   generateStandings,
   handleFinale,
-  getReadiness,
+  handleLobbyJoin,
   handleClients,
   handleNewHorse,
   handleAskForHorse,
@@ -76,17 +76,20 @@ io.on("connection", (socket) => {
     handleAskForHorse(response, {user:user,clients:clients,io:io});
   });
 
-  socket.on("newStats", (request) => { 
+  socket.on("joinLobby", ()=>{
+    console.log("attmept at lobbyjoin")
     if (Object.keys(user).length === 0) return;
-    handleNewStats(request, user);
-  });
+    handleLobbyJoin(clients,io)
+  })
 
-  socket.on("ready", () => {
+  socket.on("ready", (request) => {
     clearEmptyClients()
     if (Object.keys(user).length === 0) return;
+    handleNewStats(request, user);
     handleReady(user, clientKey, clients, io);
-  });
 
+  });
+ 
    socket.on("frame", () => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
