@@ -1,9 +1,10 @@
 const socket = io();
-socket.on("test", (data) => {
-  console.log("wait, ", data);
-});
-socket.emit("askForHorse", ({ name }) => {
-  console.log("Server responded to askforHorse wiht: ", name);
+let clientHorseName;
+let clientHorseColor;
+socket.emit("askForHorse", ({ horse }) => {
+  const { name, color } = horse;
+  clientHorseName = name;
+  clientHorseColor = color;
   document.getElementById("trainTitle").textContent = `Train ${name}`;
 });
 
@@ -11,11 +12,10 @@ socket.on("start", (horses) => {
   window.location.href = "/race";
 });
 
-socket.on("updateReadied", (horses)=>{
-  clearDiv("clientsBar");
-  fillDiv("clientsBar",horses);
-  console.log("horses nigrumps",horses)
-})
+// socket.on("updateReadied", (horses) => {
+//   clearDiv("clientsBar");
+//   fillDiv("clientsBar", horses);
+// });
 
 const clearDiv = (id) => {
   const div = document.getElementById(id);
@@ -33,13 +33,12 @@ const createClientDiv = (name, horse) => {
   return clientDiv;
 };
 
-const fillDiv = (div,horses) => {
+const fillDiv = (div, horses) => {
   const clientsBar = document.getElementById(div);
   for (let horse in horses) {
     if (Object.keys(horses[horse]).length === 0) {
       continue;
     }
-    console.log("omghedid it");
     clientsBar.appendChild(createClientDiv(horse, horses[horse]));
   }
 };
@@ -68,7 +67,6 @@ const actions = {
     stats: { weight: -1, balance: -1 },
   },
 };
-
 
 const makeActionsIntoButtons = (actions) => {
   for (let act in actions) {
@@ -126,11 +124,12 @@ function handleStats(stat) {
 const updateSavedStats = (stat) => {
   for (let act in actions) {
     const action = actions[act];
-    if (action.text == stat) {
-      action.sound.play();
-      for (let delta in action.stats) {
-        savedStats[delta] += action.stats[delta];
-      }
+    if (action.text !== stat) {
+      continue;
+    }
+    action.sound.play();
+    for (let delta in action.stats) {
+      savedStats[delta] += action.stats[delta];
     }
   }
 };
@@ -159,50 +158,104 @@ const sendClients = () => {
 };
 
 //p5 stuff for the ready up upgrade
-const main = (p) =>{
+const main = (p) => {
   p.clientHeight;
   p.clientWidth;
   p.horseImg;
-  p.allHorseData
+  p.allHorseData = [];
 
   p.preload = () => {
     p.horseImg = p.loadImage(
       "/assets/graphics/s_horseHeadGS.png",
-      () => console.log("Image3 loaded fully!"),
+      () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
   };
-  
+
   p.setup = () => {
-    const div = document.getElementById("raceCanvas");
+    const div = document.getElementById("clientsBar");
     const { clientWidth, clientHeight } = div;
     p.clientHeight = clientHeight;
     p.clientWidth = clientWidth;
-    
+
     let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("clientsBar");
+    p.allHorseData.push({
+      name: clientHorseName,
+      images: [
+        p.horseImg.get(),
+        p.addFilter(p.horseImg.get(), clientHorseColor),
+      ],
+    });
+    const clientHorse = {};
+    clientHorse[clientHorseName] = { name: clientHorseName, ready: false };
+    p.showHorses(clientHorse);
 
+    socket.on("updateReadied", (horses) => {
+      console.log("these are real hoses: ", horses)
+      p.showHorses(horses);
+    });
   };
- 
-p.addHorseToData = (horse)=>{
 
-        p.horses.set(data[horse].position.y, {
-          name: horse,
-          images: [p.horseImage.get(),p.dyeHorse(horse)],
-        });
-  p.horseData.something(horse)
-}
+  p.showHorses = (horses) => {
+    // clearDiv("clientsBar");
+    console.log("are these the horse you are looking for: ", horses);
+    // Clear the canvas
+    p.background(255);
 
-  p.dyeHorse = (horse)=>{
-        horse.color.a = 5; // hack, put this in server or soemthing
-       return p.addFilter(p.horseImg.get(), horse.color);
-  }
+    // Display each horse
+    let index = 0;
+    for (let horseName in horses) {
+      if (Object.keys(horses[horseName]).length === 0) {
+        continue;
+      }
+      let horse = horses[horseName];
+      p.showHorse(horse, index);
+      index++;
+    }
+  };
+  p.addHorseToData = (horse) => {
+    p.allHorseData.push({
+      name: horse.name,
+      images: [p.horseImg, p.dyeHorse(horse)],
+    });
+  };
+
+  p.showHorse = (horse, index) => {
+    let imgWidth = 96;
+    let imgHeight = 96;
+    let gap = 10;
+    let perRow = Math.floor(p.clientWidth / (imgWidth + gap));
+
+    let x = (index % perRow) * (imgWidth + gap);
+    let y = Math.floor(index / perRow) * (imgHeight + gap);
+
+    let horseData = p.allHorseData.find((h) => h.name === horse.name);
+    let img = horse.ready ? horseData.images[1] : horseData.images[0];
+    p.image(img, 0, 0);
+    p.fill(0); // Setting the fill color for the text
+    p.text(horse.name, x, y - 10); // Display the name above the image
+    // p.image(img, x, y, imgWidth, imgHeight); // Display the image
+  };
+
+  // p.addHorseToData = (horse) => {
+  // p.horses.set(data[horse].position.y, {
+  // name: horse,
+  // images: [p.horseImage.get(), p.dyeHorse(horse)],
+  // });
+  // p.horseData.something(horse);
+  // };
+
+  p.dyeHorse = (horse) => {
+    horse.color.a = 5; // hack, put this in server or soemthing
+    return p.addFilter(p.horseImg.get(), horse.color);
+  };
 
   p.fillHorseData = (data) => {
     Object.keys(data)
       .reverse()
       .forEach((horse) => {
-        p.addHorseToData(horse)
+        p.addHorseToData(horse);
       });
   };
 
@@ -218,22 +271,31 @@ p.addHorseToData = (horse)=>{
           img.pixels[index] += (r - bright) * (bright / 255); // Red
           img.pixels[index + 1] += (g - bright) * (bright / 255); // Green    ///get pixel, add color, subract brightness, increase contrast
           img.pixels[index + 2] += (b - bright) * (bright / 255); // Blue
-          img.pixels[index + 3] += a; 
+          img.pixels[index + 3] += a;
         }
       }
       img.updatePixels();
     }
-    return img
+    return img;
   };
 
-  p.showHorse = (horse) => {
-    const horseIndex = horse.position.y
+  p.showHorse2 = (horse) => {
+    const horseIndex = horse.name;
     const horseData = p.horses.get(horseIndex);
     const x = horse.position.x,
       y = p.clientHeight - 100 - horse.position.y;
     const pic = horseData.images[stepInCycle];
     p.text(horse.name, x, y);
-    console.log("showhorse pic", pic, stepInCycle)
+    console.log("showhorse pic", pic, stepInCycle);
     p.image(pic, x, y);
   };
-}
+
+  p.updateLobby = (horses) => {
+    if (horses.length == p.horseData.length) {
+      // just change the colors
+    } else {
+      //add needed horses and change colorsgg
+    }
+  };
+};
+const my = new p5(main);

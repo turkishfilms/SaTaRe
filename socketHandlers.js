@@ -18,7 +18,7 @@ export const handleAskForHorse = (response, { user, clients, io }) => {
     // console.log("Horse name was asked for by: ", user.horse.name);
     console.log("wtw", clients);
     io.emit("updateReadied", getReadiness(clients));
-    response({ horse: { name: user.horse.name }, name: user.horse.name });
+    response({ horse: { name: user.horse.name,color:user.horse.color }, name: user.horse.name });
   }
 };
 
