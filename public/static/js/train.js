@@ -172,18 +172,13 @@ const main = (p) => {
     const { clientWidth, clientHeight } = div;
     p.clientHeight = clientHeight;
     p.clientWidth = clientWidth;
+    p.fill(0);
 
     let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
     cnv.parent("clientsBar");
-    // p.allHorseData.push({
-    //   name: clientHorseName,
-    //   images: [
-    //     p.horseImg.get(),
-    //     p.addFilter(p.horseImg.get(), clientHorseColor),
-    //   ],
-    // });
 
     socket.on("updateLobby", (horses) => {
+      console.log("updatehorses:=>", horses);
       p.updateHorseData(horses);
       p.showHorses(p.allHorseData);
     });
@@ -191,20 +186,27 @@ const main = (p) => {
   };
 
   p.updateHorseData = (data) => {
-    for (let client in data) {
-      if (!p.allHorseData.some((horse) => horse.name === client)) {
-        const newHorseData = {
-          name: clientHorseName,
-          images: [
-            p.horseImg.get(),
-            p.addFilter(p.horseImg.get(), clientHorseColor),
-          ],
-        };
-        p.allHorseData.push({ ...newHorseData, ...data[client] });
-      }
+  for (let client in data) {
+    const horseIndex = p.allHorseData.findIndex((horse) => horse.name === client);
+    
+    if (horseIndex === -1) {
+      const newPic = p.addFilter(p.horseImg.get(), data[client].color);
+      console.log("uhd:newpic=>", newPic);
+      
+      const newHorseData = {
+        name: client,
+        images: [
+          p.horseImg.get(),
+          newPic
+        ],
+        ready: data[client].ready,
+      };
+      p.allHorseData.push(newHorseData);
+    } else {
+      p.allHorseData[horseIndex].ready = data[client].ready;
     }
-    // p.allHorseData = data;
-  };
+  }
+};
 
   p.showHorses = (horses) => {
     console.log("showHorses: horses=>", horses);
@@ -215,51 +217,28 @@ const main = (p) => {
       index++;
     }
   };
-  p.addHorseToData = (horse) => {
-    p.allHorseData.push({
-      name: horse.name,
-      images: [p.horseImg, p.dyeHorse(horse)],
-      ready: horse.ready,
-    });
-  };
 
   p.showHorse = (horse, index) => {
-    let imgWidth = 96;
-    let imgHeight = 96;
-    let gap = 10;
-    let perRow = Math.floor(p.clientWidth / (imgWidth + gap));
-
-    let x = (index % perRow) * (imgWidth + gap);
-    let y = Math.floor(index / perRow) * (imgHeight + gap);
-    let horseData = p.allHorseData.find((h) => h.name === horse.name);
-    console.log("showhorse:x,horseData,horse=>",x, horseData, horse)
-    let img = horseData.ready ? horseData.images[1] : horseData.images[0];
-    p.image(img, 0, 0);
-    p.fill(0); 
-    p.text(horseData.name, x, y - 10); 
+    const imgWidth = 96;
+    const leftOffset = 200
     
+    p.fill(0);
+    const horseData = p.allHorseData.find((h) => h.name === horse.name);
+    console.log("showhorse:ready,thishorsesdata,horse=>", horseData.ready, horseData, horse);
+    const img = horseData.ready ? horseData.images[1] : horseData.images[0];
+    p.image(img, index * imgWidth + leftOffset, 0);
+    p.text(horseData.name, index * imgWidth + leftOffset, 80);
   };
 
-  p.dyeHorse = (horse) => {
-    horse.color.a = 5; // hack, put this in server or soemthing
-    return p.addFilter(p.horseImg.get(), horse.color);
-  };
 
-  p.fillHorseData = (data) => {
-    Object.keys(data)
-      .reverse()
-      .forEach((horse) => {
-        p.addHorseToData(horse);
-      });
-  };
-
-  p.addFilter = (img, { r, g, b, a }) => {
+  p.addFilter = (img, { r, g, b, a=25 }) => {
+    console.log("addilter:r,g,b,a=>",r,g,b,a,)
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
-        let index = 4 * (j * img.width + i);
-        let alpha = img.pixels[index + 3];
-        let bright = (r + g + b) / 3;
+        const index = 4 * (j * img.width + i);
+        const alpha = img.pixels[index + 3];
+        const bright = (r + g + b) / 3;
         if (alpha !== 0) {
           // if pixel is not transparent
           img.pixels[index] += (r - bright) * (bright / 255); // Red
@@ -270,6 +249,7 @@ const main = (p) => {
       }
       img.updatePixels();
     }
+    p.image(img,r,0)
     return img;
   };
 
