@@ -110,7 +110,7 @@ const main = (p) => {
   p.preload = () => {
     console.log("preloading")
     p.horseHead = p.loadImage(
-      "/assets/graphics/s_horseHead.png",
+      "/assets/graphics/s_horseHeadGS.png",
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );

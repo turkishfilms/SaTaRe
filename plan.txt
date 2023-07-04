@@ -77,7 +77,7 @@ TODO;
 - Color pick
 - Progress Bars
 
-TODDNE:
+TODDONE:
 + Home page (index.html) 
 + Introduction video 
 + Name Submission
