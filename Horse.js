@@ -16,6 +16,9 @@ export default class Horse {
     return this.#name;
   }
 
+  set name(newName) {
+    return this.#name = newName;
+  }
   get color() {
     return this.#color;
   }

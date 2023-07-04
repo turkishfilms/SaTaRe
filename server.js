@@ -7,7 +7,6 @@ import sharedsession from "express-socket.io-session";
 import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
-  generateStandings,
   handleFinale,
   handleLobbyJoin,
   handleClients,
@@ -63,8 +62,13 @@ io.on("connection", (socket) => {
 
   const user = clients[clientKey];
   socket.emit("test", "tesing animal")
-
-  console.log("User Assigned", user, "Everyone", clients);
+let clientNames = []
+Object.values(clients).forEach((client)=>{
+  if(client.horse && client.horse.name){
+    clientNames.push(client.horse.name)
+  }
+})
+  console.log("User Assigned", user, "Everyone", clientNames);
   socket.on("clients", handleClients(socket, clients));
  
   socket.on("newHorse", (socket) => {

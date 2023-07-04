@@ -5,7 +5,22 @@ export const ROADHEIGHT = 100;
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
-  let newHorse = new Horse({ name: name, color: color });
+  let uniqueName = name;
+  let i = 1;
+  while (
+    Object.values(clients).some((client) => {
+      if (client.horse && client.horse.name) {
+        console.log("handleHorse:clients - cclient=>", client);
+return        client.horse.name === uniqueName;
+      }
+    })
+  ) {
+    uniqueName = name + i;
+    i++;
+    console.log("Previously used name");
+  }
+
+  let newHorse = new Horse({ name: uniqueName, color: color });
   clients[clientKey] = {
     horse: newHorse,
     ready: false,

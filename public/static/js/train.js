@@ -235,18 +235,10 @@ const main = (p) => {
     console.log("showhorse:x,horseData,horse=>",x, horseData, horse)
     let img = horseData.ready ? horseData.images[1] : horseData.images[0];
     p.image(img, 0, 0);
-    p.fill(0); // Setting the fill color for the text
-    p.text(horseData.name, x, y - 10); // Display the name above the image
-    // p.image(img, x, y, imgWidth, imgHeight); // Display the image
+    p.fill(0); 
+    p.text(horseData.name, x, y - 10); 
+    
   };
-
-  // p.addHorseToData = (horse) => {
-  // p.horses.set(data[horse].position.y, {
-  // name: horse,
-  // images: [p.horseImage.get(), p.dyeHorse(horse)],
-  // });
-  // p.horseData.something(horse);
-  // };
 
   p.dyeHorse = (horse) => {
     horse.color.a = 5; // hack, put this in server or soemthing
