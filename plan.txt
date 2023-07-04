@@ -23,17 +23,17 @@ Balance: likliehood of stalling
 REGINALD
 (Backend)
 TODO;
-- fix Tripping speed glitch thing
-- Ready up lobby should have bw horse head with name below it, when that user readies up the horse head turns into the color of their horse
 - make all code solid
+- TIDY all code
 - Client keys map to an array of horses not just one horse
 - robustify lol
 - bug hunt
-- TIDY all code
 - Refine README
 
 - Horse Race Progress (nvm) 
 TODONE:
++ Ready up lobby should have bw horse head with name below it, when that user readies up the horse head turns into the color of their horse
++ fix Tripping speed glitch thing (less is more)
 + endscreen MVP
 + Number of ready clients displayed to user on train page
 + only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
