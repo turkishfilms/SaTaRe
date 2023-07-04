@@ -62,12 +62,10 @@ io.on("connection", (socket) => {
 
   const user = clients[clientKey];
   socket.emit("test", "tesing animal")
-let clientNames = []
-Object.values(clients).forEach((client)=>{
-  if(client.horse && client.horse.name){
-    clientNames.push(client.horse.name)
-  }
-})
+ let clientNames = Object.values(clients)
+  .filter(client => client.horse && client.horse.name)
+  .map(client => client.horse.name);
+
   console.log("User Assigned", user, "Everyone", clientNames);
   socket.on("clients", handleClients(socket, clients));
  

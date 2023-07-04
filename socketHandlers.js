@@ -7,17 +7,16 @@ export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
   let uniqueName = name;
   let i = 1;
-  while (
-    Object.values(clients).some((client) => {
+  const isUniqueName = (name) => {
+    return Object.values(clients).some((client) => {
       if (client.horse && client.horse.name) {
-        console.log("handleHorse:clients - cclient=>", client);
-return        client.horse.name === uniqueName;
+        return client.horse.name === name;
       }
-    })
-  ) {
+    });
+  };
+  while (isUniqueName(uniqueName)) {
     uniqueName = name + i;
     i++;
-    console.log("Previously used name");
   }
 
   let newHorse = new Horse({ name: uniqueName, color: color });
