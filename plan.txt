@@ -1,5 +1,19 @@
 "IDEA 1: Horse Racing WebApp"
 
+BUGS & STUFF
+-----------------
+INTRO:
+ - horse head is greyscale, and only becomes colored on slider input. should just be colored right away.
+TRAINING:
+ - your horse's name counts up as if you were a duplicate when you go back and forth between intro and training
+ - the big horse head across from the shotgun should be colored like your horse as well
+ - the ready up icons don't reset(stay colored) if you go back to the training page
+RACE END:
+ - the "play again" button should return you to the training page. not the intro. So you can keep training the same horse.
+ - horse head should be colored like your horse
+OTHERS:
+ - at one point, the game thought I had 2 clients open. there was a ghost horse with a previous name that I couldn't get to go away. I haven't been able to repeat
+-----------------
 
 
 WISHLIST
