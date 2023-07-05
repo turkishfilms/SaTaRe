@@ -82,7 +82,7 @@ const makeShotgun = () => {
     const bullet = document.createElement("div");
     bullet.id = "bullet";
     document.body.append(bullet);
-
+    ur.deadHorse();
     document.getElementById("profilePic").src =
       "assets/graphics/s_horseHeadDead.png";
   });
@@ -186,27 +186,26 @@ const main = (p) => {
   };
 
   p.updateHorseData = (data) => {
-  for (let client in data) {
-    const horseIndex = p.allHorseData.findIndex((horse) => horse.name === client);
-    
-    if (horseIndex === -1) {
-      const newPic = p.addFilter(p.horseImg.get(), data[client].color);
-      console.log("uhd:newpic=>", newPic);
-      
-      const newHorseData = {
-        name: client,
-        images: [
-          p.horseImg.get(),
-          newPic
-        ],
-        ready: data[client].ready,
-      };
-      p.allHorseData.push(newHorseData);
-    } else {
-      p.allHorseData[horseIndex].ready = data[client].ready;
+    for (let client in data) {
+      const horseIndex = p.allHorseData.findIndex(
+        (horse) => horse.name === client
+      );
+
+      if (horseIndex === -1) {
+        const newPic = p.addFilter(p.horseImg.get(), data[client].color);
+        console.log("uhd:newpic=>", newPic);
+
+        const newHorseData = {
+          name: client,
+          images: [p.horseImg.get(), newPic],
+          ready: data[client].ready,
+        };
+        p.allHorseData.push(newHorseData);
+      } else {
+        p.allHorseData[horseIndex].ready = data[client].ready;
+      }
     }
-  }
-};
+  };
 
   p.showHorses = (horses) => {
     console.log("showHorses: horses=>", horses);
@@ -220,19 +219,23 @@ const main = (p) => {
 
   p.showHorse = (horse, index) => {
     const imgWidth = 96;
-    const leftOffset = 200
-    
+    const leftOffset = 200;
+
     p.fill(0);
     const horseData = p.allHorseData.find((h) => h.name === horse.name);
-    console.log("showhorse:ready,thishorsesdata,horse=>", horseData.ready, horseData, horse);
+    console.log(
+      "showhorse:ready,thishorsesdata,horse=>",
+      horseData.ready,
+      horseData,
+      horse
+    );
     const img = horseData.ready ? horseData.images[1] : horseData.images[0];
     p.image(img, index * imgWidth + leftOffset, 0);
     p.text(horseData.name, index * imgWidth + leftOffset, 80);
   };
 
-
-  p.addFilter = (img, { r, g, b, a=25 }) => {
-    console.log("addilter:r,g,b,a=>",r,g,b,a,)
+  p.addFilter = (img, { r, g, b, a = 25 }) => {
+    console.log("addilter:r,g,b,a=>", r, g, b, a);
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -249,7 +252,7 @@ const main = (p) => {
       }
       img.updatePixels();
     }
-    p.image(img,r,0)
+    p.image(img, r, 0);
     return img;
   };
 
@@ -289,3 +292,54 @@ const my = new p5(main);
  *
  *
  */
+const char = (p) => {
+  p.preload = () => {
+    p.horseImg = p.loadImage(
+      "/assets/graphics/s_horseHeadGS.png",
+      () => console.log("Image loaded fully!frfr"),
+      (err) => console.error("Error loading image:", err)
+    );
+  };
+
+  p.setup = () => {
+    const div = document.getElementById("profilePic2");
+    const { clientWidth, clientHeight } = div;
+    p.clientHeight = clientHeight;
+    p.clientWidth = clientWidth;
+    let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
+    cnv.parent("profilePic2");
+    p.image(
+      p.addFilter(p.horseImg, clientHorseColor),
+      0,
+      0,
+      p.horseImg.width * 2,
+      p.horseImg.height * 2
+    );
+  };
+
+  p.addFilter = (img, { r, g, b, a = 25 }) => {
+    console.log("addilter:r,g,b,a=>", r, g, b, a);
+    img.loadPixels();
+    for (let i = 0; i < img.width; i++) {
+      for (let j = 0; j < img.height; j++) {
+        const index = 4 * (j * img.width + i);
+        const alpha = img.pixels[index + 3];
+        const bright = (r + g + b) / 3;
+        if (alpha !== 0) {
+          // if pixel is not transparent
+          img.pixels[index] += (r - bright) * (bright / 255); // Red
+          img.pixels[index + 1] += (g - bright) * (bright / 255); // Green    ///get pixel, add color, subract brightness, increase contrast
+          img.pixels[index + 2] += (b - bright) * (bright / 255); // Blue
+          img.pixels[index + 3] += a;
+        }
+      }
+      img.updatePixels();
+    }
+    return img;
+  };
+  p.deadHorse = () => {
+    p.clear();
+  };
+};
+
+const ur = new p5(char);
