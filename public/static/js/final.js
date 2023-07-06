@@ -18,12 +18,16 @@ socket.on("standings", ({ myHorseName, standings }) => {
   const podium = document.getElementById("podium");
   for (let horse in standings) {
     if (horse == myHorseName) {
-      document.title =
-        standings[horse] == 0
-          ? "Winner Chicken Dinner"
-          : "Better Luck next Time";
-      winLossHeader.textContent =
-        standings[horse] == 0 ? "You Win" : "You Lost";
+      if (standings[horse] == 0) {
+        winLossHeader.textContent = "You Win";
+        document.title = "Winner Chicken Dinner";
+      } else {
+        winLossHeader.textContent = "You Lost";
+        document.title = "Better Luck next Time";
+
+        const myImage = document.getElementById("finalImage");
+        myImage.src = "assets/graphics/s_horseHeadDead.png";
+      }
     }
     const horseDiv = document.createElement("h2");
     horseDiv.textContent = `${horse} finished in position ${
