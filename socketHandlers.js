@@ -5,7 +5,21 @@ export const ROADHEIGHT = 100;
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
-  let newHorse = new Horse({ name: name, color: color });
+  let uniqueName = name;
+  let i = 1;
+  const isUniqueName = (name) => {
+    return Object.values(clients).some((client) => {
+      if (client.horse && client.horse.name) {
+        return client.horse.name === name;
+      }
+    });
+  };
+  while (isUniqueName(uniqueName)) {
+    uniqueName = name + i;
+    i++;
+  }
+
+  let newHorse = new Horse({ name: uniqueName, color: color });
   clients[clientKey] = {
     horse: newHorse,
     ready: false,
@@ -15,10 +29,7 @@ export const handleNewHorse = (request, clientKey, clients) => {
 
 export const handleAskForHorse = (response, { user, clients, io }) => {
   if (Object.keys(user).length !== 0) {
-    // console.log("Horse name was asked for by: ", user.horse.name);
-    console.log("wtw", clients);
-    io.emit("updateReadied", getReadiness(clients));
-    response({ horse: { name: user.horse.name }, name: user.horse.name });
+    response({ horse: { name: user.horse.name,color:user.horse.color }, name: user.horse.name });
   }
 };
 
@@ -30,17 +41,18 @@ export const handleNewStats = (request, user) => {
   console.log(user.horse.name, " Is getting new stats!: " + stats);
 };
 
-export const handleReady = (user, clientKey, clients, io) => {
-  const client = user;
-  client.ready = true;
-  console.log("Readied up: " + clientKey);
+export const handleLobbyJoin = (clients,io)=>{
+  console.log("someone joined lobby")
+  io.emit('updateLobby', getLobbyData(clients))
+}
 
+export const handleReady = (user, clientKey, clients, io) => {
   if (Object.keys(user).length === 0) {
     return;
   }
-  const horses = getReadiness(clients);
-  io.emit("updateReadied", horses);
-
+  user.ready = true;
+  console.log("Readied up: " + clientKey);
+  
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
       const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
@@ -49,6 +61,7 @@ export const handleReady = (user, clientKey, clients, io) => {
     io.emit("start", clients);
   } else {
     console.log("Not everyone is ready", clients);
+    io.emit("updateLobby", getLobbyData(clients));
   }
 };
 
@@ -56,7 +69,7 @@ export const handleClients = (socket, clients) => (user) => {
   console.log("clients asked for", clients, "by", user);
   // if (Object.keys(user).length !== 0) {
   console.log("omg he sent it");
-  const horses = getReadiness(clients);
+  const horses = getLobbyData(clients);
   console.log(
     "about to send out horses, it looks like this: ",
     horses,
@@ -104,13 +117,12 @@ export const handleFinale = (clientKey, clients,socket) => {
   socket.emit("standings", generateStandings(clientKey, clients));
 };
 
-export const getReadiness = (clients) => {
-  console.log("bloatwareready", clients);
+export const getLobbyData = (clients) => { //returns ready and color as values for key horse name
+  console.log("gettingLobbyData:clients=>", clients);
   const horses = {};
   for (let client in clients) {
     if (clients[client].horse) {
-      console.log("same", client, clients[client].horse);
-      horses[clients[client].horse.name] = { ready: clients[client].ready };
+      horses[clients[client].horse.name] = { ready: clients[client].ready,color:clients[client].horse.color };
     }
   }
   return horses;

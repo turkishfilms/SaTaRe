@@ -1,5 +1,20 @@
 "IDEA 1: Horse Racing WebApp"
 
+BUGS & STUFF
+-----------------
+INTRO:
+ - horse head is greyscale, and only becomes colored on slider input. should just be colored right away
+ - horse head canvas background is white, should be clear so we can style it with css
+TRAINING:
+ - your horse's name counts up as if you were a duplicate when you go back and forth between intro and training
+ - the big horse head across from the shotgun should be colored like your horse as well
+ - the ready up icons don't reset(stay colored) if you go back to the training page
+RACE END:
+ - the "play again" button should return you to the training page. not the intro. So you can keep training the same horse
+ - horse head should be colored like your horse
+OTHERS:
+ - at one point, the game thought I had 2 clients open. there was a ghost horse with a previous name that I couldn't get to go away. I haven't been able to repeat
+-----------------
 
 
 WISHLIST
@@ -23,17 +38,17 @@ Balance: likliehood of stalling
 REGINALD
 (Backend)
 TODO;
-- fix Tripping speed glitch thing
-- Ready up lobby should have bw horse head with name below it, when that user readies up the horse head turns into the color of their horse
 - make all code solid
+- TIDY all code
 - Client keys map to an array of horses not just one horse
 - robustify lol
 - bug hunt
-- TIDY all code
 - Refine README
 
 - Horse Race Progress (nvm) 
 TODONE:
++ Ready up lobby should have bw horse head with name below it, when that user readies up the horse head turns into the color of their horse
++ fix Tripping speed glitch thing (less is more)
 + endscreen MVP
 + Number of ready clients displayed to user on train page
 + only send clients the info they need ( pos and color data), maybe color data on race start and then client saves it, interface segregation principle
@@ -77,7 +92,7 @@ TODO;
 - Color pick
 - Progress Bars
 
-TODDNE:
+TODDONE:
 + Home page (index.html) 
 + Introduction video 
 + Name Submission
