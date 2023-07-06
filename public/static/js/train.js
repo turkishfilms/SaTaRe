@@ -45,7 +45,6 @@ const fillDiv = (div, horses) => {
 };
 
 socket.on("clientsSend", (horses) => {
-  console.log("horses reeturned based on the clients messgae: ", horses);
   // fillDiv("clientsBar",horses);
 });
 
@@ -153,7 +152,7 @@ makeShotgun();
 
 const sendClients = () => {
   socket.emit("clients", {}, (data) => {
-    console.log(data);
+   console.log(data);
   });
 };
 
@@ -183,7 +182,6 @@ const main = (p) => {
     cnv.parent("clientsBar");
 
     socket.on("updateLobby", (horses) => {
-      console.log("updatehorses:=>", horses);
       p.updateHorseData(horses);
       p.showHorses(p.allHorseData);
     });
@@ -198,7 +196,6 @@ const main = (p) => {
 
       if (horseIndex === -1) {
         const newPic = p.addFilter(p.horseImg.get(), data[client].color);
-        console.log("uhd:newpic=>", newPic);
 
         const newHorseData = {
           name: client,
@@ -213,7 +210,6 @@ const main = (p) => {
   };
 
   p.showHorses = (horses) => {
-    console.log("showHorses: horses=>", horses);
     p.clear();
     let index = 0;
     for (let horse of horses) {
@@ -228,19 +224,12 @@ const main = (p) => {
 
     p.fill(0);
     const horseData = p.allHorseData.find((h) => h.name === horse.name);
-    console.log(
-      "showhorse:ready,thishorsesdata,horse=>",
-      horseData.ready,
-      horseData,
-      horse
-    );
     const img = horseData.ready ? horseData.images[1] : horseData.images[0];
     p.image(img, index * imgWidth + leftOffset, 0);
     p.text(horseData.name, index * imgWidth + leftOffset, 80);
   };
 
   p.addFilter = (img, { r, g, b, a = 25 }) => {
-    console.log("addilter:r,g,b,a=>", r, g, b, a);
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -268,7 +257,6 @@ const main = (p) => {
       y = p.clientHeight - 100 - horse.position.y;
     const pic = horseData.images[stepInCycle];
     p.text(horse.name, x, y);
-    console.log("showhorse pic", pic, stepInCycle);
     p.image(pic, x, y);
   };
 
@@ -323,7 +311,6 @@ const char = (p) => {
   };
 
   p.addFilter = (img, { r, g, b, a = 25 }) => {
-    console.log("addilter:r,g,b,a=>", r, g, b, a);
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
