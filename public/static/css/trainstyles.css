@@ -111,7 +111,8 @@ button {
 
 #profilePic {
     position: fixed;
-    left: 32px;
+    transform-origin: top left;
+    left: 0px;
     top: 25%;
     height: auto;
     scale: 200%;
@@ -120,7 +121,7 @@ button {
 #profilePic2 {
     position: fixed;
     left:0px;
-    top: 20%;
+    top: 25%;
     height:128px;
     width:128px;
 }
