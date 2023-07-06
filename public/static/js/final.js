@@ -7,23 +7,30 @@
  * draw stands with text
  * place a horse on each level
  * place horse on side
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  */
-const socket = io()
-socket.on('standings',({myHorseName,standings})=>{
-     const podium = document.getElementById('podium')
-     console.log("the best horse is: ",myHorseName)
-     console.log("the standings are: ", standings)
-    for(let horse in standings){
-        const horseDiv = document.createElement('p')
-        horseDiv.textContent = `${horse} finished in position ${standings[horse]}!`
-        podium.appendChild(horseDiv)
+const socket = io();
+socket.on("standings", ({ myHorseName, standings }) => {
+  const winLossHeader = document.getElementById("winLossMessage");
+  const podium = document.getElementById("podium");
+  for (let horse in standings) {
+    if (horse == myHorseName) {
+      document.title =
+        standings[horse] == 0
+          ? "Winner Chicken Dinner"
+          : "Better Luck next Time";
+      winLossHeader.textContent =
+        standings[horse] == 0 ? "You Win" : "You Lost";
     }
-})
+    const horseDiv = document.createElement("h2");
+    horseDiv.textContent = `${horse} finished in position ${
+      standings[horse] + 1
+    }!`;
+    podium.appendChild(horseDiv);
+  }
+});
 
-socket.emit('getStandings')
-
-
+socket.emit("getStandings");
