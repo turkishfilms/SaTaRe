@@ -52,6 +52,7 @@ export const handleReady = (user, clientKey, clients, io) => {
   }
   user.ready = true;
   console.log("Readied up: " + clientKey);
+  io.emit("updateLobby", getLobbyData(clients));
   
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
@@ -61,7 +62,6 @@ export const handleReady = (user, clientKey, clients, io) => {
     io.emit("start", clients);
   } else {
     console.log("Not everyone is ready", clients);
-    io.emit("updateLobby", getLobbyData(clients));
   }
 };
 
