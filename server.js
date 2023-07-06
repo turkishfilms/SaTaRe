@@ -4,7 +4,6 @@ import { join } from "path";
 import { Server } from "socket.io";
 import session from "express-session";
 import sharedsession from "express-socket.io-session";
-// import Horse from "./Horse.js";
 import router from "./routes.js";
 import {
   handleFinale,
@@ -32,7 +31,7 @@ const sessionMiddleware = session({
     sameSite: "lax", // protection against cross site request forgery attacks
   },
 });
- 
+
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors());
@@ -40,13 +39,13 @@ app.use(express.static(join(process.cwd(), "public")));
 
 const clients = {};
 
-const clearEmptyClients = ()=>{
-    for (let client in clients) {
-      if (Object.keys(clients[client]).length === 0) {
-        delete clients[client];
-      }
+const clearEmptyClients = () => {
+  for (let client in clients) {
+    if (Object.keys(clients[client]).length === 0) {
+      delete clients[client];
     }
-}
+  }
+};
 
 app.use("/", router);
 
@@ -65,12 +64,24 @@ io.on("connection", (socket) => {
     .filter((client) => client.horse && client.horse.name)
     .map((client) => client.horse.name);
 
-  console.log("User Assigned", user.horse ? user.horse.name:user, "Everyone", clientNames);
+  console.log(
+    "User Assigned",
+    user.horse ? user.horse.name : user,
+    "Everyone",
+    clientNames
+  );
 
   socket.on("clients", handleClients(socket, clients));
 
   socket.on("newHorse", (socket) => {
-    handleNewHorse(socket, clientKey, clients);
+    try {
+      handleNewHorse(socket, clientKey, clients);
+    } catch (error) {
+      console.error(`Error handling new horse: ${error.message}`);
+      socket.emit("error", {
+        message: "An error occurred while creating a new horse.",
+      });
+    }
   });
 
   socket.on("askForHorse", (response) => {

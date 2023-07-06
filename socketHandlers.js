@@ -1,27 +1,26 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
-
-export const ROADHEIGHT = 100;
+import { ROADHEIGHT, FINISH_LINE } from "./constants.js";
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
   let uniqueName = name;
   let i = 1;
+  const nonEmptyClients = Object.values(clients)
+    .filter((client)=>{return client.horse && client.horse.name})
   const isUniqueName = (name) => {
-    return Object.values(clients).some((client) => {
-      if (client.horse && client.horse.name) {
+    return nonEmptyClients.some((client) => {
         return client.horse.name === name;
-      }
-    });
+      });
   };
-  while (isUniqueName(uniqueName)) {
+
+  while (isUniqueName(uniqueName)) {//as long as the name is not unqiue add the next integer until it is unique
     uniqueName = name + i;
     i++;
   }
 
-  let newHorse = new Horse({ name: uniqueName, color: color });
   clients[clientKey] = {
-    horse: newHorse,
+    horse: new Horse({ name: uniqueName, color: color }),
     ready: false,
   };
   console.log("New Horse Handled", request);
@@ -29,16 +28,13 @@ export const handleNewHorse = (request, clientKey, clients) => {
 
 export const handleAskForHorse = (response, { user, clients, io }) => {
   if (Object.keys(user).length !== 0) {
-    response({ horse: { name: user.horse.name,color:user.horse.color }, name: user.horse.name });
+    response({ horse: { name: user.horse.name,color:user.horse.color }, });
   }
 };
 
 export const handleNewStats = (request, user) => {
   const { stats } = request;
-
-  const horse = user.horse;
-  horse.stats = { ...horse.stats, ...stats };
-  console.log(user.horse.name, " Is getting new stats!: " + stats);
+  user.horse.stats = { ...user.horse.stats, ...stats };
 };
 
 export const handleLobbyJoin = (clients,io)=>{
@@ -68,20 +64,11 @@ export const handleReady = (user, clientKey, clients, io) => {
 export const handleClients = (socket, clients) => (user) => {
   console.log("clients asked for", clients, "by", user);
   // if (Object.keys(user).length !== 0) {
-  console.log("omg he sent it");
-  const horses = getLobbyData(clients);
-  console.log(
-    "about to send out horses, it looks like this: ",
-    horses,
-    horses instanceof Map
-  );
-  socket.emit("clientsSend", horses);
-  //
+  socket.emit("clientsSend",getLobbyData(clients));
 };
 
 export const handleFrame = (clientsList, io) => {
   const horses = {};
-  // console.log("Handling frame: ClientsList", clientsList)
   Object.keys(clientsList).forEach((client) => {
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
@@ -94,13 +81,12 @@ export const handleFrame = (clientsList, io) => {
     );
     physics.position.x += physics.speed;
     horses[horse.name] = {
-      //problematic, multiple identical keys possible
       color: horse.color,
       position: physics.position,
       speed: physics.speed,
     };
 
-    if (physics.position.x > 1000) {
+    if (physics.position.x >FINISH_LINE) {
       console.log("we have a winner", client);
       io.emit("over", horse.name);
     }
