@@ -2,30 +2,31 @@
 
 const socket = io();
 const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
+const RED = { r: 255, g: 0, b: 0 };
+const ALPHA = 25;
+const IMAGEWIDTH = (IMAGEHEIGHT = 128);
 
 const submitForm = (event) => {
   event.preventDefault();
-  // console.log("submitting form, heres an event: ", event)
-
   newHorse(
     numberToRGB(document.getElementById("colorChooser").value),
-    document.getElementById("name").value || `Horse${Math.random().toFixed(5)}`
+    document.getElementById("name").value
   );
-  window.location.href = '/train'
+  window.location.href = "/train";
 };
 
-const setColor = (p,degree) => {
-  p.showHorse({  ...numberToRGB(degree), a: 25 });
+const setColor = (p, degree) => {
+  p.showHorse({ ...numberToRGB(degree), a: ALPHA });
 };
 
 const newHorse = (color, name) => {
-  const data = { name: name, color: color || { r: 255, g: 0, b: 0 } };
+  const data = { name: name, color: color || RED };
   console.log(data);
   socket.emit("newHorse", data);
 };
 
 const numberToRGB = (number) => {
-  let h = number / 360;
+  let h = number / 360; //360 degress for hue rotate
   let s = 1,
     v = 1;
   let r, g, b, i, f, p, q, t;
@@ -64,7 +65,6 @@ const numberToRGB = (number) => {
   };
 };
 
-
 window.onload = () => {
   document
     .getElementById("name")
@@ -81,38 +81,17 @@ const sendClients = () => {
     return data;
   });
 };
-//---------
-/**
- * COlored horse itnro image
- * todo
- * add canvas to div
- * set w and h
- * preload image
- * add updete image fx
- * UIF(deg)
- * when slider change run updateimgfx
- * slider outputs deg
- * convert to rgb
- * feed into add filter
- * add copy of img into add filter
- * display copied image
- *
- * todone
- * bring in p5
- */
 
 const main = (p) => {
   p.clientHeight;
-  console.log("okay p5 started")
   p.clientWidth;
   p.horseHead;
 
   p.preload = () => {
-    console.log("preloading")
     p.horseHead = p.loadImage(
       "/assets/graphics/s_horseHeadGS.png",
-      () => console.log("Image loaded fully!"),
-      (err) => console.error("Error loading image:", err)
+      () => console.log("Horse Head Image loaded fully!"),
+      (err) => console.error("Error loading Horse Head image:", err)
     );
   };
 
@@ -121,13 +100,11 @@ const main = (p) => {
     const { clientWidth, clientHeight } = div;
     let cnv = p.createCanvas(clientWidth, clientHeight);
     cnv.parent("horseHead");
-    p.background(255)
-    p.image(p.horseHead,0,0,128,128)
-    // console.log("pic", p.horseHead);
-    // console.log("canva:", cnv);
+    p.background(255);
+    p.image(p.horseHead, 0, 0, IMAGEWIDTH, IMAGEHEIGHT);
   };
 
-  p.addFilter = (img,{ r, g, b, a }) => {
+  p.addFilter = (img, { r, g, b, a }) => {
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -148,10 +125,10 @@ const main = (p) => {
   };
 
   p.showHorse = (color) => {
-    p.background(255);
+    p.background(255); //white
     const pic = p.horseHead.get();
     p.addFilter(pic, color);
-    p.image(pic, 0, 0,128,128);
+    p.image(pic, 0, 0, IMAGEWIDTH, IMAGEHEIGHT);
   };
 };
 

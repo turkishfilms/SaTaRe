@@ -1,4 +1,29 @@
 const socket = io();
+
+const savedStats = { balance: 10, weight: 10 };
+const actions = {
+  walked: {
+    text: "Walk",
+    sound: new Audio("assets/audio//horseRun.mp3"),
+    stats: { weight: 1, balance: -1 },
+  },
+  fed: {
+    text: "Feed",
+    sound: new Audio("assets/audio//horseEat.mp3"),
+    stats: { weight: -1, balance: 1 },
+  },
+  rested: {
+    text: "Rest",
+    sound: new Audio("assets/audio/horseSleep.mp3"),
+    stats: { weight: -1, balance: -1 },
+  },
+};
+
+const LOBBY_IMG_WIDTH = 96;
+const LOBBY_LEFT_OFFSET = 200;
+const LOBBY_TEXT_HEIGHT = 80;
+const ALPHA = 25;
+
 let clientHorseName;
 let clientHorseColor;
 
@@ -13,10 +38,10 @@ socket.on("start", (horses) => {
   window.location.href = "/race";
 });
 
-socket.on("updateReadied", (horses)=>{
+socket.on("updateReadied", (horses) => {
   clearDiv("clientsBar");
-  fillDiv("clientsBar",horses);
-})
+  fillDiv("clientsBar", horses);
+});
 
 const clearDiv = (id) => {
   const div = document.getElementById(id);
@@ -42,30 +67,6 @@ const fillDiv = (div, horses) => {
     }
     clientsBar.appendChild(createClientDiv(horse, horses[horse]));
   }
-};
-
-socket.on("clientsSend", (horses) => {
-  // fillDiv("clientsBar",horses);
-});
-
-const savedStats = { balance: 10, weight: 10 };
-
-const actions = {
-  walked: {
-    text: "Walk",
-    sound: new Audio("assets/audio//horseRun.mp3"),
-    stats: { weight: 1, balance: -1 },
-  },
-  fed: {
-    text: "Feed",
-    sound: new Audio("assets/audio//horseEat.mp3"),
-    stats: { weight: -1, balance: 1 },
-  },
-  rested: {
-    text: "Rest",
-    sound: new Audio("assets/audio/horseSleep.mp3"),
-    stats: { weight: -1, balance: -1 },
-  },
 };
 
 const makeActionsIntoButtons = (actions) => {
@@ -149,13 +150,6 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
-
-const sendClients = () => {
-  socket.emit("clients", {}, (data) => {
-   console.log(data);
-  });
-};
-
 //p5 stuff for the ready up upgrade
 const main = (p) => {
   p.clientHeight;
@@ -219,17 +213,18 @@ const main = (p) => {
   };
 
   p.showHorse = (horse, index) => {
-    const imgWidth = 96;
-    const leftOffset = 200;
-
     p.fill(0);
     const horseData = p.allHorseData.find((h) => h.name === horse.name);
     const img = horseData.ready ? horseData.images[1] : horseData.images[0];
-    p.image(img, index * imgWidth + leftOffset, 0);
-    p.text(horseData.name, index * imgWidth + leftOffset, 80);
+    p.image(img, index * LOBBY_IMG_WIDTH + LOBBY_LEFT_OFFSET, 0);
+    p.text(
+      horseData.name,
+      index * LOBBY_IMG_WIDTH + LOBBY_LEFT_OFFSET,
+      LOBBY_TEXT_HEIGHT
+    );
   };
 
-  p.addFilter = (img, { r, g, b, a = 25 }) => {
+  p.addFilter = (img, { r, g, b, a = ALPHA }) => {
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -249,48 +244,16 @@ const main = (p) => {
     p.image(img, r, 0);
     return img;
   };
-
-  p.showHorse2 = (horse) => {
-    const horseIndex = horse.name;
-    const horseData = p.horses.get(horseIndex);
-    const x = horse.position.x,
-      y = p.clientHeight - 100 - horse.position.y;
-    const pic = horseData.images[stepInCycle];
-    p.text(horse.name, x, y);
-    p.image(pic, x, y);
-  };
-
-  p.updateLobby = (horses) => {
-    if (horses.length == p.horseData.length) {
-      // just change the colors
-    } else {
-      //add needed horses and change colorsgg
-    }
-  };
 };
+
 const my = new p5(main);
-/**
- * first loads-> grab our name and send new unready person in lobby messag to everyonw
- * hits ready-> send new person is ready to everyone
- * someone else loads -> we need to show them neing unready
- * someone else readies -> we need to show them being ready
- *
- * clients
- * 1.one message to say plaer joined lobby
- * 2.one message to say lobby player is ready
- *
- * server
- * always sends updated lobby unless everyone is ready
- * only updates ready status if 2. is fired
- *
- *
- */
+
 const char = (p) => {
   p.preload = () => {
     p.horseImg = p.loadImage(
       "/assets/graphics/s_horseHeadGS.png",
-      () => console.log("Image loaded fully!frfr"),
-      (err) => console.error("Error loading image:", err)
+      () => console.log("Grey Scale Horse Head Image loaded fully!"),
+      (err) => console.error("Error loading Grey Scale Horse Head Image:", err)
     );
   };
 
@@ -310,7 +273,7 @@ const char = (p) => {
     );
   };
 
-  p.addFilter = (img, { r, g, b, a = 25 }) => {
+  p.addFilter = (img, { r, g, b, a = ALPHA }) => {
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -329,6 +292,7 @@ const char = (p) => {
     }
     return img;
   };
+
   p.deadHorse = () => {
     p.clear();
   };

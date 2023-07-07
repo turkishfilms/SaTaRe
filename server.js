@@ -16,6 +16,7 @@ import {
   handleFrame,
   handleDisconnect,
 } from "./socketHandlers.js";
+import { oneHourInMilliseconds } from "./constants.js"
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -25,7 +26,7 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 60 * 60 * 1000, // sets the cookie to expire in 1 hour
+    maxAge: oneHourInMilliseconds, 
     secure: false, // true for https
     httpOnly: false, // if true prevents client side JS from reading the cookie
     sameSite: "lax", // protection against cross site request forgery attacks

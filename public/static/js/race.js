@@ -2,12 +2,17 @@ import "./scripts/p5.min.js";
 
 const socket = io();
 
+const FPS = 60;
+const ALPHA = 5;
+const HORSE_CADENCE_OFFSET_THRESHOLD = 10;
+const BOTTOM_OFFSET = 110;
+const HORSE_ANIMATION_FRAME_DURATION = 7;
+let numberOfImages;
+
 const main = (p) => {
   p.clientHeight;
   p.clientWidth;
-  p.horseImg;
-  p.horseImg2;
-  p.horseImg3;
+  p.horseImgs;
   p.order = 1;
   p.horses = new Map();
 
@@ -21,30 +26,36 @@ const main = (p) => {
   };
 
   p.preload = () => {
-    p.horseImg = p.loadImage(
-      "/assets/graphics/horse/s_horseRunG1.png",
-      () => console.log("Image1 loaded barely!"),
-      (err) => console.error("Error loading image:", err)
+    p.horseImgs.push(
+      p.loadImage(
+        "/assets/graphics/horse/s_horseRunG1.png",
+        () => console.log("Image1 loaded barely!"),
+        (err) => console.error("Error loading Image1: ", err)
+      )
     );
-    p.horseImg2 = p.loadImage(
-      "/assets/graphics/horse/s_horseRunG2.png",
-      () => console.log("Image2 loaded fully!"),
-      (err) => console.error("Error loading image:", err)
+    p.horseImgs.push(
+      p.loadImage(
+        "/assets/graphics/horse/s_horseRunG2.png",
+        () => console.log("Image2 loaded fully!"),
+        (err) => console.error("Error loading Image2:", err)
+      )
     );
-    p.horseImg3 = p.loadImage(
-      "/assets/graphics/horse/s_horseRunG3.png",
-      () => console.log("Image3 loaded fully!"),
-      (err) => console.error("Error loading image:", err)
+    p.horseImgs.push(
+      p.loadImage(
+        "/assets/graphics/horse/s_horseRunG3.png",
+        () => console.log("Image3 loaded fully!"),
+        (err) => console.error("Error loading Image3:", err)
+      )
     );
   };
-  
+
   p.setup = () => {
-    // p.loop();
+    numberOfImages = p.horseImgs.length;
     const div = document.getElementById("raceCanvas");
     const { clientWidth, clientHeight } = div;
     p.clientHeight = clientHeight;
     p.clientWidth = clientWidth;
-    p.frameRate(60);
+    p.frameRate(FPS);
     socket.on("frame", (data) => {
       p.clear();
 
@@ -85,15 +96,19 @@ const main = (p) => {
     Object.keys(data)
       .reverse()
       .forEach((horse) => {
-        const pics = [p.horseImg.get(), p.horseImg2.get(), p.horseImg3.get()];
-        data[horse].color.a = 5; // hack, put this in server or soemthing
+        const pics = [
+          p.horseImgs[0].get(),
+          p.horseImgs[1].get(),
+          p.horseImgs[2].get(),
+        ];
+        data[horse].color.a = ALPHA;
         pics.forEach((pic) => {
           p.addFilter(pic, data[horse].color);
         });
         p.horses.set(data[horse].position.y, {
           name: horse,
           images: pics,
-          offset: Math.floor(p.random(10)),
+          offset: Math.floor(p.random(HORSE_CADENCE_OFFSET_THRESHOLD)),
           frame: 0,
         });
       });
@@ -118,13 +133,19 @@ const main = (p) => {
     }
   };
 
+  p.frameToShowIndex = () => {
+    return Math.floor(
+      (p.frameCount % (HORSE_ANIMATION_FRAME_DURATION * numberOfImages)) /
+        HORSE_ANIMATION_FRAME_DURATION
+    );
+  };
+
   p.showHorse = (horse) => {
-    const horseIndex = horse.position.y
+    const horseIndex = horse.position.y;
     const horseData = p.horses.get(horseIndex);
     const x = horse.position.x,
-      y = p.clientHeight - 110 - horse.position.y;
-    const stepInCycle = Math.floor((p.frameCount % 20) / 7);
-    const pic = horseData.images[stepInCycle];
+      y = p.clientHeight - BOTTOM_OFFSET - horse.position.y;
+    const pic = horseData.images[p.frameToShowIndex()];
     p.text(horse.name, x, y);
     p.image(pic, x, y);
   };

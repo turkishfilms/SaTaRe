@@ -1,6 +1,6 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
-import { ROADHEIGHT, FINISH_LINE } from "./constants.js";
+import { MAX_RANDOM_VALUE, ROADHEIGHT, FINISH_LINE } from "./constants.js";
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
@@ -14,7 +14,7 @@ export const handleNewHorse = (request, clientKey, clients) => {
       });
   };
 
-  while (isUniqueName(uniqueName)) {//as long as the name is not unqiue add the next integer until it is unique
+  while (isUniqueName(uniqueName)) {//guarantee unique name *faster way is to keep track of the biggest number used so far across all numbers, then add that number +1 to any repeated name
     uniqueName = name + i;
     i++;
   }
@@ -57,13 +57,11 @@ export const handleReady = (user, clientKey, clients, io) => {
     });
     io.emit("start", clients);
   } else {
-    console.log("Not everyone is ready", clients);
+    console.log("Not everyone is ready");
   }
 };
 
 export const handleClients = (socket, clients) => (user) => {
-  console.log("clients asked for", clients, "by", user);
-  // if (Object.keys(user).length !== 0) {
   socket.emit("clientsSend",getLobbyData(clients));
 };
 
@@ -72,7 +70,7 @@ export const handleFrame = (clientsList, io) => {
   Object.keys(clientsList).forEach((client) => {
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
-    if (Math.random() * 100 > horse.balance) {
+    if (Math.random() * MAX_RANDOM_VALUE > horse.balance) {
       physics.speed = 0;
     }
     physics.speed = Math.max(
@@ -104,7 +102,6 @@ export const handleFinale = (clientKey, clients,socket) => {
 };
 
 export const getLobbyData = (clients) => { //returns ready and color as values for key horse name
-  console.log("gettingLobbyData:clients=>", clients);
   const horses = {};
   for (let client in clients) {
     if (clients[client].horse) {
