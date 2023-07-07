@@ -1,20 +1,32 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
-import { MAX_RANDOM_VALUE, ROADHEIGHT, FINISH_LINE } from "./constants.js";
+import {
+  MAX_RANDOM_VALUE,
+  ROADHEIGHT,
+  FINISH_LINE,
+  UPDATE_LOBBY_MESSAGE,
+  START_RACE_MESSAGE,
+  CLIENTS_LIST_SEND_MESSAGE,
+  RACE_END_MESSGAE,
+  FRAME_MESSAGE,
+  SEND_STANDINGS_MESSAGE,
+} from "./constants.js";
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
   let uniqueName = name;
   let i = 1;
-  const nonEmptyClients = Object.values(clients)
-    .filter((client)=>{return client.horse && client.horse.name})
+  const nonEmptyClients = Object.values(clients).filter((client) => {
+    return client.horse && client.horse.name;
+  });
   const isUniqueName = (name) => {
     return nonEmptyClients.some((client) => {
-        return client.horse.name === name;
-      });
+      return client.horse.name === name;
+    });
   };
 
-  while (isUniqueName(uniqueName)) {//guarantee unique name *faster way is to keep track of the biggest number used so far across all numbers, then add that number +1 to any repeated name
+  while (isUniqueName(uniqueName)) {
+    //guarantee unique name *faster way is to keep track of the biggest number used so far across all numbers, then add that number +1 to any repeated name
     uniqueName = name + i;
     i++;
   }
@@ -28,7 +40,7 @@ export const handleNewHorse = (request, clientKey, clients) => {
 
 export const handleAskForHorse = (response, { user, clients, io }) => {
   if (Object.keys(user).length !== 0) {
-    response({ horse: { name: user.horse.name,color:user.horse.color }, });
+    response({ horse: { name: user.horse.name, color: user.horse.color } });
   }
 };
 
@@ -37,10 +49,10 @@ export const handleNewStats = (request, user) => {
   user.horse.stats = { ...user.horse.stats, ...stats };
 };
 
-export const handleLobbyJoin = (clients,io)=>{
-  console.log("someone joined lobby")
-  io.emit('updateLobby', getLobbyData(clients))
-}
+export const handleLobbyJoin = (clients, io) => {
+  console.log("someone joined lobby");
+  io.emit(UPDATE_LOBBY_MESSAGE, getLobbyData(clients));
+};
 
 export const handleReady = (user, clientKey, clients, io) => {
   if (Object.keys(user).length === 0) {
@@ -48,21 +60,21 @@ export const handleReady = (user, clientKey, clients, io) => {
   }
   user.ready = true;
   console.log("Readied up: " + clientKey);
-  io.emit("updateLobby", getLobbyData(clients));
-  
+  io.emit(UPDATE_LOBBY_MESSAGE, getLobbyData(clients));
+
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
       const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
       clients[client].physics = { speed: 0, position: { x: 0, y: raceLane } };
     });
-    io.emit("start", clients);
+    io.emit(START_RACE_MESSAGE, clients);
   } else {
     console.log("Not everyone is ready");
   }
 };
 
 export const handleClients = (socket, clients) => (user) => {
-  socket.emit("clientsSend",getLobbyData(clients));
+  socket.emit(CLIENTS_LIST_SEND_MESSAGE, getLobbyData(clients));
 };
 
 export const handleFrame = (clientsList, io) => {
@@ -84,9 +96,9 @@ export const handleFrame = (clientsList, io) => {
       speed: physics.speed,
     };
 
-    if (physics.position.x >FINISH_LINE) {
+    if (physics.position.x > FINISH_LINE) {
       console.log("we have a winner", client);
-      io.emit("over", horse.name);
+      io.emit(RACE_END_MESSGAE, horse.name);
     }
   });
   let horseNames = Object.keys(horses);
@@ -94,18 +106,22 @@ export const handleFrame = (clientsList, io) => {
   for (let i = 0; i < horseNames.length; i++) {
     horses[horseNames[i]].rank = i + 1;
   }
-  io.emit("frame", horses);
+  io.emit(FRAME_MESSAGE, horses);
 };
 
-export const handleFinale = (clientKey, clients,socket) => {
-  socket.emit("standings", generateStandings(clientKey, clients));
+export const handleFinale = (clientKey, clients, socket) => {
+  socket.emit(SEND_STANDINGS_MESSAGE, generateStandings(clientKey, clients));
 };
 
-export const getLobbyData = (clients) => { //returns ready and color as values for key horse name
+export const getLobbyData = (clients) => {
+  //returns ready and color as values for key horse name
   const horses = {};
   for (let client in clients) {
     if (clients[client].horse) {
-      horses[clients[client].horse.name] = { ready: clients[client].ready,color:clients[client].horse.color };
+      horses[clients[client].horse.name] = {
+        ready: clients[client].ready,
+        color: clients[client].horse.color,
+      };
     }
   }
   return horses;

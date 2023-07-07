@@ -16,7 +16,16 @@ import {
   handleFrame,
   handleDisconnect,
 } from "./socketHandlers.js";
-import { oneHourInMilliseconds } from "./constants.js"
+import {
+  ASK_FOR_HORSE_MESSAGE,
+  CLIENTS_MESSAGE,
+  FRAME_MESSAGE,
+  GET_STANDINGS_MESSAGE,
+  JOIN_LOBBY_MESSAGE,
+  NEW_HORSE_MESSAGE,
+  READY_MESSAGE,
+  ONE_HOUR_IN_MILLISECONDS,
+} from "./constants.js";
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -26,7 +35,7 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: oneHourInMilliseconds, 
+    maxAge: ONE_HOUR_IN_MILLISECONDS,
     secure: false, // true for https
     httpOnly: false, // if true prevents client side JS from reading the cookie
     sameSite: "lax", // protection against cross site request forgery attacks
@@ -72,9 +81,9 @@ io.on("connection", (socket) => {
     clientNames
   );
 
-  socket.on("clients", handleClients(socket, clients));
+  socket.on(CLIENTS_MESSAGE, handleClients(socket, clients));
 
-  socket.on("newHorse", (socket) => {
+  socket.on(NEW_HORSE_MESSAGE, (socket) => {
     try {
       handleNewHorse(socket, clientKey, clients);
     } catch (error) {
@@ -85,29 +94,29 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("askForHorse", (response) => {
+  socket.on(ASK_FOR_HORSE_MESSAGE, (response) => {
     if (Object.keys(user).length === 0) return;
     handleAskForHorse(response, { user: user, clients: clients, io: io });
   });
 
-  socket.on("joinLobby", () => {
+  socket.on(JOIN_LOBBY_MESSAGE, () => {
     if (Object.keys(user).length === 0) return;
     handleLobbyJoin(clients, io);
   });
 
-  socket.on("ready", (request) => {
+  socket.on(READY_MESSAGE, (request) => {
     clearEmptyClients();
     if (Object.keys(user).length === 0) return;
     handleNewStats(request, user);
     handleReady(user, clientKey, clients, io);
   });
 
-  socket.on("frame", () => {
+  socket.on(FRAME_MESSAGE, () => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });
 
-  socket.on("getStandings", () => {
+  socket.on(GET_STANDINGS_MESSAGE, () => {
     if (Object.keys(user).length === 0) return;
     handleFinale(clientKey, clients, socket);
   });
