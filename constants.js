@@ -2,7 +2,7 @@
 export const ROADHEIGHT = 100;
 export const FINISH_LINE = 1000
 export const ONE_HOUR_IN_MILLISECONDS = 60*60*1000
-export const maxRandomVal = 100
+export const MAX_RANDOM_VALUE = 100
 
 export const CLIENTS_MESSAGE = 'clients' 
 export const NEW_HORSE_MESSAGE = 'newHorse'

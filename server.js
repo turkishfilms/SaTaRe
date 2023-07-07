@@ -126,13 +126,8 @@ io.on("connection", (socket) => {
   });
 });
 
-export const isAllClientsReady = (clients) => {
-  const clientel = Object.values(clients);
-  let counter = 0;
-  for (let i = 0; i < clientel.length; i++) {
-    if (clientel[i].ready === false) {
-      counter++;
-    }
-  }
-  return counter === 0;
-};
+export const isAllClientsReady = (clientsList)=>{
+  return Object.values(clientsList).every((client)=>{
+    return client.ready
+  })
+}
