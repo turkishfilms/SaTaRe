@@ -63,14 +63,12 @@ export const handleReady = (user, clientKey, clients, io) => {
   io.emit(UPDATE_LOBBY_MESSAGE, getLobbyData(clients));
 
   if (isAllClientsReady(clients)) {
-    console.log("IACR:passed=>", true);
     Object.keys(clients).forEach((client, i) => {
       const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
       clients[client].physics = { speed: 0, position: { x: 0, y: raceLane } };
     });
     io.emit(START_RACE_MESSAGE, clients);
   } else {
-    console.log("IACR:passed=>", false);
     console.log("Not everyone is ready");
   }
 };

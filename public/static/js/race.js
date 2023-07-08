@@ -12,7 +12,7 @@ let numberOfImages;
 const main = (p) => {
   p.clientHeight;
   p.clientWidth;
-  p.horseImgs;
+  p.horseImgs=[]
   p.order = 1;
   p.horses = new Map();
 

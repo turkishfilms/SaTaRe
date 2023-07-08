@@ -17,6 +17,11 @@ const actions = {
     sound: new Audio("assets/audio/horseSleep.mp3"),
     stats: { weight: -1, balance: -1 },
   },
+  brushed: {
+    text: "Brush",
+    sound: new Audio("assets/audio/horseSleep.mp3"),
+    stats: { weight: 2, balance: 3 },
+  },
 };
 
 const LOBBY_IMG_WIDTH = 96;
@@ -34,40 +39,9 @@ socket.emit("askForHorse", ({ horse }) => {
   document.getElementById("trainTitle").textContent = `Train ${name}`;
 });
 
-socket.on("start", (horses) => {
+socket.on("start", () => {
   window.location.href = "/race";
 });
-
-socket.on("updateReadied", (horses) => {
-  clearDiv("clientsBar");
-  fillDiv("clientsBar", horses);
-});
-
-const clearDiv = (id) => {
-  const div = document.getElementById(id);
-  while (div.firstChild) {
-    div.removeChild(div.firstChild);
-  }
-};
-
-const createClientDiv = (name, horse) => {
-  const clientDiv = document.createElement("p");
-  clientDiv.textContent = name;
-  clientDiv.id = name;
-  // clientDiv.style.marginRight = "3rem";
-  clientDiv.classList.add(horse.ready ? "ready" : "unready");
-  return clientDiv;
-};
-
-const fillDiv = (div, horses) => {
-  const clientsBar = document.getElementById(div);
-  for (let horse in horses) {
-    if (Object.keys(horses[horse]).length === 0) {
-      continue;
-    }
-    clientsBar.appendChild(createClientDiv(horse, horses[horse]));
-  }
-};
 
 const makeActionsIntoButtons = (actions) => {
   for (let act in actions) {
@@ -87,7 +61,7 @@ const makeShotgun = () => {
     const bullet = document.createElement("div");
     bullet.id = "bullet";
     document.body.append(bullet);
-    ur.deadHorse();
+    playerAvatar.deadHorse();
     document.getElementById("profilePic").src =
       "assets/graphics/s_horseHeadDead.png";
   });
@@ -150,81 +124,82 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
-//p5 stuff for the ready up upgrade
-const main = (p) => {
-  p.clientHeight;
-  p.clientWidth;
-  p.horseImg;
-  p.allHorseData = [];
 
-  p.preload = () => {
-    p.horseImg = p.loadImage(
+//p5 stuff for the lobby
+const lobbyPanel = (p5) => {
+  p5.clientHeight;
+  p5.clientWidth;
+  p5.horseImg;
+  p5.allHorseData = [];
+
+  p5.preload = () => {
+    p5.horseImg = p5.loadImage(
       "/assets/graphics/s_horseHeadGS.png",
       () => console.log("Image loaded fully!"),
       (err) => console.error("Error loading image:", err)
     );
   };
 
-  p.setup = () => {
+  p5.setup = () => {
     const div = document.getElementById("clientsBar");
     const { clientWidth, clientHeight } = div;
-    p.clientHeight = clientHeight;
-    p.clientWidth = clientWidth;
-    p.fill(0);
+    p5.clientHeight = clientHeight;
+    p5.clientWidth = clientWidth;
+    p5.fill(0);
 
-    let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
+    let cnv = p5.createCanvas(p5.clientWidth, p5.clientHeight);
     cnv.parent("clientsBar");
 
     socket.on("updateLobby", (horses) => {
-      p.updateHorseData(horses);
-      p.showHorses(p.allHorseData);
+      p5.updateHorseData(horses);
+      p5.showHorses(p5.allHorseData);
     });
     socket.emit("joinLobby");
   };
 
-  p.updateHorseData = (data) => {
+  p5.updateHorseData = (data) => {
     for (let client in data) {
-      const horseIndex = p.allHorseData.findIndex(
+      const horseIndex = p5.allHorseData.findIndex(
         (horse) => horse.name === client
       );
 
       if (horseIndex === -1) {
-        const newPic = p.addFilter(p.horseImg.get(), data[client].color);
+        const newPic = p5.addFilter(p5.horseImg.get(), data[client].color);
 
         const newHorseData = {
           name: client,
-          images: [p.horseImg.get(), newPic],
+          images: [p5.horseImg.get(), newPic],
           ready: data[client].ready,
         };
-        p.allHorseData.push(newHorseData);
+        p5.allHorseData.push(newHorseData);
       } else {
-        p.allHorseData[horseIndex].ready = data[client].ready;
+        p5.allHorseData[horseIndex].ready = data[client].ready;
       }
     }
   };
 
-  p.showHorses = (horses) => {
-    p.clear();
+  p5.showHorses = (horses) => {
+    p5.clear();
     let index = 0;
     for (let horse of horses) {
-      p.showHorse(horse, index);
+      p5.showHorse(horse, index);
       index++;
     }
   };
 
-  p.showHorse = (horse, index) => {
-    p.fill(0);
-    const horseData = p.allHorseData.find((h) => h.name === horse.name);
+  p5.showHorse = (horse, index) => {
+    p5.fill(0);
+    const horseData = p5.allHorseData.find((h) => h.name === horse.name);
     const img = horseData.ready ? horseData.images[1] : horseData.images[0];
-    p.image(img, index * LOBBY_IMG_WIDTH + LOBBY_LEFT_OFFSET, 0);
-    p.text(
+    p5.image(img, index * LOBBY_IMG_WIDTH + LOBBY_LEFT_OFFSET, 0);
+    p5.text(
       horseData.name,
       index * LOBBY_IMG_WIDTH + LOBBY_LEFT_OFFSET,
       LOBBY_TEXT_HEIGHT
     );
   };
 
-  p.addFilter = (img, { r, g, b, a = ALPHA }) => {
+  p5.addFilter = (img, { r, g, b, a = ALPHA }) => {
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -241,39 +216,39 @@ const main = (p) => {
       }
       img.updatePixels();
     }
-    p.image(img, r, 0);
+    p5.image(img, r, 0);
     return img;
   };
 };
 
-const my = new p5(main);
+const lobbySketch = new p5(lobbyPanel);
 
-const char = (p) => {
-  p.preload = () => {
-    p.horseImg = p.loadImage(
+const horseHead = (p5) => {
+  p5.preload = () => {
+    p5.horseHeadImg = p5.loadImage(
       "/assets/graphics/s_horseHeadGS.png",
       () => console.log("Grey Scale Horse Head Image loaded fully!"),
       (err) => console.error("Error loading Grey Scale Horse Head Image:", err)
     );
   };
 
-  p.setup = () => {
+  p5.setup = () => {
     const div = document.getElementById("profilePic2");
     const { clientWidth, clientHeight } = div;
-    p.clientHeight = clientHeight;
-    p.clientWidth = clientWidth;
-    let cnv = p.createCanvas(p.clientWidth, p.clientHeight);
+    p5.clientHeight = clientHeight;
+    p5.clientWidth = clientWidth;
+    let cnv = p5.createCanvas(p5.clientWidth, p5.clientHeight);
     cnv.parent("profilePic2");
-    p.image(
-      p.addFilter(p.horseImg, clientHorseColor),
+    p5.image(
+      p5.addFilter(p5.horseHeadImg, clientHorseColor),
       0,
       0,
-      p.horseImg.width * 2,
-      p.horseImg.height * 2
+      p5.horseHeadImg.width * 2,
+      p5.horseHeadImg.height * 2
     );
   };
 
-  p.addFilter = (img, { r, g, b, a = ALPHA }) => {
+  p5.addFilter = (img, { r, g, b, a = ALPHA }) => {
     img.loadPixels();
     for (let i = 0; i < img.width; i++) {
       for (let j = 0; j < img.height; j++) {
@@ -293,9 +268,9 @@ const char = (p) => {
     return img;
   };
 
-  p.deadHorse = () => {
-    p.clear();
+  p5.deadHorse = () => {
+    p5.clear();
   };
 };
 
-const ur = new p5(char);
+const playerAvatar = new p5(horseHead);
