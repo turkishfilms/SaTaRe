@@ -16,16 +16,7 @@ import {
   handleFrame,
   handleDisconnect,
 } from "./socketHandlers.js";
-import {
-  ASK_FOR_HORSE_MESSAGE,
-  CLIENTS_MESSAGE,
-  FRAME_MESSAGE,
-  GET_STANDINGS_MESSAGE,
-  JOIN_LOBBY_MESSAGE,
-  NEW_HORSE_MESSAGE,
-  READY_MESSAGE,
-  ONE_HOUR_IN_MILLISECONDS,
-} from "./constants.js";
+import {MESSAGES,RACE_CONFIG} from './constants.js'
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -35,8 +26,8 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: ONE_HOUR_IN_MILLISECONDS,
-    secure: false, // true for https
+    maxAge: RACE_CONFIG.ONE_HOUR_IN_MILLISECONDS,
+    secure: false, // true for http eeebsbs
     httpOnly: false, // if true prevents client side JS from reading the cookie
     sameSite: "lax", // protection against cross site request forgery attacks
   },
@@ -75,15 +66,15 @@ io.on("connection", (socket) => {
     .map((client) => client.horse.name);
 
   console.log(
-    "User Assigned",
+    'User Assigned',
     user.horse ? user.horse.name : user,
     "Everyone",
     clientNames
   );
 
-  socket.on(CLIENTS_MESSAGE, handleClients(socket, clients));
+  socket.on(MESSAGES.CLIENTS, handleClients(socket, clients));
 
-  socket.on(NEW_HORSE_MESSAGE, (socket) => {
+  socket.on(MESSAGES.NEW_HORSE, (socket) => {
     try {
       handleNewHorse(socket, clientKey, clients);
     } catch (error) {
@@ -94,29 +85,30 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on(ASK_FOR_HORSE_MESSAGE, (response) => {
+  socket.on(MESSAGES.ASK_FOR_HORSE, () => {
     if (Object.keys(user).length === 0) return;
-    handleAskForHorse(response, { user: user, clients: clients, io: io });
+    handleAskForHorse({ horse: user.horse, socket: socket });
+    console.log(user.horse.name)
   });
 
-  socket.on(JOIN_LOBBY_MESSAGE, () => {
+  socket.on(MESSAGES.JOIN_LOBBY, () => {
     if (Object.keys(user).length === 0) return;
     handleLobbyJoin(clients, io);
   });
 
-  socket.on(READY_MESSAGE, (request) => {
+  socket.on(MESSAGES.READY, (request) => {
     clearEmptyClients();
     if (Object.keys(user).length === 0) return;
     handleNewStats(request, user);
     handleReady(user, clientKey, clients, io);
   });
 
-  socket.on(FRAME_MESSAGE, () => {
+  socket.on(MESSAGES.FRAME, () => {
     if (Object.keys(user).length === 0) return;
     handleFrame(clients, io);
   });
 
-  socket.on(GET_STANDINGS_MESSAGE, () => {
+  socket.on(MESSAGES.GET_STANDINGS, () => {
     if (Object.keys(user).length === 0) return;
     handleFinale(clientKey, clients, socket);
   });

@@ -1,16 +1,6 @@
 import Horse from "./Horse.js";
 import { isAllClientsReady } from "./server.js";
-import {
-  MAX_RANDOM_VALUE,
-  ROADHEIGHT,
-  FINISH_LINE,
-  UPDATE_LOBBY_MESSAGE,
-  START_RACE_MESSAGE,
-  CLIENTS_LIST_SEND_MESSAGE,
-  RACE_END_MESSGAE,
-  FRAME_MESSAGE,
-  SEND_STANDINGS_MESSAGE,
-} from "./constants.js";
+import { MESSAGES, RACE_CONFIG } from "./constants.js";
 
 export const handleNewHorse = (request, clientKey, clients) => {
   const { name, color } = request;
@@ -38,10 +28,10 @@ export const handleNewHorse = (request, clientKey, clients) => {
   console.log("New Horse Handled", request);
 };
 
-export const handleAskForHorse = (response, { user, clients, io }) => {
-  if (Object.keys(user).length !== 0) {
-    response({ horse: { name: user.horse.name, color: user.horse.color } });
-  }
+export const handleAskForHorse = ({ horse, socket }) => {
+  socket.emit(MESSAGES.SEND_HORSE_NAME_AND_COLOR, {
+      name: horse.name, color: horse.color ,
+  });
 };
 
 export const handleNewStats = (request, user) => {
@@ -51,7 +41,7 @@ export const handleNewStats = (request, user) => {
 
 export const handleLobbyJoin = (clients, io) => {
   console.log("someone joined lobby");
-  io.emit(UPDATE_LOBBY_MESSAGE, getLobbyData(clients));
+  io.emit(MESSAGES.UPDATE_LOBBY, getLobbyData(clients));
 };
 
 export const handleReady = (user, clientKey, clients, io) => {
@@ -60,21 +50,22 @@ export const handleReady = (user, clientKey, clients, io) => {
   }
   user.ready = true;
   console.log("Readied up: " + clientKey);
-  io.emit(UPDATE_LOBBY_MESSAGE, getLobbyData(clients));
+  io.emit(MESSAGES.UPDATE_LOBBY, getLobbyData(clients));
 
   if (isAllClientsReady(clients)) {
     Object.keys(clients).forEach((client, i) => {
-      const raceLane = (i / Object.keys(clients).length) * ROADHEIGHT;
+      const raceLane =
+        (i / Object.keys(clients).length) * RACE_CONFIG.ROADHEIGHT;
       clients[client].physics = { speed: 0, position: { x: 0, y: raceLane } };
     });
-    io.emit(START_RACE_MESSAGE, clients);
+    io.emit(MESSAGES.START_RACE, clients);
   } else {
     console.log("Not everyone is ready");
   }
 };
 
 export const handleClients = (socket, clients) => (user) => {
-  socket.emit(CLIENTS_LIST_SEND_MESSAGE, getLobbyData(clients));
+  socket.emit(MESSAGES.CLIENTS_LIST_SEND, getLobbyData(clients));
 };
 
 export const handleFrame = (clientsList, io) => {
@@ -82,7 +73,7 @@ export const handleFrame = (clientsList, io) => {
   Object.keys(clientsList).forEach((client) => {
     const horse = clientsList[client].horse;
     const physics = clientsList[client].physics;
-    if (Math.random() * MAX_RANDOM_VALUE > horse.balance) {
+    if (Math.random() * RACE_CONFIG.MAX_RANDOM_VALUE > horse.balance) {
       physics.speed = 0;
     }
     physics.speed = Math.max(
@@ -96,9 +87,9 @@ export const handleFrame = (clientsList, io) => {
       speed: physics.speed,
     };
 
-    if (physics.position.x > FINISH_LINE) {
+    if (physics.position.x > RACE_CONFIG.FINISH_LINE) {
       console.log("we have a winner", client);
-      io.emit(RACE_END_MESSGAE, horse.name);
+      io.emit(MESSAGES.RACE_END, horse.name);
     }
   });
   let horseNames = Object.keys(horses);
@@ -106,11 +97,11 @@ export const handleFrame = (clientsList, io) => {
   for (let i = 0; i < horseNames.length; i++) {
     horses[horseNames[i]].rank = i + 1;
   }
-  io.emit(FRAME_MESSAGE, horses);
+  io.emit(MESSAGES.FRAME, horses);
 };
 
 export const handleFinale = (clientKey, clients, socket) => {
-  socket.emit(SEND_STANDINGS_MESSAGE, generateStandings(clientKey, clients));
+  socket.emit(MESSAGES.SEND_STANDINGS, generateStandings(clientKey, clients));
 };
 
 export const getLobbyData = (clients) => {

@@ -12,13 +12,15 @@ let numberOfImages;
 const main = (p) => {
   p.clientHeight;
   p.clientWidth;
-  p.horseImgs=[]
+  p.horseImgs = [];
   p.order = 1;
   p.horses = new Map();
 
-  socket.emit("askForHorse", ({ name }) => {
+  socket.on("returnHorseNameAndColor", ({ name }) => {
     document.getElementById("horsename").textContent = `Name: ${name}`;
   });
+  socket.emit("askForHorse");
+
   p.sendClients = () => {
     socket.emit("clients", {}, (data) => {
       console.log(data);

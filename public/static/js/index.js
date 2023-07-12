@@ -1,6 +1,5 @@
 // import "./scripts/p5.min.js";
 
-const socket = io();
 const giddyUpAudio = new Audio("./assets/audio/giddyUp.mp3");
 const RED = { r: 255, g: 0, b: 0 };
 const ALPHA = 25;
@@ -12,7 +11,9 @@ const submitForm = (event) => {
     numberToRGB(document.getElementById("colorChooser").value),
     document.getElementById("name").value
   );
-  window.location.href = "/train";
+  setTimeout(() => {
+    window.location.href = "/train";
+  }, 300);
 };
 
 const setColor = (p, degree) => {
@@ -20,9 +21,8 @@ const setColor = (p, degree) => {
 };
 
 const newHorse = (color, name) => {
-  const data = { name: name, color: color || RED };
-  console.log(data);
-  socket.emit("newHorse", data);
+  const socket = io();
+  socket.emit("newHorse", { name: name, color: color || RED });
 };
 
 const numberToRGB = (number) => {
@@ -76,11 +76,6 @@ window.onload = () => {
   );
 };
 
-const sendClients = () => {
-  socket.emit("clients", {}, (data) => {
-    return data;
-  });
-};
 
 const main = (p) => {
   p.clientHeight;

@@ -5,22 +5,22 @@ const actions = {
   walked: {
     text: "Walk",
     sound: new Audio("assets/audio//horseRun.mp3"),
-    stats: { weight: 1, balance: -1 },
+    stats: { weight: 0, balance: 1 },
   },
   fed: {
     text: "Feed",
     sound: new Audio("assets/audio//horseEat.mp3"),
-    stats: { weight: -1, balance: 1 },
+    stats: { weight: 2, balance: -1 },
   },
   rested: {
     text: "Rest",
     sound: new Audio("assets/audio/horseSleep.mp3"),
-    stats: { weight: -1, balance: -1 },
+    stats: { weight: 1, balance: 1 },
   },
   brushed: {
     text: "Brush",
     sound: new Audio("assets/audio/horseSleep.mp3"),
-    stats: { weight: 2, balance: 3 },
+    stats: { weight: -1, balance: 2 },
   },
 };
 
@@ -29,15 +29,17 @@ const LOBBY_LEFT_OFFSET = 200;
 const LOBBY_TEXT_HEIGHT = 80;
 const ALPHA = 25;
 
-let clientHorseName;
-let clientHorseColor;
+let clientHorse = { color: 0, name: "horse" };
 
-socket.emit("askForHorse", ({ horse }) => {
-  const { name, color } = horse;
-  clientHorseName = name;
-  clientHorseColor = color;
+socket.on("returnHorseNameAndColor", ({ name, color }) => {
+  clientHorse.name = name;
+  clientHorse.color = color;
   document.getElementById("trainTitle").textContent = `Train ${name}`;
+
+  const playerAvatar = new p5(horseHead);
 });
+
+socket.emit("askForHorse");
 
 socket.on("start", () => {
   window.location.href = "/race";
@@ -83,17 +85,20 @@ const makeActionCard = (stat) => {
   trainedHistory.prepend(statCard);
 };
 
-function handleStats(stat) {
-  const stats = {
-    maxSpeed: { str: "Max Speed:  ", statDelta: savedStats.weight },
-    Weight: { str: "Weight:  ", statDelta: savedStats.weight },
-    Acceleration: { str: "Acceleration:  ", statDelta: -savedStats.weight },
-    Balance: { str: "Balance:  ", statDelta: savedStats.balance },
+const statsDisplayObject = (stats) => {
+  return {
+    maxSpeed: { str: "Max Speed:  ", statDelta: stats.weight },
+    weight: { str: "Weight:  ", statDelta: stats.weight },
+    acceleration: { str: "Acceleration:  ", statDelta: -stats.weight },
+    balance: { str: "Balance:  ", statDelta: stats.balance },
   };
+};
 
+function handleStats(stat) {
+  const stats = statsDisplayObject(savedStats);
   makeActionCard(stat);
   updateSavedStats(stat);
-  updateStatsDisplay(stats, stat);
+  updateStatsDisplay(stats);
 }
 
 const updateSavedStats = (stat) => {
@@ -111,6 +116,7 @@ const updateSavedStats = (stat) => {
 
 const updateStatsDisplay = (stats) => {
   Object.keys(stats).forEach((stat) => {
+    console.log("update stats display: stat=> ", stat);
     document.getElementById(stat).textContent =
       stats[stat].str + stats[stat].statDelta;
   });
@@ -124,6 +130,7 @@ const readiedUp = () => {
 
 makeActionsIntoButtons(actions);
 makeShotgun();
+updateStatsDisplay(statsDisplayObject(savedStats));
 
 //p5 stuff for the lobby
 const lobbyPanel = (p5) => {
@@ -239,8 +246,9 @@ const horseHead = (p5) => {
     p5.clientWidth = clientWidth;
     let cnv = p5.createCanvas(p5.clientWidth, p5.clientHeight);
     cnv.parent("profilePic2");
+
     p5.image(
-      p5.addFilter(p5.horseHeadImg, clientHorseColor),
+      p5.addFilter(p5.horseHeadImg, clientHorse.color),
       0,
       0,
       p5.horseHeadImg.width * 2,
@@ -272,5 +280,3 @@ const horseHead = (p5) => {
     p5.clear();
   };
 };
-
-const playerAvatar = new p5(horseHead);
