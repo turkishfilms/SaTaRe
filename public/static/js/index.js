@@ -96,8 +96,8 @@ const main = (p) => {
     let cnv = p.createCanvas(clientWidth, clientHeight);
     cnv.parent("horseHead");
     p.background(255);
-    p.image(p.horseHead, 0, 0, IMAGEWIDTH, IMAGEHEIGHT);
-  };
+    p.showHorse({r:255,g:0,b:0,a:25})
+  }; 
 
   p.addFilter = (img, { r, g, b, a }) => {
     img.loadPixels();
@@ -115,8 +115,9 @@ const main = (p) => {
           img.pixels[index + 3] += a; // Blue
         }
       }
-      img.updatePixels();
+      img.updatePixels()
     }
+    return img
   };
 
   p.showHorse = (color) => {
