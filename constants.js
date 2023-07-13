@@ -19,4 +19,6 @@ export const MESSAGES = {
   RACE_END: "over",
   SEND_STANDINGS: "standings",
   SEND_HORSE_NAME_AND_COLOR: "returnHorseNameAndColor",
+  START_OVER: "startOver",
+  DELETE_HORSE: 'deleteHorse'
 };

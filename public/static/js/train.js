@@ -30,13 +30,13 @@ const LOBBY_TEXT_HEIGHT = 80;
 const ALPHA = 25;
 
 let clientHorse = { color: 0, name: "horse" };
-
+let playerAvatar
 socket.on("returnHorseNameAndColor", ({ name, color }) => {
   clientHorse.name = name;
   clientHorse.color = color;
   document.getElementById("trainTitle").textContent = `Train ${name}`;
 
-  const playerAvatar = new p5(horseHead);
+  playerAvatar = new p5(horseHead);
 });
 
 socket.emit("askForHorse");
@@ -66,6 +66,8 @@ const makeShotgun = () => {
     playerAvatar.deadHorse();
     document.getElementById("profilePic").src =
       "assets/graphics/s_horseHeadDead.png";
+      socket.emit('deleteHorse')
+      window.location.href = "/"
   });
 };
 
@@ -158,17 +160,19 @@ const lobbyPanel = (p5) => {
     cnv.parent("clientsBar");
 
     socket.on("updateLobby", (horses) => {
+      console.log("updstaionglobby: horse=> ",horses)
+      p5.allHorseData = []
       p5.updateHorseData(horses);
-      p5.showHorses(p5.allHorseData);
+      p5.showHorses(p5.allHorseData)
     });
-    socket.emit("joinLobby");
+    socket.emit("joinLobby")
   };
 
   p5.updateHorseData = (data) => {
     for (let client in data) {
       const horseIndex = p5.allHorseData.findIndex(
         (horse) => horse.name === client
-      );
+      )
 
       if (horseIndex === -1) {
         const newPic = p5.addFilter(p5.horseImg.get(), data[client].color);

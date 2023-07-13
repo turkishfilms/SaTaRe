@@ -8,6 +8,7 @@ import router from "./routes.js";
 import {
   handleFinale,
   handleLobbyJoin,
+  handleOver,
   handleClients,
   handleNewHorse,
   handleAskForHorse,
@@ -15,8 +16,9 @@ import {
   handleReady,
   handleFrame,
   handleDisconnect,
+  getLobbyData,
 } from "./socketHandlers.js";
-import {MESSAGES,RACE_CONFIG} from './constants.js'
+import { MESSAGES, RACE_CONFIG } from "./constants.js";
 
 const app = express(),
   port = process.env.PORT || 3007;
@@ -38,7 +40,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(join(process.cwd(), "public")));
 
-const clients = {};
+let clients = {};
 
 const clearEmptyClients = () => {
   for (let client in clients) {
@@ -66,7 +68,7 @@ io.on("connection", (socket) => {
     .map((client) => client.horse.name);
 
   console.log(
-    'User Assigned',
+    "User Assigned",
     user.horse ? user.horse.name : user,
     "Everyone",
     clientNames
@@ -88,7 +90,7 @@ io.on("connection", (socket) => {
   socket.on(MESSAGES.ASK_FOR_HORSE, () => {
     if (Object.keys(user).length === 0) return;
     handleAskForHorse({ horse: user.horse, socket: socket });
-    console.log(user.horse.name)
+    console.log(user.horse.name);
   });
 
   socket.on(MESSAGES.JOIN_LOBBY, () => {
@@ -105,6 +107,7 @@ io.on("connection", (socket) => {
 
   socket.on(MESSAGES.FRAME, () => {
     if (Object.keys(user).length === 0) return;
+    console.log("frame:user=> ", Object.keys(user));
     handleFrame(clients, io);
   });
 
@@ -113,13 +116,25 @@ io.on("connection", (socket) => {
     handleFinale(clientKey, clients, socket);
   });
 
+  socket.on(MESSAGES.START_OVER, () => {
+    if (Object.keys(user).length === 0) return;
+    handleOver(clients);
+    clients = {};
+  });
+
+  socket.on(MESSAGES.DELETE_HORSE, () => {
+    if (Object.keys(user).length === 0) return;
+    clients[clientKey] = {};
+    io.emit(MESSAGES.UPDATE_LOBBY, getLobbyData(clients));
+  });
+
   socket.on("disconnect", () => {
     handleDisconnect(clientKey);
   });
 });
 
-export const isAllClientsReady = (clientsList)=>{
-  return Object.values(clientsList).every((client)=>{
-    return client.ready
-  })
-}
+export const isAllClientsReady = (clientsList) => {
+  return Object.values(clientsList).every((client) => {
+    return client.ready;
+  });
+};

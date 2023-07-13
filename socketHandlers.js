@@ -138,3 +138,7 @@ export const generateStandings = (clientKey, clients) => {
 export const handleDisconnect = (clientKey) => {
   console.log("Bye Client: " + clientKey);
 };
+export const handleOver = (clients)=>{
+clients = {}
+console.log("handleover:clients=> ",clients)
+}
