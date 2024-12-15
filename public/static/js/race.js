@@ -23,7 +23,6 @@ const main = (p) => {
 
   p.sendClients = () => {
     socket.emit("clients", {}, (data) => {
-      console.log(data);
     });
   };
 

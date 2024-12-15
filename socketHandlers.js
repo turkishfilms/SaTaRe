@@ -30,7 +30,8 @@ export const handleNewHorse = (request, clientKey, clients) => {
 
 export const handleAskForHorse = ({ horse, socket }) => {
   socket.emit(MESSAGES.SEND_HORSE_NAME_AND_COLOR, {
-      name: horse.name, color: horse.color ,
+    name: horse.name,
+    color: horse.color,
   });
 };
 
@@ -135,10 +136,16 @@ export const generateStandings = (clientKey, clients) => {
   return { myHorseName: clientHorseName, standings: horses };
 };
 
-export const handleDisconnect = (clientKey) => {
+export const handleDisconnect = (clientKey, clients) => {
   console.log("Bye Client: " + clientKey);
+  if (clients[clientKey] && clients[clientKey].horse) {
+    // KEEP HORSE IF CLIENT DISCONNECTS AND COMES BACK (ON SAME SERVER INSTANCE)
+    clients[clientKey] = {
+      horse: clients[clientKey].horse,
+    };
+  }
 };
-export const handleOver = (clients)=>{
-clients = {}
-console.log("handleover:clients=> ",clients)
-}
+export const handleOver = (clients) => {
+  clients = {};
+  console.log("handleover:clients=> ", clients);
+};

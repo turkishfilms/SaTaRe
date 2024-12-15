@@ -29,9 +29,9 @@ const sessionMiddleware = session({
   saveUninitialized: true,
   cookie: {
     maxAge: RACE_CONFIG.ONE_HOUR_IN_MILLISECONDS,
-    secure: false, // true for http eeebsbs
-    httpOnly: false, // if true prevents client side JS from reading the cookie
-    sameSite: "lax", // protection against cross site request forgery attacks
+    secure: false,
+    httpOnly: false,
+    sameSite: "lax",
   },
 });
 
@@ -59,36 +59,32 @@ io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
 io.on("connection", (socket) => {
   const clientKey = socket.handshake.session.id;
-  clients[clientKey] = clients[clientKey] || {}; //FIXME: add supprt for arrays and stuff this need to be more thougtul
+
+  if (!clients[clientKey]) {
+    clients[clientKey] = {};
+  }
 
   const user = clients[clientKey];
 
-  let clientNames = Object.values(clients)
-    .filter((client) => client.horse && client.horse.name)
-    .map((client) => client.horse.name);
-
-  console.log(
-    "User Assigned",
-    user.horse ? user.horse.name : user,
-    "Everyone",
-    clientNames
-  );
-
   socket.on(MESSAGES.CLIENTS, handleClients(socket, clients));
 
-  socket.on(MESSAGES.NEW_HORSE, (socket) => {
+  socket.on(MESSAGES.NEW_HORSE, (request) => {
+    if (clients[clientKey] && clients[clientKey].horse) {
+      return; // do NOT WANT MULTIPLE HORSES
+    }
     try {
-      handleNewHorse(socket, clientKey, clients);
+      handleNewHorse(request, clientKey, clients);
     } catch (error) {
-      console.error(`Error handling new horse: ${error.message}`);
-      socket.emit("error", {
-        message: "An error occurred while creating a new horse.",
-      });
+      console.error(`YOU DONE TRY TO HAVE 2 HORSES COWBOY: ${error.message}`);
     }
   });
 
   socket.on(MESSAGES.ASK_FOR_HORSE, () => {
-    if (Object.keys(user).length === 0) return;
+    if (!user || !user.horse) {
+      console.error("NO HORSE.");
+      socket.emit("redirect", "/");
+      return;
+    }
     handleAskForHorse({ horse: user.horse, socket: socket });
     console.log(user.horse.name);
   });
@@ -96,6 +92,11 @@ io.on("connection", (socket) => {
   socket.on(MESSAGES.JOIN_LOBBY, () => {
     if (Object.keys(user).length === 0) return;
     handleLobbyJoin(clients, io);
+    if (!user.horse) {
+      socket.emit("redirect", "/");
+      socket.disconnect(true);
+      return;
+    }
   });
 
   socket.on(MESSAGES.READY, (request) => {
@@ -106,8 +107,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on(MESSAGES.FRAME, () => {
-    if (Object.keys(user).length === 0) return;
-    console.log("frame:user=> ", Object.keys(user));
+    if (Object.keys(user).length === 0 || !user.horse) {
+      console.log("User does not have a horse, ignoring frame.");
+      return;
+    }
+
     handleFrame(clients, io);
   });
 
@@ -119,7 +123,7 @@ io.on("connection", (socket) => {
   socket.on(MESSAGES.START_OVER, () => {
     if (Object.keys(user).length === 0) return;
     handleOver(clients);
-    clients = {};
+    clients = {}; //reset FOR NEW RACE
   });
 
   socket.on(MESSAGES.DELETE_HORSE, () => {
@@ -127,14 +131,8 @@ io.on("connection", (socket) => {
     clients[clientKey] = {};
     io.emit(MESSAGES.UPDATE_LOBBY, getLobbyData(clients));
   });
-
-  socket.on("disconnect", () => {
-    handleDisconnect(clientKey);
-  });
 });
 
 export const isAllClientsReady = (clientsList) => {
-  return Object.values(clientsList).every((client) => {
-    return client.ready;
-  });
+  return Object.values(clientsList).every((client) => client.ready);
 };

@@ -284,3 +284,15 @@ const horseHead = (p5) => {
     p5.clear();
   };
 };
+
+
+
+socket.on('redirect', (url) => { //TO MOVE BACK TO HOME PAGE IF NOT HORSE OR CLIENT
+  window.location.href = url; 
+});
+
+
+
+
+
+  
